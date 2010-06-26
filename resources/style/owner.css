@@ -1,0 +1,93 @@
+*
+{
+	margin                           : 0;
+	padding                          : 0;
+}
+
+body
+{
+	background-color                 : #FFFFFF;
+	background-image                 : url(../image/bg_Owner.gif);
+	background-position              : top left;
+	background-repeat                : repeat-x;
+	font-size                        : small;
+}
+
+/* XHTML 에러 메세지 윈도우용 CSS */
+#body-message-page
+{
+	background-image                 : url("../image/e_back.gif");
+	background-position              : left top;
+}
+
+#body-message-page .message-box
+{
+	background-color                 : #FFFFFF;
+	background-image                 : url("../image/back.gif");
+	background-position              : left top;
+	background-repeat                : repeat-x;
+	border                           : 1px solid #000000;
+	margin-top                       : 140px;
+	padding                          : 20px;
+	text-align                       : center;
+}
+
+#body-message-page h1
+{
+	color                            : #213141;
+	font-size                        : 12px;
+	margin-bottom                    : 10px;
+}
+
+#body-message-page .input-button
+{
+	border                           : 1px solid #878787;
+	background-color                 : #EFEFEF;
+	color                            : #000000;
+	font-weight                      : bold;
+	font-size                        : 12px;
+	height                           : 1.9em;
+	margin-top                       : 20px;
+	padding                          : 0 6px;
+}
+
+/* XHTML 에러 메세지 페이지용 CSS */
+#body-message-page
+{
+	background-color                 : transparent;
+	background-image                 : url("../image/bg_message_page.gif");
+	background-position              : left top;
+}
+
+#body-message-page .message-box
+{
+	background-color                 : #FFFFFF;
+	background-image                 : url("../image/bg_message.gif");
+	background-position              : left top;
+	background-repeat                : repeat-x;
+	border                           : 1px solid #000000;
+	font-family                      : Tahoma, Helvetica, Arial, Gulim, sans-serif;
+	font-size                        : 0.925em;
+	margin-top                       : 140px;
+	padding                          : 20px;
+	text-align                       : center;
+}
+
+#body-message-page h1
+{
+	color                            : #213141;
+	font-size                        : 12px;
+	margin-bottom                    : 10px;
+}
+
+#body-message-page .input-button
+{
+	border                           : 1px solid #878787;
+	background-color                 : #EFEFEF;
+	color                            : #000000;
+	font-weight                      : bold;
+	font-size                        : 12px;
+	height                           : 1.9em;
+	margin-top                       : 20px;
+	padding                          : 0 6px;
+}

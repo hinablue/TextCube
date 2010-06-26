@@ -1,0 +1,76 @@
+/* keylog log */
+body
+{
+	margin                  : 0;
+	background              : #FFF url(./images/bg.png) top left repeat-x;
+}
+
+#keylog
+{
+	padding-bottom          : 10px;
+}
+
+#keylog a
+{
+	color                   : #000;
+	text-decoration         : none;
+}
+
+#keylog a:hover
+{
+	text-decoration         : underline;
+}
+
+#keylog h1
+{
+	margin-left             : 20px;
+	margin-top              : 10px;
+	padding-top             : 5px;
+	padding-left            : 30px;
+	height                  : 20px;
+	color                   : #FFF;
+	font-size               : .75em;
+	font-family             : Tahoma, Helvetica, Arial, Gulim, sans-serif;
+	background              : url(./images/bullet.gif) 0% 50% no-repeat;
+}
+
+#keylog .view
+{
+	padding                 : 50px 20px;
+	font-size               : .75em;
+	font-family             : Tahoma, Helvetica, Arial, Gulim, sans-serif;
+}
+
+#keylog .list
+{
+	margin                  : 10px;
+}
+
+#keylog .title
+{
+	margin-top              : 20px;
+	font-size               : .75em;
+	font-family             : Dotum, Arial, sans-serif;
+}
+
+#keylog ul
+{
+	padding                 : 0;
+	margin                  : 10px;
+	list-style              : none;
+	letter-spacing          : -1px;
+	font-size               : .7em;
+	font-family             : Dotum, Arial, sans-serif;
+}
+
+#keylog .date
+{
+	color                   : #999;
+}
+
+#keylog .cnt
+{
+	font-size               : 1em;
+	font-family             : Tahoma, Helvetica, Arial, Dotum, sans-serif;
+	color                   : #666;
+}

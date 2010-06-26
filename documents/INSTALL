@@ -1,0 +1,57 @@
+Textcube Installation
+---------------------
+
+Please read manual_requirements.txt to see what softwares you need before installation.
+
+For MySQL 4.1 or above, UTF-8 for default character set and collation settings
+is strongly recommended.
+
+1. For Linux Systems:
+
+  Step 1: Make sure the directory of Textcube is accessible from Apache, and
+          has write permissions on the main directory and cache, attachment, 
+          skin, skin/customize subdirectories.
+
+          If you can't change owner or group of file/directories, you may set
+          777 permission on them.
+
+  Step 2: Create apropriate MySQL user/database if you need. Or you may consult
+          your web-hosting provider.
+
+  Step 3: Run setup.php on your web browser and follow instructions.
+
+2. For Windows Systems:
+
+  Step 1: Install and setup IIS, PHP, MySQL.
+
+  Step 2: Install a free open-source rewrite filter. It supports IIS5/6/7.
+          Link : http://www.codeplex.com/IIRF
+
+          There is another implementation provided by IIS Development Team, but it has
+          encoding problems with non-ASCII URLs and runs only on IIS7.
+          Link : http://learn.iis.net/page.aspx/460/using-url-rewrite-module/
+
+  Step 3: Grant all permissions on the Textcube directory and its subdirectories to
+          IIS_IUSRS group or appropriate user/groups.
+
+  Step 4: Run setup.php on your web browser.
+
+  Step 5: You will see a notice about IIS during installation.
+
+  Step 6: After setup, add $service['fancyURL'] = 2; to config.php to force using rewrites.
+          (optional)
+
+  Step 7: Copy all rewrite rules in .htaccess to IsapiRewrite4.ini as instructed.
+          setup.php will generate these rules by recognizing the web server.
+  
+  Step 8: Restart the web server or the application pool if you're using FastCGI.
+     
+     NOTE: For 64bit IIS 7.0, you have to turn on 32bit compatibility mode in advanced settings
+           of the application pool to use this rewrite filter properly.
+
+  TIPS:
+   * Change upload_tmp_dir setting in php.ini to avoid permission problems with file uploads.
+     You have to grant all permissions on it to IIS_IUSRS group.
+   * To apply changes of php.ini when you use FastCGI, refresh your application pool instead
+     of restarting the web service.
+

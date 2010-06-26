@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">HC flickr Photos</title>
+  <title xml:lang="zh-TW">HC flickr 相片貼</title>
+  <title xml:lang="zh-CN">HC flickr 相片贴</title>
+  <version>1.0</version>
+  <description xml:lang="en"><![CDATA[flickr photos bar for blog posting support.]]></description>
+  <description xml:lang="zh-TW"><![CDATA[在編輯器下方插入你的 flickr 相片，將相片輕鬆貼入你的編輯器中。]]></description>
+  <description xml:lang="zh-CN"><![CDATA[在编辑器下方插入你的flickr 相片，将相片轻松贴入你的编辑器中。]]></description>
+  <license>GPL</license>
+  <link>http://hina.ushiisland.net/blog/</link>
+  <author xml:lang="en" link="http://blog.hinablue.me"><![CDATA[Hina, Cain Chen.]]></author>
+  <author xml:lang="zh-TW" link="http://blog.hinablue.me"><![CDATA[Hina, Cain Chen.]]></author>
+  <author xml:lang="zh-CN" link="http://blog.hinablue.me"><![CDATA[Hina, Cain Chen.]]></author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="yes" accessRaw="yes" />
+  <requirements>
+    <textcube>1.8</textcube>
+  </requirements>
+  <binding>
+    <listener event="AddPostEditorToolbox">showFlickrPhotos</listener>
+    <listener event="/plugin/flickrPhotos">getFlickrPhotos</listener>
+	<config xml:lang="en" dataValHandler="getFlickrPhotosDataSet" >
+		<window width="500" height="310" />
+			<fieldset legend="flickr user setting" >
+				<field title="My flickr NSID:" name="flickruserid" type="text" size ="35" value="">
+                  		<caption><![CDATA[ex) NSID: 123456789@N01, you can find your NSID in <a href="http://www.flickr.com/services/api/explore/?method=flickr.auth.checkToken" target="_blank">flickr API services</a>.]]></caption>
+                		</field>
+			</fieldset>
+	</config>
+	<config xml:lang="zh-TW" dataValHandler="getFlickrPhotosDataSet" >
+		<window width="500" height="310" />
+			<fieldset legend="flickr 使用者設定" >
+				<field title="你的 flickr NSID:" name="flickruserid" type="text" size ="35" value="">
+                  		<caption><![CDATA[範例) NSID: 123456789@N01, 你可以在 <a href="http://www.flickr.com/services/api/explore/?method=flickr.auth.checkToken" target="_blank">flickr API 服務</a> 中找到你的 NSID。]]></caption>
+                		</field>
+			</fieldset>
+	</config>
+	<config xml:lang="zh-CN" dataValHandler="getFlickrPhotosDataSet" >
+		<window width="500" height="310" />
+			<fieldset legend="flickr 用户设置" >
+				<field title="你的 flickr NSID:" name="flickruserid" type="text" size ="35" value="">
+                  		<caption><![CDATA[范例) NSID: 123456789@N01, 你可以在 <a href="http://www.flickr.com/services/api/explore/?method=flickr.auth.checkToken" target="_blank">flickr API 服务</a> 中找到你的NSID。]]></caption>
+                		</field>
+			</fieldset>
+	</config>
+  </binding>
+</plugin>

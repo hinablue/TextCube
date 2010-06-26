@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">Banner Plug-in</title>
+  <title xml:lang="ko">배너출력</title>
+  <title xml:lang="zh-TW">側欄橫幅插件</title>
+  <title xml:lang="zh-CN">侧栏横幅插件</title>
+  <link>http://needlworks.org/</link>
+  <version>1.0</version>
+  <description xml:lang="en">Display banner on sidebar.</description>
+  <description xml:lang="ko">사이드바에 배너를 출력해 줍니다.</description>
+  <description xml:lang="zh-TW">顯示一個橫幅(banner)於側欄。</description>
+  <description xml:lang="zh-CN">显示一个横幅(banner)于侧栏。</description>
+  <license>GPL</license>
+  <author xml:lang="en" link="http://gendoh.com">Sang-il Lee (gendoh / TNC)</author>
+  <author xml:lang="ko" link="http://gendoh.com"><![CDATA[이상일 (gendoh / TNC)]]></author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="yes" />
+  <requirements>
+    <textcube>1.5</textcube>
+  </requirements>
+  <binding>
+    <sidebar title="ImageBanner" handler="SB_Banner_withImage">
+      <params>
+        <param>
+          <title xml:lang="ko">이미지 경로</title>
+          <title xml:lang="en">image source</title>
+          <title xml:lang="zh-TW">影像來源</title>
+          <title xml:lang="zh-CN">影像来源</title>
+          <name>imgsrc</name>
+          <type>string</type>
+        </param>
+        <param>
+          <title xml:lang="ko">타겟 경로</title>
+          <title xml:lang="en">target URL</title>
+          <title xml:lang="zh-TW">目標網址(URL)</title>
+          <title xml:lang="zh-CN">目标网址(URL)</title>
+          <name>href</name>
+          <type>string</type>
+        </param>
+      </params>
+    </sidebar>
+    <sidebar title="CodeBanner" handler="SB_Banner_withCode">
+      <params>
+        <param>
+          <title xml:lang="ko">HTML 코드</title>
+          <title xml:lang="en">HTML Code</title>
+          <title xml:lang="zh-TW">HTML 內容</title>
+          <title xml:lang="zh-CN">HTML 内容</title>
+          <name>text</name>
+          <type>textarea</type>
+        </param>
+      </params>
+    </sidebar>
+  </binding>
+</plugin>

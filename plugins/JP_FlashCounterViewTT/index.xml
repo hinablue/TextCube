@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title>JP Flash Counter View</title>
+  <version>1.9.0502</version>
+  <description xml:lang="ko">태터 0.9* 구버젼부터 써오던 혀니님(http://www.web2dew.com/blog.bung)께서 만드신 플래쉬카운터를 Textcube 1.5 코어에 맞게 플러그인화 했습니다. 플래쉬카운터의 원 저작권은 혀니님께 있습니다. (IE패치용)</description>
+  <description xml:lang="zh-TW">此插件由 TextTools 0.9* 版本開發者 혀니님(http://www.web2dew.com/blog.bung) 所修改並適用於 Textcube 1.5 以後版本。本插件著作權仍屬原開發者所有。(IE 更新)</description>
+  <description xml:lang="zh-CN">此插件由 TextTools 0.9* 版本开发者 혀니님(http://www.web2dew.com/blog.bung) 所修改并适用于 Textcube 1.5 以后版本。本插件著作权仍属原开发者所有。(IE 更新)</description>
+  <license>GPL</license>
+  <link>http://create74.com</link>
+  <author xml:lang="en" link="http://create74.com"><![CDATA[Yong-ju, Park (J.Parker / Needlworks)]]></author>
+  <author xml:lang="ko" link="http://create74.com"><![CDATA[박용주 (J.Parker / Needlworks)]]></author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
+  <requirements>
+    <textcube>1.7.9</textcube>
+  </requirements>
+  <binding>
+	<sidebar title="Flash Counter View" handler="showFlashCounter" />
+	<tag name="Flash_Counter_View" handler="showFlashCounter" />
+	<config dataValHandler="FlashCounterViewDataSet" >
+		<window width="500" height="447" />
+		<fieldset legend="플래쉬 카운터 표시 설정">
+			<field title="기간 :" name="maxdate" type="text" size="4" value="5">
+				<caption><![CDATA[<b>tip:</b> 실제 카운팅된 기간이 설정기간보다 작을경우 <b>'0'</b>으로 표시됩니다. ]]></caption>
+			</field>
+			<field title="크기 :" name="flashsize" type="radio" >
+				<op value="150" checked="checked">150 x 85</op>
+				<op value="180">180 x 85</op>
+				<op value="194">194 x 85</op>
+				<op value="205">205 x 85</op>
+			</field>
+			<field title="정렬 :" name="flashalign" type="radio" >
+				<op value="left" checked="checked">왼쪽</op>
+				<op value="center">가운데</op>
+				<op value="right">오른쪽</op>
+			</field>
+			<field title="여백 :" name="flashmargin" type="text" size="20" value="0px 0px 0px 0px" >
+				<caption><![CDATA[<b>tip:</b> 20px 1px 2px 1px , [상px 우px 하px 좌px]의 형식으로 여백조정]]></caption>
+			</field>
+			<field title="색상 :" name="flashcolor" type="radio" >
+				<op value="white" checked="checked">흰색</op>
+				<op value="black">검정색</op>
+				<caption><![CDATA[<b>tip:</b> 플래쉬카운터 <font color="blue">'205x85'</font> 크기는 <b>검정색</b>만 설정가능합니다.]]></caption>
+			</field>
+		</fieldset>
+	</config>
+	<config xml:lang="zh-TW" dataValHandler="FlashCounterViewDataSet" >
+		<window width="500" height="447" />
+		<fieldset legend="計數器顯示設定">
+			<field title="天數 :" name="maxdate" type="text" size="4" value="5">
+				<caption><![CDATA[<b>tip:</b> 顯示自當日起天數設定的資料。若設定為<b>'0'</b>則不限制。]]></caption>
+			</field>
+			<field title="尺寸 :" name="flashsize" type="radio" >
+				<op value="150" checked="checked">150 x 85</op>
+				<op value="180">180 x 85</op>
+				<op value="194">194 x 85</op>
+				<op value="205">205 x 85</op>
+			</field>
+			<field title="對齊 :" name="flashalign" type="radio" >
+				<op value="left" checked="checked">靠左</op>
+				<op value="center">置中</op>
+				<op value="right">靠右</op>
+			</field>
+			<field title="留白 :" name="flashmargin" type="text" size="20" value="0px 0px 0px 0px" >
+			<caption><![CDATA[<b>tip:</b> 20px 1px 2px 1px , [左px 上px 右px 下px]的方式做留白設定。]]></caption>
+			</field>
+			<field title="底色 :" name="flashcolor" type="radio" >
+				<op value="white" checked="checked">白色</op>
+				<op value="black">黑色</op>
+				<caption><![CDATA[<b>tip:</b> 尺寸設定 <font color="blue">'205x85'</font> 僅適用於 <b>黑色</b>的底色設定。]]></caption>
+			</field>
+		</fieldset>
+	</config>
+	<config xml:lang="zh-CN" dataValHandler="FlashCounterViewDataSet" >
+		<window width="500" height="447" />
+		<fieldset legend="计数器显示设置">
+			<field title="天数 :" name="maxdate" type="text" size="4" value="5">
+				<caption><![CDATA[<b>tip:</b> 显示自当日起天数设定的资料。若设定为<b>'0'</b>则不限制。]]></caption>
+			</field>
+			<field title="尺寸 :" name="flashsize" type="radio" >
+				<op value="150" checked="checked">150 x 85</op>
+				<op value="180">180 x 85</op>
+				<op value="194">194 x 85</op>
+				<op value="205">205 x 85</op>
+			</field>
+			<field title="对齐 :" name="flashalign" type="radio" >
+				<op value="left" checked="checked">靠左</op>
+				<op value="center">置中</op>
+				<op value="right">靠右</op>
+			</field>
+			<field title="留白 :" name="flashmargin" type="text" size="20" value="0px 0px 0px 0px" >
+			<caption><![CDATA[<b>tip:</b> 20px 1px 2px 1px , [左px 上px 右px 下px]的方式做留白设定。]]></caption>
+			</field>
+			<field title="底色 :" name="flashcolor" type="radio" >
+				<op value="white" checked="checked">白色</op>
+				<op value="black">黑色</op>
+				<caption><![CDATA[<b>tip:</b> 尺寸设定 <font color="blue">'205x85'</font> 仅适用于 <b>黑色</b>的底色设定。]]></caption>
+			</field>
+		</fieldset>
+	</config>
+  </binding>
+</plugin>

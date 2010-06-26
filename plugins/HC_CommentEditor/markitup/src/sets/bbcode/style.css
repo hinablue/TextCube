@@ -1,0 +1,194 @@
+/* -------------------------------------------------------------------
+// markItUp!
+// By Jay Salvat - http://markitup.jaysalvat.com/
+// ------------------------------------------------------------------*/
+.markItUp .fonts-bold a	{
+	background-image:url(images/bold.png);
+}
+.markItUp .fonts-italic a	{
+	background-image:url(images/italic.png);
+}
+.markItUp .fonts-underline a	{
+	background-image:url(images/underline.png);
+}
+
+.markItUp .picture a	{
+	background-image:url(images/picture.png);
+}
+.markItUp .link a	{
+	background-image:url(images/link.png);
+}
+
+.markItUp .fonts-size a	{
+	background-image:url(images/fonts.png);
+}
+.markItUp .content-smile a	{
+	background-image:url(images/smile.png);
+}
+.markItUp .content-quotes a	{
+	background-image:url(images/quotes.png);
+}
+.markItUp .source-code a	{
+	background-image:url(images/code.png);
+}
+	
+.markItUp .clean a {
+	background-image:url(images/clean.png);
+}
+.markItUp .preview a {
+	background-image:url(images/preview.png);
+}
+
+/* -------------------------------------------------------------------
+// markItUp!
+// By Jay Salvat - http://markitup.jaysalvat.com/
+// ------------------------------------------------------------------*/
+.markItUp .fonts-colors a {
+	background-image:url(images/colors.png);
+}
+.markItUp .fonts-colors ul {
+	width:81px;
+	padding:1px;	
+}
+.markItUp .fonts-colors  li {
+	border:1px solid white;
+	width:25px;	height:25px;
+	overflow:hidden;
+	padding:0px; margin:0px;
+	float:left;
+}
+.markItUp .fonts-colors ul a {
+	width:25px;	height:25px;
+}
+.markItUp .fonts-colors ul a:hover {
+	/*background-color: transparent; */
+	border: 1px solid #efefef;
+}
+
+.markItUp .fonts-colors .col1-1 a {
+	background:yellow;
+}
+.markItUp .fonts-colors .col1-2 a {
+	background:orange;
+}
+.markItUp .fonts-colors .col1-3 a {
+	background:red;
+}
+
+.markItUp .fonts-colors .col2-1 a {
+	background:blue;
+}
+.markItUp .fonts-colors .col2-2 a {
+	background:purple;
+}
+.markItUp .fonts-colors .col2-3 a {
+	background:green;
+}
+
+.markItUp .fonts-colors .col3-1 a {
+	background:white;
+}
+.markItUp .fonts-colors .col3-2 a {
+	background:gray;
+}
+.markItUp .fonts-colors .col3-3 a {
+	background:black;
+}
+
+/* -------------------------------------------------------------------
+// markItUp!
+// By Hina, Cain Chen - http://blog.hinablue.me/
+// ------------------------------------------------------------------*/
+.markItUp .content-smile ul {
+	width:81px;
+	padding:1px;	
+}
+.markItUp .content-smile  li {
+	border:1px solid white;
+	width:25px;	height:25px;
+	overflow:hidden;
+	padding:0px; margin:0px;
+	float:left;
+}
+.markItUp .content-smile ul a {
+	width:25px;	height:25px;
+}
+.markItUp .content-smile ul a:hover {
+	/*background-color: transparent; */
+	border: 1px solid #efefef;
+}
+.markItUp .content-smile .col1-s1 a {
+	background: url(images/smile/001.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col1-s2 a {
+	background: url(images/smile/002.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col1-s3 a {
+	background: url(images/smile/003.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col2-s1 a {
+	background: url(images/smile/004.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col2-s2 a {
+	background: url(images/smile/005.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col2-s3 a {
+	background: url(images/smile/006.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col3-s1 a {
+	background: url(images/smile/007.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col3-s2 a {
+	background: url(images/smile/008.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col3-s3 a {
+	background: url(images/smile/009.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col4-s1 a {
+	background: url(images/smile/010.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col4-s2 a {
+	background: url(images/smile/011.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col4-s3 a {
+	background: url(images/smile/012.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col5-s1 a {
+	background: url(images/smile/013.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col5-s2 a {
+	background: url(images/smile/014.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col5-s3 a {
+	background: url(images/smile/015.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col6-s1 a {
+	background: url(images/smile/016.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col6-s2 a {
+	background: url(images/smile/017.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col6-s3 a {
+	background: url(images/smile/018.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col7-s1 a {
+	background: url(images/smile/019.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col7-s2 a {
+	background: url(images/smile/020.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col7-s3 a {
+	background: url(images/smile/021.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col8-s1 a {
+	background: url(images/smile/022.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col8-s2 a {
+	background: url(images/smile/023.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col8-s3 a {
+	background: url(images/smile/024.jpg) top left no-repeat #fff;
+}
+.markItUp .content-smile .col9-s1 a {
+	background: url(images/smile/025.jpg) top left no-repeat #fff;
+}

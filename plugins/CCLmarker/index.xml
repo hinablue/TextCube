@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">Creative Commons License</title>
+  <title xml:lang="ko">크리에이티브 커먼즈 라이센스</title>
+  <title xml:lang="zh-TW">創用 CC 授權</title>
+  <title xml:lang="zh-CN">创用 CC 授权</title>
+  <link>http://www.creativecommons.or.kr</link>
+  <version>2.1</version>
+  <description xml:lang="en">Display creative commons license banner on sidebar.</description>
+  <description xml:lang="ko"><![CDATA[블로그 내용의 법적 보호를 위하여 각 포스트와 블로그에 사이드바 치환자([##_CCL_Banner_##])를 이용하여 미리 정의한 크리에이티브 커먼즈 라이센스를 출력해 줍니다. 환경설정에서 정의할 수 있습니다. 원작자 inureyes : http://forest.nubimaru.com/ , 주성애비 : http://pinhole.pe.kr/]]></description>
+  <description xml:lang="zh-TW"><![CDATA[顯示創用 CC 授權於側欄，或使用替換標籤([##_CCL_Banner_##])顯示於自訂位置。]]></description>
+  <description xml:lang="zh-CN"><![CDATA[显示创用 CC 授权于侧栏，或使用替换卷标([##_CCL_Banner_##])显示于自定义位置。]]></description>
+  <license>GPL</license>
+  <author xml:lang="en" link="http://forest.nubimaru.com/"><![CDATA[신정규 (inureyes / Needlworks) , 주성애비]]></author>
+  <author xml:lang="ko" link="http://forest.nubimaru.com/"><![CDATA[신정규 (inureyes / Needlworks) , 주성애비]]></author>
+  <author xml:lang="zh-TW" link="http://forest.nubimaru.com/"><![CDATA[신정규 (inureyes / Needlworks) , 주성애비]]></author>
+  <author xml:lang="zh-CN" link="http://forest.nubimaru.com/"><![CDATA[신정규 (inureyes / Needlworks) , 주성애비]]></author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
+  <requirements>
+    <textcube>1.6</textcube>
+  </requirements>
+  <UserProperties>
+  	<up>blog</up>
+	<up>post</up>
+  </UserProperties>  
+  <binding>
+    <sidebar title="CCL Banner" handler="CCLmarker" />
+	<tag name="CCL_Banner" handler="CCLmarker_replacer" />
+	<listener event="ViewPostContent">CCLmarker_insertCCL</listener>
+	<config xml:lang="ko" dataValHandler = "CCLmarker_DataSet">
+		<window width="600" height="550" />
+		<fieldset legend="포스트 관련 사용자 설정">
+			<field title="포스트 CCL 마크 사용 |" name="postUse" type="radio">
+				<op value="01" checked="checked">사용</op>
+				<op value="02" >미사용</op>
+			</field>		
+			<field title="포스트와의 위치 |" name="Position" type="radio">
+				<op value="01">포스트 상단</op>
+				<op value="02" checked="checked">포스트 하단</op>
+			</field>
+			<field title="타이틀 |" name="titleCaption" type="radio">
+				<op value="01" checked="checked">한글</op>
+				<op value="02">영어</op>
+				<op value="03">표시하지 않음</op>
+				<op value="04">사용자설정</op>
+			</field>
+			<field title="사용자설정 타이틀" name="titleCaptionText" type="text" size="50" value="저작권" />
+			<field title="Rss Feed에서 표시 |" name="showRSS" type="radio">
+				<op value="01" checked="checked">표시함</op>
+				<op value="02">표시하지 않음</op>
+			</field>
+		</fieldset>		
+		<fieldset legend="Creative Commons License">
+			<field title="영리목적 이용" name="profit" type="radio">
+				<caption><![CDATA[영리적인 목적으로의 이용 허가 여부를 결정합니다.]]></caption>
+				<op value="yes">예</op>
+				<op value="no" checked="checked">아니오</op>
+			</field>			
+			<field title="변경 허락" name="changeable" type="radio">
+				<caption><![CDATA[저작물의 변경 허가 여부를 결정합니다.]]></caption>
+				<op value="yes">예</op>
+				<op value="no">아니오</op>
+				<op value="some" checked="checked">예. 단 동일한 이용허락조건을 적용하는 경우에만.</op>
+			</field>
+		</fieldset>
+	</config>
+	<config xml:lang="en" dataValHandler = "CCLmarker_DataSet">
+		<window width="600" height="550" />
+		<fieldset legend="Article with CCL mark">
+			<field title="show CCL mark |" name="postUse" type="radio">
+				<op value="01" checked="checked">Yes</op>
+				<op value="02" >No</op>
+			</field>		
+			<field title="position |" name="Position" type="radio">
+				<op value="01">Top</op>
+				<op value="02" checked="checked">Bottom</op>
+			</field>
+			<field title="Header |" name="titleCaption" type="radio">
+				<op value="01">Korea</op>
+				<op value="02" checked="checked">English</op>
+				<op value="03">No display</op>
+				<op value="04">Custom</op>
+			</field>
+			<field title="Custom Header" name="titleCaptionText" type="text" size="50" value="Copyright." />
+			<field title="show CCL mark with feed |" name="showRSS" type="radio">
+				<op value="01" checked="checked">Yes</op>
+				<op value="02">No</op>
+			</field>
+		</fieldset>		
+		<fieldset legend="Creative Commons License">
+			<field title="CCL use authorization" name="profit" type="radio">
+				<caption><![CDATA[Commercial authorization.]]></caption>
+				<op value="yes">Yes</op>
+				<op value="no" checked="checked">No</op>
+			</field>			
+			<field title="Permission authorization" name="changeable" type="radio">
+				<caption><![CDATA[Auth way.]]></caption>
+				<op value="yes">No Limit.</op>
+				<op value="no">No Derivative Works.</op>
+				<op value="some" checked="checked">Share Alike.</op>
+			</field>
+		</fieldset>
+	</config>	
+	<config xml:lang="zh-TW" dataValHandler = "CCLmarker_DataSet">
+		<window width="600" height="550" />
+		<fieldset legend="文章顯示創用標籤">
+			<field title="顯示 CCL 標籤 |" name="postUse" type="radio">
+				<op value="01" checked="checked">顯示</op>
+				<op value="02" >不顯示</op>
+			</field>		
+			<field title="標籤位置 |" name="Position" type="radio">
+				<op value="01">文章頂端</op>
+				<op value="02" checked="checked">文章尾端</op>
+			</field>
+			<field title="標題 |" name="titleCaption" type="radio">
+				<op value="01" checked="checked">繁體中文</op>
+				<op value="02">英語</op>
+				<op value="03">不顯示</op>
+				<op value="04">自訂標題</op>
+			</field>
+			<field title="自訂顯示標題" name="titleCaptionText" type="text" size="50" value="Copyright." />
+			<field title="於 Feed 顯示標籤 |" name="showRSS" type="radio">
+				<op value="01" checked="checked">顯示</op>
+				<op value="02">不顯示</op>
+			</field>
+		</fieldset>		
+		<fieldset legend="Creative Commons License">
+			<field title="創作商業用途授權" name="profit" type="radio">
+				<caption><![CDATA[決定創作允許商業性使用授權.]]></caption>
+				<op value="yes">是</op>
+				<op value="no" checked="checked">否</op>
+			</field>			
+			<field title="允許授權方式" name="changeable" type="radio">
+				<caption><![CDATA[決定創作品的授權方式.]]></caption>
+				<op value="yes">不限制</op>
+				<op value="no">禁止改作</op>
+				<op value="some" checked="checked">相同方式分享</op>
+			</field>
+		</fieldset>
+	</config>
+	<config xml:lang="zh-CN" dataValHandler = "CCLmarker_DataSet">
+		<window width="600" height="550" />
+		<fieldset legend="文章显示创用卷标">
+			<field title="显示 CCL 卷标 |" name="postUse" type="radio">
+				<op value="01" checked="checked">显示</op>
+				<op value="02" >不显示</op>
+			</field>		
+			<field title="卷标位置 |" name="Position" type="radio">
+				<op value="01">文章顶端</op>
+				<op value="02" checked="checked">文章尾端</op>
+			</field>
+			<field title="标题 |" name="titleCaption" type="radio">
+				<op value="01" checked="checked">简体中文</op>
+				<op value="02">英语</op>
+				<op value="03">不显示</op>
+				<op value="04">自定义标题</op>
+			</field>
+			<field title="自定义显示标题" name="titleCaptionText" type="text" size="50" value="Copyright." />
+			<field title="于 Feed 显示卷标 |" name="showRSS" type="radio">
+				<op value="01" checked="checked">显示</op>
+				<op value="02">不显示</op>
+			</field>
+		</fieldset>		
+		<fieldset legend="Creative Commons License">
+			<field title="创作商业用途授权" name="profit" type="radio">
+				<caption><![CDATA[决定创作允许商业性用户许可证.]]></caption>
+				<op value="yes">是</op>
+				<op value="no" checked="checked">否</op>
+			</field>			
+			<field title="允许授权方式" name="changeable" type="radio">
+				<caption><![CDATA[决定创作品的授权方式.]]></caption>
+				<op value="yes">不限制</op>
+				<op value="no">禁止改作</op>
+				<op value="some" checked="checked">相同方式分享</op>
+			</field>
+		</fieldset>
+	</config>
+  </binding>
+</plugin>

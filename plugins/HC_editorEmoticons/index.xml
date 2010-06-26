@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">HC_Editor with Emoticons</title>
+  <title xml:lang="zh-TW">HC_編輯器表情符號</title>
+  <title xml:lang="zh-CN">HC_编辑器表情符号</title>
+  <version>1.0</version>
+  <description xml:lang="en"><![CDATA[Emoticons for blog posting support.]]></description>
+  <description xml:lang="zh-TW"><![CDATA[在編輯器中插入表情符號。]]></description>
+  <description xml:lang="zh-CN"><![CDATA[在编辑器中插入表情符号。]]></description>
+  <license>GPL</license>
+  <link>http://blog.hinablue.me/</link>
+  <author link="http://blog.hinablue.me/"><![CDATA[Hina, Cain Chen.]]></author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="yes" accessRaw="yes" />
+  <requirements>
+    <textcube>1.6</textcube>
+  </requirements>
+  <binding>
+	<listener event="AddPostEditorToolbox">showEmoticons_Toolbox</listener>
+	<listener event="/plugin/getEmoticons">showEmoticons_getEmoticons</listener>
+  </binding>
+</plugin>

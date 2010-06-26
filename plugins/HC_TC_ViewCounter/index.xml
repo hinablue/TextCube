@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.1">
+  <title xml:lang="en">HC Entries view counter</title>
+  <title xml:lang="zh-TW">HC 顯示觀賞文章計數</title>  
+  <title xml:lang="zh-CN">HC 显示观赏文章计数</title>  
+  <link>http://diary.tw/tim</link>  
+  <version>1.1</version>
+  <description xml:lang="en">This plugin displays  view count of post content. Use [##_ViewCounterList_##] to display the article list by view times.</description>
+  <description xml:lang="zh-TW">本插件提供顯示觀賞文章計數, 使用[##_ViewCounterList_##]顯示文章依顯示次數的排行。</description>
+  <description xml:lang="zh-CN">本插件提供显示观赏文章计数, 使用[##_ViewCounterList_##]显示文章依显示次数的排行。</description>
+  <license>GPL</license>
+  <author link="http://diary.tw/tim">Tim</author>
+  <author link="http://blog.hinablue.me">Hina, Cain Chen.</author>
+  <safety changeData="no" exposeData="no" accessLocal="yes" accessRemote="no" accessRaw="yes" />
+  <requirements>
+	<textcube>1.8</textcube>
+  </requirements>
+  <binding>
+    <listener event="ViewPostContent">CountAndShow</listener>
+    <listener event="ViewNoticeContent">CountAndShow</listener>
+	<tag name="ViewCounterList" handler="ViewCounterList" />
+  </binding>
+  <storage>
+    <table>
+      <name>EntryReadCount</name>
+      <fields>
+          <field>
+            <name>id</name>
+            <attribute>int</attribute>
+            <length>11</length>
+			<isnull>0</isnull>
+          </field>
+          <field>
+            <name>readcounts</name>
+            <attribute>int</attribute>
+            <length>11</length>
+            <isnull>0</isnull>
+			<default>0</default>
+          </field>
+          <field>
+            <name>lastaccess</name>
+            <attribute>int</attribute>
+            <length>11</length>
+            <isnull>0</isnull>
+            <default>0</default>
+          </field>
+      </fields>
+      <key>id</key>
+    </table>
+  </storage>
+</plugin>

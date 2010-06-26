@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+	<title xml:lang="en">Line Posting</title>
+	<title xml:lang="ko">라인 쓰기</title>
+	<title xml:lang="zh-TW">短消息</title>
+	<title xml:lang="zh-CN">短消息</title>
+	<link>http://forest.nubimaru.com/</link>
+	<version>0.1</version>
+	<description xml:lang="en">Quickly writing lines on dashboard</description>
+	<description xml:lang="ko"><![CDATA[재빨리 라인을 쓸 수 있는 위젯을 추가합니다.]]></description>
+	<description xml:lang="zh-TW"><![CDATA[在管理首頁快速插入短消息。]]></description>
+	<description xml:lang="zh-CN"><![CDATA[在管理首页快速插入短消息。]]></description>
+	<license>GPL</license>
+	<author link="http://forest.nubimaru.com">Jeongkyu Shin (inureyes)</author>
+	<safety changeData="yes" exposeData="no" accessLocal="yes" accessRemote="no" accessRaw="yes" />
+	<requirements>
+		<textcube>
+			<minVersion>1.8</minVersion>
+		</textcube>
+	</requirements>
+	<binding>
+		<center handler="linePost_Widget" />
+		<listener event="/plugin/linePostWidget.js" handler="linePost_widget_Javascript" />
+	</binding>
+</plugin>

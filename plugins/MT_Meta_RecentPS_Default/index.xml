@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">Coverpage Recent Entries as blogmeta</title>
+  <title xml:lang="ko">모든 블로그의 최근 글 보기</title>
+  <title xml:lang="zh-TW">封面顯示最新文章</title>
+  <title xml:lang="zh-CN">封面顯示最新文章</title>
+  <link>http://needlworks.org/</link>
+  <version>1.8</version>
+  <description xml:lang="en">Shows coverpage with recent entries</description>
+  <description xml:lang="ko">다중 사용자 모드에서 모든 블로그들의 최근에 작성된 글들을 표지에 보여줍니다</description>
+  <description xml:lang="zh-TW">在首頁封面上顯示最新文章列表。</description>
+  <description xml:lang="zh-CN">在首页封面上显示最新文章列表。</description>
+  <license>GPL</license>
+  <author xml:lang="en" link="http://create74.com">Yong-ju, Park (J.Parker / Needlworks)</author>
+  <author xml:lang="ko" link="http://create74.com"><![CDATA[박용주 (J.Parker / Needlworks)]]></author>
+  <author xml:lang="zh-TW" link="http://create74.com">Yong-ju, Park (J.Parker / Needlworks)</author>
+  <author xml:lang="zh-CN" link="http://create74.com">Yong-ju, Park (J.Parker / Needlworks)</author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="yes" />
+  <requirements>
+    <textcube>
+		<minVersion>1.8</minVersion>
+	</textcube>
+  </requirements>
+  <binding>
+  	<listener event="AddPost" handler="MT_Cover_getRecentEntries_purgeCache" />
+  	<listener event="UpdatePost" handler="MT_Cover_getRecentEntries_purgeCache" />
+  	<listener event="DeletePost" handler="MT_Cover_getRecentEntries_purgeCache" />
+	<listener event="ChangeVisibility" handler="MT_Cover_getRecentEntries_purgeCache" />
+	<listener event="ToggleBlogSlogan" handler="MT_Cover_getRecentEntries_purgeCache" />
+	<listener event="ModifyPluginParam_MT_Meta_RecentPS_Default" handler="MT_Cover_getRecentEntries_purgeCache" />
+	<tag name="SKIN_head_end" handler="MT_Cover_getRecentEntryStyle" />
+    <coverpage title="Recent Posts" handler="MT_Cover_getRecentEntries">
+      <params>
+        <param>
+          <title xml:lang="en">Show recent posts per list</title>
+          <title xml:lang="ko">출력될 최근 글 수</title>
+          <title xml:lang="zh-TW">封面顯示最新文章</title>
+          <title xml:lang="zh-CN">封面显示最新文章</title>
+          <name>entryLength</name>
+          <type>int</type>
+		  <default>5</default>
+        </param>
+	  </params>
+	</coverpage>
+	<config xml:lang="ko" dataValHandler="MT_Cover_getRecentEntries_DataSet" manifestHandler="MT_Cover_getRecentEntries_ConfigOut_ko">
+		<window width="500" height="375" />
+	</config>
+	<config xml:lang="en" dataValHandler="MT_Cover_getRecentEntries_DataSet" manifestHandler="MT_Cover_getRecentEntries_ConfigOut_en">
+		<window width="500" height="375" />
+	</config>
+	<config xml:lang="zh-TW" dataValHandler="MT_Cover_getRecentEntries_DataSet" manifestHandler="MT_Cover_getRecentEntries_ConfigOut_zh_TW">
+		<window width="500" height="375" />
+	</config>
+	<config xml:lang="zh-CN" dataValHandler="MT_Cover_getRecentEntries_DataSet" manifestHandler="MT_Cover_getRecentEntries_ConfigOut_zh-CN">
+		<window width="500" height="375" />
+	</config>
+  </binding>
+</plugin>

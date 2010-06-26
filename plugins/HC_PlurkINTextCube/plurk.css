@@ -1,0 +1,53 @@
+.plurkResponse {
+	width: 100%;
+	height: auto;
+	background-color: rgb(255, 148, 96);
+	overflow: hidden;
+}
+.plurkResponse h3 {
+	color: #333;
+	text-align: right;
+	padding: 2px 2px;
+	line-height: 1.0em;
+}
+.plurkResponseLists {
+	width: auto;
+	height: 250px;
+	overflow: hidden;
+}
+.plurkResponseMoreButton {
+	padding: 2px;
+	cursor: pointer;
+}
+.autoPlurkResponsesExtend {
+	height: auto;
+}
+.plurkResponseLists table,
+.plurkResponseLists tr,
+.plurkResponseLists td {
+	border: 0;
+}
+.plurkResponseLists td {
+	text-align: left !important;
+}
+.plurkResponseLists td.user_icon {
+	width: 80px;
+	height: auto;
+	text-align: center !important;
+}
+.plurkResponseLists td.user_icon img {
+	border: 2px solid #efefef;
+}
+.plurkResponseLists td.plurkcontent {
+	width: 99.9%;
+	background-color: #fff;
+}
+
+.qualifier_love, .qualifier_likes, .qualifier_gives, .qualifier_hates, .qualifier_wants,
+.qualifier_wishes, .qualifier_needs, .qualifier_will, .qualifier_hopes, .qualifier_asks, .qualifier_has,
+.qualifier_was, .qualifier_wonders, .qualifier_feels, .qualifier_thinks, .qualifier_says, .qualifier_is {
+	border: 1px solid #efefef;
+	padding: 2px 2px;
+	background-color: rgb(148, 196, 235);
+	color: #ffffff;
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+	<title xml:lang="ko">리퍼러 로그 정리</title>
+	<title xml:lang="en">referer log re-arranging</title>
+	<title xml:lang="zh-TW">重新整理 Referer 返回位址</title>
+	<title xml:lang="zh-CN">重新整理 Referer 返回地址</title>
+	<link>http://crizin.net/entry/태터툴즈-105-플러그인</link>
+	<version>1.0.4</version>
+	<description xml:lang="ko">리퍼러 로그에서 escape 문자를 제거해주고 검색어를 보여줍니다.</description>
+	<description xml:lang="en">Remove the escape letter in referer log and show a search key word.</description>
+	<description xml:lang="zh-TW">移除返回位址紀錄中的脫溢字，並顯示搜尋關鍵字。</description>
+	<description xml:lang="zh-CN">移除返回地址纪录中的脱溢字，并显示搜寻关键词。</description>
+	<license>GPL</license>
+	<author link="http://crizin.net">crizin</author>
+	<safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
+	<requirements>
+		<textcube>1.8</textcube>
+	</requirements>
+	<binding>
+		<listener event="ViewRefererURL">RefererURLBeautifier_handler</listener>
+	</binding>
+</plugin>

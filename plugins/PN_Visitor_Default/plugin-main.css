@@ -1,0 +1,78 @@
+@charset "utf-8";
+
+/* Visitor ***************************************************************************************/
+
+/* common ---------------------------------------------------------------------------------------*/
+#part-statistics-visitor
+{
+	padding-bottom                   : 20px;
+}
+
+#part-statistics-visitor .data-inbox
+{
+	float                            : left;
+	margin-right                     : 10px !important;
+	width                            : 210px !important;
+}
+
+/* visitor count --------------------------------------------------------------------------------*/
+#statistics-counter-inbox
+{
+	background-color                 : #EFEFEF;
+	margin-left                      : 10px;
+	padding                          : 10px;
+}
+
+#statistics-counter-inbox .label
+{
+	display                          : block;
+	font-weight                      : bold;
+	text-align                       : center;
+}
+
+#statistics-counter-inbox .divider
+{
+	display                          : none;
+}
+
+#total
+{
+	color                            : #000000;
+	display                          : block;
+	font-family                      : Arial, Tahoma, Verdana, sans-serif;
+	font-size                        : 300%;
+	font-weight                      : bold;
+	margin                           : 10px 0;
+	text-align                       : center;
+}
+
+#statistics-counter-inbox .button
+{
+	background-color                 : #FFFFFF;
+	border                           : 1px solid #999999;
+    display                          : block;
+    font-weight                      : bold;
+    line-height                      : 2em;
+	margin                           : 0 auto;
+	padding                          : 3px 5px;
+	text-align                       : center;
+	width                            : 50px;
+}
+
+/* month / day ----------------------------------------------------------------------------------*/
+#statistics-day-inbox,
+#statistics-month-inbox
+{
+	margin-top                       : 5px;
+}
+
+#statistics-month-inbox tbody tr td
+{
+	cursor                           : pointer;
+}
+
+#statistics-month-inbox tbody tr td.date,
+#statistics-day-inbox tbody tr td.date
+{
+	background-position              : right bottom;
+}

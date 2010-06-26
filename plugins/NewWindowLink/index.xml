@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.03">
+	<title xml:lang="ko">새창으로 열기 링크</title>
+	<title xml:lang="en">New Window Links</title>
+	<title xml:lang="zh-TW">新視窗開啟鏈結</title>
+	<title xml:lang="zh-CN">新窗口开启链结</title>
+	<link>http://daybreaker.info</link>
+	<version>1.0</version>
+	<description xml:lang="ko">글 본문에 걸린 링크들에 대해 새창으로 열기 링크를 추가해줍니다.</description>
+	<description xml:lang="en">This plugin adds new windows links to the existing hyperlinks in blog posts.</description>
+	<description xml:lang="zh-TW">將文章中存在的對外鏈結開啟於新視窗。</description>
+	<description xml:lang="zh-CN">将文章中存在的对外链结开启于新窗口。</description>
+	<license>GPL</license>
+	<author xml:lang="en" link="http://daybreaker.info"><![CDATA[Kim Joongi (daybreaker / Needlworks)]]></author>
+	<author xml:lang="ko" link="http://daybreaker.info"><![CDATA[김준기 (daybreaker / Needlworks)]]></author>
+	<safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
+	<requirements>
+		<textcube>1.6</textcube>
+	</requirements>
+	<binding>
+		<listener event="ViewPostContent">AddNewWindowLinks</listener>
+		<listener event="ViewNoticeContent">AddNewWindowLinks</listener>
+		<config xml:lang="ko" dataValHandler="">
+			<window width="500" height="300" />
+			<fieldset legend="어떤 형태의 새 창으로 열기 링크를 사용할지 선택해주세요.">
+				<field title="Type" name="type" type="select">
+					<op value="hack">아이콘 - CSS Hack 사용</op>
+					<op value="img">아이콘 - img 태그 사용</op>
+					<op value="text">텍스트만 사용</op>
+					<caption><![CDATA[
+					<ul>
+						<li>아이콘 (CSS Hack 사용) : 다양한 종류의 웹브라우저에서 가장 예쁜 모양이 나오지만 접근성 면에서는 떨어집니다.</li>
+						<li>아이콘 (img 태그 사용) : IE 계열에서 본문과 아이콘의 위치가 어긋나 보이나 비교적 깔끔한 코드로 이루어집니다.</li>
+						<li>텍스트만 사용 : 아이콘 없이 문자열로 새 창 링크를 표시합니다.</li>
+					</ul>
+					]]></caption>
+				</field>
+			</fieldset>
+		</config>
+		<config xml:lang="en" dataValHandler="">
+			<window width="500" height="300" />
+			<fieldset legend="Please select the type of new window links.">
+				<field title="Type" name="type" type="select">
+					<op value="hack">Icon - using CSS Hack</op>
+					<op value="img">Icon - using img tag</op>
+					<op value="text">Text only</op>
+					<caption><![CDATA[
+					<ul>
+						<li>Icon (using CSS Hack) : More fancy appearance, but dirty html/style code.</li>
+						<li>Icon (using img tag) : Good accessibility</li>
+						<li>Text only : simple text link</li>
+					</ul>
+					]]></caption>
+				</field>
+			</fieldset>
+		</config>
+		<config xml:lang="zh-TW" dataValHandler="">
+			<window width="500" height="300" />
+			<fieldset legend="請選擇開啟新視窗顯示形式">
+				<field title="形式" name="type" type="select">
+					<op value="hack">圖示 - 使用 CSS 樣式</op>
+					<op value="img">圖示 - 使用 img 標籤</op>
+					<op value="text">純文字</op>
+					<caption><![CDATA[
+					<ul>
+						<li>圖示 - 使用 CSS 樣式 : 較為美化的形式，但包含較多 html/style 編碼。</li>
+						<li>圖示 - 使用 img 標籤 : 較好的可用性</li>
+						<li>純文字 : 簡易的文字鏈結</li>
+					</ul>
+					]]></caption>
+				</field>
+			</fieldset>
+		</config>
+		<config xml:lang="zh-CN" dataValHandler="">
+			<window width="500" height="300" />
+			<fieldset legend="请选择开启新窗口显示形式">
+				<field title="形式" name="type" type="select">
+					<op value="hack">图标 - 使用 CSS 样式</op>
+					<op value="img">图标 - 使用 img 卷标</op>
+					<op value="text">纯文本</op>
+					<caption><![CDATA[
+					<ul>
+						<li>图标 - 使用 CSS 样式 : 较为美化的形式，但包含较多 html/style 编码。</li>
+						<li>图标 - 使用 img 卷标 : 较好的可用性</li>
+						<li>纯文本 : 简易的文字链结</li>
+					</ul>
+					]]></caption>
+				</field>
+			</fieldset>
+		</config>
+	</binding>
+</plugin>

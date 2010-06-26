@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">JP Blog Statistics Log</title>
+  <title xml:lang="ko">JP 블로그 통계</title>
+  <title xml:lang="zh-TW">JP 部落格狀態紀錄</title>
+  <title xml:lang="zh-CN">JP 博客状态纪录</title>
+  <version>1.8.0105</version>
+  <description xml:lang="en">Show Blog Statistics Log.</description>
+  <description xml:lang="ko">텍스트큐브 블로그의 전반적인 기록을  보여줍니다.</description>
+  <description xml:lang="zh-TW">顯示部落格統計狀態紀錄。</description>
+  <description xml:lang="zh-CN">显示博客统计状态纪录。</description>
+  <license>GPL</license>
+  <link>http://create74.com</link>
+  <author xml:lang="en" link="http://create74.com"><![CDATA[Yong-ju, Park (J.Parker / Needlworks)]]></author>
+  <author xml:lang="ko" link="http://create74.com"><![CDATA[박용주 (J.Parker / Needlworks)]]></author>
+  <author xml:lang="zh-TW" link="http://create74.com"><![CDATA[Yong-ju, Park (J.Parker / Needlworks)]]></author>
+  <author xml:lang="zh-CN" link="http://create74.com"><![CDATA[Yong-ju, Park (J.Parker / Needlworks)]]></author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="yes" />
+  <requirements>
+	<textcube>
+		<minVersion>1.8</minVersion>
+	</textcube>
+  </requirements>
+  <binding>
+	<center title="Last 7 days Visitor Statistics." handler="CT_BlogVisitStatistics" />
+	<listener event="AddPostEditorToolbox">Null</listener>
+	<listener event="/plugin/BlogStatisticsProcess/">PN_BlogStatisticsProcess</listener>
+    <adminMenu>
+      <viewMethods>
+        <method>
+          <topMenu>center</topMenu>
+          <contentMenuOrder>5</contentMenuOrder>
+          <title xml:lang="en">JP Blog Statistics</title>
+          <title xml:lang="ko">JP 블로그 통계</title>
+          <title xml:lang="zh-TW">JP 部落格狀態紀錄</title>
+          <title xml:lang="zh-CN">JP 博客状态纪录</title>
+          <handler>PN_Blog_Statistics_Default</handler>
+          <params>
+            <param>
+              <name>date</name>
+              <type>int</type>
+              <mandatory>0</mandatory>
+            </param>
+            <param>
+              <name>menu</name>
+              <type>string</type>
+              <mandatory></mandatory>
+            </param>
+          </params>
+        </method>
+      </viewMethods>
+    </adminMenu>
+	<config xml:lang="ko" dataValHandler="PN_Blog_Statistics_DataSet" >
+		<window width="500" height="407" />
+		<fieldset>
+			<field title="관리자 댓글 :" name="repliesChk" type="radio"  >
+				<op value="1"><![CDATA[포함&nbsp;]]></op>
+				<op value="2" checked="checked">미포함</op>
+				<caption><![CDATA['<b>미포함</b>'을 선택했을 경우 댓글 통계에서 관리자 작성 자료는 제외됨.]]></caption>
+			</field>
+			<field title="비공개 　글 :" name="privateChk" type="radio"  >
+				<op value="1"><![CDATA[포함&nbsp;]]></op>
+				<op value="2" checked="checked">미포함</op>
+				<caption><![CDATA['<b>미포함</b>'을 선택했을 경우 비공개 된 글은 <b>글(포스트) 통계</b>에서 제외됨.]]></caption>
+			</field>
+			<field title="제외할 유저 :" name="commenterout" size="49" type="text"  value="" >
+				<caption><![CDATA['<b>댓글/방명록 특정 유저 제외</b>' 유저 구분은 '<font color="red"><b>|</b></font>'으로 구분. (예, 길똥이<font color="red">|</font>말똥이)]]></caption>
+			</field>
+		</fieldset>
+	</config>
+	<config xml:lang="en" dataValHandler="PN_Blog_Statistics_DataSet" >
+		<window width="500" height="326" />
+		<fieldset>
+			<field title="Admin comment :" name="repliesChk" type="radio"  >
+				<op value="1"><![CDATA[included&nbsp;]]></op>
+				<op value="2" checked="checked">not included</op>
+			</field>
+			<field title="Secret post :" name="privateChk" type="radio"  >
+				<op value="1"><![CDATA[included&nbsp;]]></op>
+				<op value="2" checked="checked">not included</op>
+			</field>
+			<field title="Exception commenters :" name="commenterout" size="42" type="text"  value="" >
+				<caption><![CDATA['Commenter separation of the '<font color="red"><b>|</b></font>'. (ex, commenter1<font color="red">|</font>commenter2)]]></caption>
+			</field>
+		</fieldset>
+	</config>
+        <config xml:lang="zh-TW" dataValHandler="PN_Blog_Statistics_DataSet" >
+		<window width="500" height="326" />
+		<fieldset>
+			<field title="管理者回應 :" name="repliesChk" type="radio"  >
+				<op value="1"><![CDATA[包含&nbsp;]]></op>
+				<op value="2" checked="checked">不包含</op>
+			</field>
+			<field title="秘密文章 :" name="privateChk" type="radio"  >
+				<op value="1"><![CDATA[包含&nbsp;]]></op>
+				<op value="2" checked="checked">不包含</op>
+			</field>
+			<field title="例外的評論/回覆者 :" name="commenterout" size="42" type="text"  value="" >
+				<caption><![CDATA['評論或回覆者的名稱以 '<font color="red"><b>|</b></font>' 分隔。(例，訪客1<font color="red">|</font>訪客2)]]></caption>
+			</field>
+		</fieldset>
+	</config>
+	<config xml:lang="zh-CN" dataValHandler="PN_Blog_Statistics_DataSet" >
+		<window width="500" height="326" />
+		<fieldset>
+			<field title="管理者响应 :" name="repliesChk" type="radio"  >
+				<op value="1"><![CDATA[包含&nbsp;]]></op>
+				<op value="2" checked="checked">不包含</op>
+			</field>
+			<field title="秘密文章 :" name="privateChk" type="radio"  >
+				<op value="1"><![CDATA[包含&nbsp;]]></op>
+				<op value="2" checked="checked">不包含</op>
+			</field>
+			<field title="例外的评论/回复者 :" name="commenterout" size="42" type="text"  value="" >
+				<caption><![CDATA['评论或回复者的名称以 '<font color="red"><b>|</b></font>' 分隔。(例，访客1<font color="red">|</font>访客2)]]></caption>
+			</field>
+		</fieldset>
+	</config>
+  </binding>
+</plugin>

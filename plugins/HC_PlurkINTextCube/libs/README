@@ -1,0 +1,22 @@
+Plurk 是個流行的網路服務，也有不少應用程式是針對 Plurk 所設計，包括機器人的撰寫、手機應用程式、 桌面
+
+應用程式...等等。由於以往 Plurk 並未公佈 API ，所以應用程式必須自己模擬登入、解譯、傳遞資料，在開發上
+
+有一定的難度。但好消息是於 2009 年 12 月份，Plurk 公佈了官方的 API 規格，此一規格釋出，可以方便程式
+
+設計師更專注於程式面的開發，設計更多好用、有趣的服務。也因為這個緣故，php-plurk-api 這個 PHP Client 
+
+API 誕生了。這是一個根據官方公佈規格實做的開放原始碼專案，授權方式是 New BSD License. 
+
+            ** 感謝 roga, whatup, appleboy, chrisliu, limit 的貢獻。 **
+
+php-plurk-api is a Plurk API Client implementation with PHP.  
+
+the API Official Website:
+http://www.plurk.com/API
+ 
+Code Repository:
+https://code.google.com/p/php-plurk-api/
+
+php-plurk-api online documents:
+http://plurk.lab3.tw/docs/

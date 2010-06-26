@@ -1,0 +1,39 @@
+Textcube 1.8 Requirements
+-------------------------
+
+1. For Linux Systems :
+
+ Minimum requirements :
+  * Apache 1.3 or above
+    * with mod_rewrite module
+  * PHP 5.2 or above
+  * Database Management System
+   * MySQL 4.1 / MariaDB 5 or above
+     * with UTF-8 emulation routine in Textcube
+   * Cubrid R2008 or above
+   * PostgreSQL 8.3 or above
+ 
+ Suggested environment :
+  * Apache 2.2 or above
+    * with mode_rewrite module
+  * PHP 5.2 or above
+    * with iconv / gd module
+  * MySQL 5.0 / MariaDB 5.1 or above
+    * with UTF-8 character set and collation settings
+ 
+ For massive service or heavy load :
+  * APC (Alternative PHP Cache) pecl package with PHP PEAR
+  * FastCGI module with Apache2
+    (Need to modify config.php. referer 'config' in DOC directory.)
+  * InnoDB with Entries / Tags / TagRelations table.
+
+2. For Microsoft Windows :
+
+  * IIS 5.0 or above
+    * with ISAPI Rewrite Filter
+  * PHP 5.2 or above
+    * with iconv / gd module
+  * MySQL 5.0 or above
+    * with UTF-8 character set and collation settings
+
+  Refer INSTALL to know how to set up on this environment.

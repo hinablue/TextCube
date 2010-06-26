@@ -1,0 +1,111 @@
+@charset "utf-8";
+
+.TCFans_center
+{
+	clear: both;
+	padding: 0px;
+	line-height: 1.5em;
+	margin: 0px;
+	color: #666;
+}
+.TCFans_layout_menu_tab
+{
+	letter-spacing: -1px;
+	margin-top: 3px;
+	padding: 0px;
+}
+
+.TCFans_layout_menu_tab ol
+{
+	clear: both;
+}
+
+/* tab */
+.TCFans-tabs-box
+{
+	background-image: url('./images/bg_tabbox.jpg');
+	background-position: left bottom;
+	line-height: 1.3em;
+	list-style-type: none;
+	height: 2.21em;
+	overflow: hidden;
+	width:300px;
+}
+
+.TCFans_layout_container {
+    height: auto;
+    width: auto;
+    overflow: hidden;
+}
+
+.TCFans-tabs-box li
+{
+	background-color: #EFEFEF;
+	border: 1px solid #D9D9D9;
+	letter-spacing: 0px;
+	cursor: pointer;
+	display: block;
+	float: left;
+	list-style-type: none;
+	margin: 0 2px;
+	padding: 5px 8px 3px 8px !important;
+}
+
+*html .TCFans-tabs-box li
+{
+	padding: 6px 8px 2px 8px !important;
+}
+
+.TCFans-tabs-box li.selected-tab
+{
+	background-color: #FFF !important;
+	border-bottom: 1px solid #FFF !important;
+}
+
+.TCFans-tabs-box li.no-selected-tab
+{
+	background-color: #EFEFEF !important;
+	border-bottom: 1px solid #D9D9D9 !important;
+}
+
+.TCFans_list
+{
+	clear: both;
+	font-size: 100%;
+	margin-top:5px;
+}
+.TCFans_list li
+{
+	clear:both;
+	height:auto;
+	padding-top:2px !important;
+	padding-bottom:2px !important;
+	border: 0 !important;
+}
+.TCFans_list .entryInfo
+{
+	float:left;
+	width: 100%;
+	border-bottom: 1px dashed #efefef !important;
+}
+
+.TCFans_list .entryInfo .title a
+{
+	color: #336699;
+}
+
+.TCFans_list .entryInfo .title
+{
+	color: #336699;
+}
+.TCFans_list .entryInfo .date
+{
+	font-family: sans-serif;
+	font-size: 0.9em;
+}
+.TCFans_list .entryInfo .description
+{
+	font-family: sans-serif;
+	font-size: 0.9em;
+	color: #999;
+}

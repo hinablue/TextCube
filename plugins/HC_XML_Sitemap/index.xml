@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="ko">HC XML-Sitemap Auto-notify</title>
+  <title xml:lang="en">HC XML-Sitemap Auto-notify</title>
+  <title xml:lang="zh-TW">HC XML-Sitemap 自動通知</title>
+  <title xml:lang="zh-CN">HC XML-Sitemap 自动通知</title>
+  <link>http://blog.hinablue.me</link>
+  <version>1.0</version>
+  <description xml:lang="en">This plugin will create sitemap.xml and notify Google and Yahoo! when you modified content.</description>
+  <description xml:lang="ko">This plugin will create sitemap.xml and notify Google and Yahoo! when you modified content.</description>
+  <description xml:lang="zh-TW">在 blog 中建立 sitemap.xml 檔案，並且自動通知 Google 與 Yahoo!。</description>
+  <description xml:lang="zh-CN">在 blog 中建立 sitemap.xml 档案，并且自动通知 Google 与 Yahoo!。</description>
+  <license>GPL</license>
+  <author xml:lang="en" link="http://blog.hinablue.me">Hina/TC Taiwan Group</author>
+  <author xml:lang="ko" link="http://blog.hinablue.me">Hina/TC Taiwan Group</author>
+  <author xml:lang="zh-TW" link="http://blog.hinablue.me">正體中文 By Hina/TC Taiwan Group</author>
+  <author xml:lang="zh-CN" link="http://blog.hinablue.me">简体中文 By Hina/TC Taiwan Group</author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
+  <scope>blog</scope>
+  <requirements>
+	<textcube>1.8</textcube>
+  </requirements>
+  <binding>
+  	<listener event="AddPost">sitemap_lastModify</listener>
+  	<listener event="UpdatePost">sitemap_lastModify</listener>
+  	<listener event="DeletePost">sitemap_lastModify</listener>
+	<listener event="ChangeVisibility">sitemap_lastModify</listener>
+	<listener event="Logout">sitemap_lastModify</listener>
+	<listener event="Cron30m">sitemap_lastModify</listener>
+	<listener event="AddPostEditorToolbox">Null</listener>
+
+	<listener event="/plugin/sitemap/buildonchange">sitemap_buildonchange</listener>
+	<listener event="/plugin/sitemap/notification">sitemap_notification</listener>
+	<listener event="/plugin/sitemap/rebuildsitemap">sitemap_rebuildcheck</listener>
+    <adminMenu>
+      <viewMethods>
+        <method>
+          <title xml:lang="en">XML-Sitemap</title>
+          <title xml:lang="ko">XML-Sitemap</title>
+          <title xml:lang="zh-TW">XML-Sitemap</title>
+          <title xml:lang="zh-CN">XML-Sitemap</title>
+          <handler>sitemap_Manage</handler>
+        </method>
+      </viewMethods>
+    </adminMenu>
+  </binding>
+</plugin>

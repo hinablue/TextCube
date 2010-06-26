@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">HC TCFans Google group</title>
+  <title xml:lang="zh-TW">HC TextCube 網上論壇</title>
+  <title xml:lang="zh-CN">HC TextCube 网上论坛</title>
+  <link>http://groups.google.com.tw/group/textcubefans</link>
+  <version>1.0</version>
+  <description xml:lang="en">Display Google Group of TextCube on sidebar and dashboard.</description>
+  <license>GPL</license>
+  <author xml:lang="en" link="http://groups.google.com/group/textcubefans">Hina, Cain Chen.</author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="yes" />
+  <requirements>
+    <textcube>1.5</textcube>
+  </requirements>
+  <binding>
+	<center handler="TCFans_Google_Group_Dashboard" />
+    <sidebar title="TC Fans Google Group" handler="TCFans_Google_Group"></sidebar>
+	<listener event="Cron30m">TCFans_Google_Group_Dashboard_sweep</listener>
+	<listener event="AddPostEditorToolbox">Null</listener>
+  </binding>
+</plugin>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">HC MailNotification</title>
+  <title xml:lang="zh-TW">HC 電子郵件通知新回覆</title>
+  <title xml:lang="zh-CN">HC 电子邮件通知新回复</title>
+  <version>0.1</version>
+  <description xml:lang="en">When the new comment left, the plugin will notify the owner by email!</description>
+  <description xml:lang="zh-TW">本插件提供利用電子郵件通知新回覆, 包含評論及留言</description>
+  <description xml:lang="zh-CN">本插件提供利用电子邮件通知新回复, 包含评论及留言</description>
+  <license>GPL</license>
+  <link>http://blog.hinablue.me</link>
+  <author xml:lang="en" link="http://blog.hinablue.me">Hina, Cain Chen.</author>
+  <author xml:lang="zh-TW" link="http://blog.hinablue.me">Hina, Cain Chen.</author>
+  <author xml:lang="zh-CN" link="http://blog.hinablue.me">Hina, Cain Chen.</author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="yes" />
+  <requirements>
+    <textcube>1.8</textcube>
+  </requirements>
+  <binding>
+    <listener event="AddComment">mailNotifyComment</listener>
+    <listener event="AddGuestComment">mailNotifyComment</listener>
+    <config xml:lang="zh-TW" dataValHandler = "MailNotificationDataSet" >
+    	<window width="500" height="550" />
+    	<fieldset legend="設定" >
+	        <field title="信箱" name="mail" type="text" size ="30" titledirection="bk" value="">
+	          <caption >指定電子郵件通知的信箱位置，若不指定，使用文章作者的郵件信箱。</caption>
+	        </field>
+		<field title="通知設定" type="select" name="notifysetting">
+		  <op value="1" checked="checked"><![CDATA[僅通知部落格擁有者（或上述指定信箱）]]></op>
+		  <op value="0"><![CDATA[通知所有共筆作者]]></op>
+		</field>
+		<field title="留言板通知" type="select" name="notifyguestbook">
+		  <op value="1"><![CDATA[是，留言板留言依照通知設定寄送通知。]]></op>
+		  <op value="0" checked="checked"><![CDATA[否，留言板留言不寄送通知。]]></op>
+		</field>
+		<field title="信件主旨" name="emailsubject" type="text" size ="30" titledirection="bk"  value="">
+	          <caption><![CDATA[你可以自行指定信件主旨，或空白使用預設值。預設主旨為：[TextCube] 最新訊息通知]]></caption>
+	        </field>
+	    </fieldset>
+    </config>
+    <config xml:lang="zh-CN" dataValHandler = "MailNotificationDataSet" >
+    	<window width="500" height="550" />
+    	<fieldset legend="设定" >
+	        <field title="信箱" name="mail" type="text"  size ="30" titledirection="bk" value="">
+	          <caption >指定电子邮件通知的信箱位置，若不指定，使用文章作者的邮件信箱。</caption>
+	        </field>
+		<field title="通知设定" type="select" name="notifysetting">
+		  <op value="1" checked="checked"><![CDATA[仅通知部落格拥有者（或上述指定信箱）]]></op>
+		  <op value="0"><![CDATA[通知所有共笔作者]]></op>
+		</field>
+		<field title="留言板通知" type="select" name="notifyguestbook">
+		  <op value="1"><![CDATA[是，留言板留言依照通知設定寄送通知。]]></op>
+		  <op value="0" checked="checked"><![CDATA[否，留言板留言不寄送通知。]]></op>
+		</field>
+		<field title="信件主旨" name="emailsubject" type="text"  size ="30" titledirection="bk"  value="">
+	          <caption ><![CDATA[你可以自行指定信件主旨，或空白使用预设值。预设主旨为：[TextCube] 最新讯息通知]]></caption>
+	        </field>
+	    </fieldset>
+    </config>
+    <config xml:lang="en" dataValHandler = "MailNotificationDataSet" >
+    	<window width="500" height="550" />
+    	<fieldset legend="Setup" >
+	        <field title="E-mail" name="mail" type="text"  size ="30" titledirection="bk"  value="">
+	          <caption >E-mail notification address, if not spec, use the author's email of entry.</caption>
+	        </field>
+		<field title="Notify Setting" type="select" name="notifysetting">
+		  <op value="1" checked="checked"><![CDATA[Just notify blog owner(or the mail address you spec).]]></op>
+		  <op value="0"><![CDATA[Notify all the teamblog users.]]></op>
+		</field>
+		<field title="Guestbook notify" type="select" name="notifyguestbook">
+		  <op value="1"><![CDATA[Yes，follow the notify setting.]]></op>
+		  <op value="0" checked="checked"><![CDATA[No，thanks.]]></op>
+		</field>
+		<field title="Email subject" name="emailsubject" type="text"  size ="30" titledirection="bk"  value="">
+	          <caption ><![CDATA[You can spec your email subject or leave blank use default. Default: [TextCube] New message notification.]]></caption>
+	        </field>
+	    </fieldset>
+    </config>
+  </binding>
+</plugin>

@@ -1,0 +1,163 @@
+@charset "utf-8";
+
+/* Visitor ***************************************************************************************/
+
+/* common ---------------------------------------------------------------------------------------*/
+#part-statistics-blog
+{
+	padding-bottom                   : 20px;
+	margin:0px;
+}
+
+#statistics-main
+{
+	margin:0px 0px 0px 10px;
+}
+
+#part-statistics-blog .data-inbox
+{
+	width                            : 750px !important;
+}
+
+
+/* visitor count --------------------------------------------------------------------------------*/
+#statistics-counter-inbox
+{
+	float                            : left;
+	background-color                 : #EFEFEF;
+	padding                          : 10px 10px 10px 10px;
+	width                            : 160px;
+}
+
+#statistics-counter-inbox .title
+{
+	background-color                 : #eaeaea;
+	border                           : 1px solid #ccc;
+	margin-bottom                    : 8px;
+	padding                          : 7px 0 5px 0; 
+	text-align                       : center;
+}
+
+#statistics-counter-inbox table
+{
+
+}
+
+#statistics-counter-inbox .tr
+{
+	height                           : 20px;
+}
+
+#statistics-counter-inbox th
+{
+	text-align                       : right;
+	font-weight                      : bold;
+}
+
+#statistics-counter-inbox #yearSelect
+{
+	width                            : 95px;
+}
+
+#statistics-counter-inbox #monthSelect
+{
+	width                            : 60px;
+}
+
+#statistics-counter-inbox .label
+{
+	display                          : block;
+	font-weight                      : bold;
+	text-align                       : center;
+}
+
+#statistics-counter-inbox .divider
+{
+	display                          : none;
+}
+
+#statistics-counter-inbox .title h3
+{
+	display:block;
+}
+
+#total
+{
+	color                            : #000000;
+	display                          : block;
+	font-family                      : Arial, Tahoma, Verdana, sans-serif;
+	font-size                        : 300%;
+	font-weight                      : bold;
+	margin                           : 10px 0;
+	text-align                       : center;
+}
+
+#statistics-counter-inbox .button
+{
+	background-color                 : #FFFFFF;
+	border                           : 1px solid #999999;
+    display                          : block;
+    line-height                      : 2em;
+	margin                           : 0 auto;
+	padding                          : 3px 5px;
+	width                            : 36px;
+}
+
+/* month / day ----------------------------------------------------------------------------------*/
+#statistics-inbox
+{
+	float                            : left;
+}
+
+#statistics-inbox h3
+{
+	display:block;
+}
+
+#statistics-inbox table
+{
+	margin                           : 1px 0 15px 10px;
+}
+
+#statistics-inbox td
+{
+	margin                           : 0 0 0 0;
+	padding                          : 0px;
+}
+
+#statistics-inbox .flash-stic
+{
+	margin                           : 10px 0 0 0;
+	padding                          : 0px;
+	text-align                       : left;
+}
+
+#statistics-inbox .flash-pizza
+{
+	padding                          : 0px;
+	text-align                       : right;
+}
+
+#statistics-inbox #commenterList 
+{ 
+	width                            : 668px; 
+	margin                           : 10px auto;
+}
+
+#statistics-inbox #commenterList .userlist
+{
+	float                            : left;
+	width                            : 160px;
+	padding                          : 0 0 0 7px;
+	overflow                         : hidden;
+	text-align                       : left;
+	margin-bottom                    : 5px;
+	background                       : url('./images/bull.gif') no-repeat 0 4px;
+}
+
+#statistics-inbox #commenterList .userlist .count
+{
+	color                            : #aaa;
+	font                             : 7pt tahoma;
+}
+#statistics-inbox #commenterList .clear{clear:both;}

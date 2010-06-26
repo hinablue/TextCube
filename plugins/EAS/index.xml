@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.1">
+  <title xml:lang="ko">EAS-Eolin Antispam Service</title>
+  <title xml:lang="en">EAS-Eolin Antispam Service</title>
+  <title xml:lang="zh-TW">EAS-Eolin Antispam Service</title>
+  <title xml:lang="zh-CN">EAS-Eolin Antispam Service</title>
+  <link>http://antispam.eolin.com</link>
+  <version>0.96 beta</version>
+  <description xml:lang="ko">EOLIN에서 제공하는 스팸 코멘트/트랙백 차단 서비스를 사용합니다.</description>
+  <description xml:lang="en">Deny spam comments and trackback supplyed by EOLIN.</description>
+  <description xml:lang="zh-TW">使用 EOLIN 服務來防止垃圾回應與引用。</description>
+  <description xml:lang="zh-CN">使用 EOLIN 服务来防止垃圾回应与引用。</description>
+  <license>GPL</license>
+  <author xml:lang="en" link="http://www.google.com">Google Inc.</author>
+  <author xml:lang="ko" link="http://www.google.com">구글</author>
+  <author xml:lang="zh-TW" link="http://www.google.com">Google Inc.</author>
+  <author xml:lang="zh-CN" link="http://www.google.com">Google Inc.</author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="yes" accessRaw="no" />
+  <requirements>
+    <textcube>
+		<minVersion>1.8</minVersion>
+	</textcube>
+  </requirements>
+  <binding>
+    <listener event="AddingTrackback" handler="EAS_AddingTrackback" />
+    <listener event="AddingComment" handler="EAS_AddingComment" />
+  </binding>
+</plugin>

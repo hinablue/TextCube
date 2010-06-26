@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+	<title>Graphic Statistics</title>
+	<title xml:lang="zh-TW">圖形化部落格訪問狀態資訊</title>
+	<title xml:lang="zh-CN">图形化部落格访问状态信息</title>
+	<link>http://gendoh.com</link>
+	<version>0.97</version>
+	<description xml:lang="ko">
+ 		접속자 통계를 Graph로 표시합니다. [##_StatisticsGraph_##] 태그를 스킨에 삽입하거나 사이드바에서 추가하면 됩니다.
+	</description>
+	<description xml:lang="zh-TW">
+		可圖形化部落格訪問狀態資訊，在樣板中插入 [##_StatisticsGraph_##] 或於側欄中也可使用。
+	</description>
+	<description xml:lang="zh-CN">
+ 		可图形化部落格访问状态信息，在样板中插入 [##_StatisticsGraph_##] 或于侧栏中也可使用。
+	</description>
+	<license>GPL</license>
+	<author link="http://gendoh.com"><![CDATA[겐도]]></author>
+	<safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
+	<requirements>
+    	<textcube>1.8</textcube>
+	</requirements>
+	<binding>
+		<tag name="StatisticsGraph" handler="DisplayStatisticsGraph" />
+                <sidebar title="Statistics" handler="DisplayStatisticsGraph"></sidebar>
+  </binding>
+</plugin>
