@@ -51,7 +51,7 @@
 	<config xml:lang="zh-TW" dataValHandler="MT_Cover_getRecentEntries_DataSet" manifestHandler="MT_Cover_getRecentEntries_ConfigOut_zh_TW">
 		<window width="500" height="375" />
 	</config>
-	<config xml:lang="zh-CN" dataValHandler="MT_Cover_getRecentEntries_DataSet" manifestHandler="MT_Cover_getRecentEntries_ConfigOut_zh-CN">
+	<config xml:lang="zh-CN" dataValHandler="MT_Cover_getRecentEntries_DataSet" manifestHandler="MT_Cover_getRecentEntries_ConfigOut_zh_CN">
 		<window width="500" height="375" />
 	</config>
   </binding>
