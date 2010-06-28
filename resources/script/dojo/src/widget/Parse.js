@@ -1,9 +1,227 @@
-dojo.provide("dojo.widget.Parse");dojo.require("dojo.widget.Manager");dojo.require("dojo.dom");
-dojo.widget.Parse=function(e){this.propertySetsList=[];this.fragment=e;this.createComponents=function(a,d){var c=[],b=false;try{if(a&&a.tagName&&a!=a.nodeRef)for(var f=dojo.widget.tags,g=String(a.tagName).split(";"),i=0;i<g.length;i++){var h=g[i].replace(/^\s+|\s+$/g,"").toLowerCase();a.tagName=h;var j;if(f[h]){b=true;j=f[h](a,this,d,a.index);c.push(j)}else{if(h.indexOf(":")==-1)h="dojo:"+h;if(j=dojo.widget.buildWidgetFromParseTree(h,a,this,d,a.index)){b=true;c.push(j)}}}}catch(k){dojo.debug("dojo.widget.Parse: error:",
-k)}b||(c=c.concat(this.createSubComponents(a,d)));return c};this.createSubComponents=function(a,d){var c,b=[];for(var f in a)if((c=a[f])&&typeof c=="object"&&c!=a.nodeRef&&c!=a.tagName&&!dojo.dom.isNode(c))b=b.concat(this.createComponents(c,d));return b};this.parsePropertySets=function(){return[]};this.parseProperties=function(a){var d={};for(var c in a)if(!(a[c]==a.tagName||a[c]==a.nodeRef)){var b=a[c];if(!(b.tagName&&dojo.widget.tags[b.tagName.toLowerCase()]))if(b[0]&&b[0].value!=""&&b[0].value!=
-null)try{if(c.toLowerCase()=="dataprovider"){this.getDataProvider(this,b[0].value);d.dataProvider=this.dataProvider}d[c]=b[0].value;var f=this.parseProperties(b);for(var g in f)d[g]=f[g]}catch(i){dojo.debug(i)}switch(c.toLowerCase()){case "checked":case "disabled":if(typeof d[c]!="boolean")d[c]=true;break}}return d};this.getDataProvider=function(a,d){dojo.io.bind({url:d,load:function(c,b){if(c=="load")a.dataProvider=b},mimetype:"text/javascript",sync:true})};this.getPropertySetById=function(a){for(var d=
-0;d<this.propertySetsList.length;d++)if(a==this.propertySetsList[d].id[0].value)return this.propertySetsList[d];return""};this.getPropertySetsByType=function(){for(var a=[],d=0;d<this.propertySetsList.length;d++){var c=this.propertySetsList[d],b=c.componentClass||c.componentType||null,f=this.propertySetsList[d].id[0].value;b&&f==b[0].value&&a.push(c)}return a};this.getPropertySets=function(a){var d=[],c=a.tagName;if(a["dojo:propertyproviderlist"]){a=a["dojo:propertyproviderlist"].value.split(" ");
-for(var b in a)if(b.indexOf("..")==-1&&b.indexOf("://")==-1){var f=this.getPropertySetById(b);f!=""&&d.push(f)}}return this.getPropertySetsByType(c).concat(d)};this.createComponentFromScript=function(a,d,c,b){c.fastMixIn=true;a=(b||"dojo")+":"+d.toLowerCase();if(dojo.widget.tags[a])return[dojo.widget.tags[a](c,this,null,null,c)];return[dojo.widget.buildWidgetFromParseTree(a,c,this,null,null,c)]}};dojo.widget._parser_collection={dojo:new dojo.widget.Parse};
-dojo.widget.getParser=function(e){e||(e="dojo");this._parser_collection[e]||(this._parser_collection[e]=new dojo.widget.Parse);return this._parser_collection[e]};
-dojo.widget.createWidget=function(e,a,d,c){var b=false,f=typeof e=="string";if(f){b=e.indexOf(":");var g=b>-1?e.substring(0,b):"dojo";if(b>-1)e=e.substring(b+1);var i=e.toLowerCase(),h=g+":"+i;b=dojo.byId(e)&&!dojo.widget.tags[h]}if(arguments.length==1&&(b||!f)){g=new dojo.xml.Parse;b=b?dojo.byId(e):e;return dojo.widget.getParser().createComponents(g.parseElement(b,null,true))[0]}a=a||{};f=false;b=null;var j=dojo.render.html.capable;if(j)b=document.createElement("span");if(d)if(c)dojo.dom.insertAtPosition(b,
-d,c);else b=d;else{f=true;j&&dojo.body().appendChild(b)}g=function(m,o,l,n){l[h]={dojotype:[{value:i}],nodeRef:m,fastMixIn:true};l.ns=n;return dojo.widget.getParser().createComponentFromScript(m,o,l,n)}(b,e.toLowerCase(),a,g);if(!g||!g[0]||typeof g[0].widgetType=="undefined")throw new Error('createWidget: Creation of "'+e+'" widget failed.');try{f&&g[0].domNode.parentNode&&g[0].domNode.parentNode.removeChild(g[0].domNode)}catch(k){dojo.debug(k)}return g[0]};
+/*
+	Copyright (c) 2004-2006, The Dojo Foundation
+	All Rights Reserved.
+
+	Licensed under the Academic Free License version 2.1 or above OR the
+	modified BSD license. For more information on Dojo licensing, see:
+
+		http://dojotoolkit.org/community/licensing.shtml
+*/
+
+
+
+dojo.provide("dojo.widget.Parse");
+dojo.require("dojo.widget.Manager");
+dojo.require("dojo.dom");
+dojo.widget.Parse = function (fragment) {
+	this.propertySetsList = [];
+	this.fragment = fragment;
+	this.createComponents = function (frag, parentComp) {
+		var comps = [];
+		var built = false;
+		try {
+			if (frag && frag.tagName && (frag != frag.nodeRef)) {
+				var djTags = dojo.widget.tags;
+				var tna = String(frag.tagName).split(";");
+				for (var x = 0; x < tna.length; x++) {
+					var ltn = tna[x].replace(/^\s+|\s+$/g, "").toLowerCase();
+					frag.tagName = ltn;
+					var ret;
+					if (djTags[ltn]) {
+						built = true;
+						ret = djTags[ltn](frag, this, parentComp, frag.index);
+						comps.push(ret);
+					} else {
+						if (ltn.indexOf(":") == -1) {
+							ltn = "dojo:" + ltn;
+						}
+						ret = dojo.widget.buildWidgetFromParseTree(ltn, frag, this, parentComp, frag.index);
+						if (ret) {
+							built = true;
+							comps.push(ret);
+						}
+					}
+				}
+			}
+		}
+		catch (e) {
+			dojo.debug("dojo.widget.Parse: error:", e);
+		}
+		if (!built) {
+			comps = comps.concat(this.createSubComponents(frag, parentComp));
+		}
+		return comps;
+	};
+	this.createSubComponents = function (fragment, parentComp) {
+		var frag, comps = [];
+		for (var item in fragment) {
+			frag = fragment[item];
+			if (frag && typeof frag == "object" && (frag != fragment.nodeRef) && (frag != fragment.tagName) && (!dojo.dom.isNode(frag))) {
+				comps = comps.concat(this.createComponents(frag, parentComp));
+			}
+		}
+		return comps;
+	};
+	this.parsePropertySets = function (fragment) {
+		return [];
+	};
+	this.parseProperties = function (fragment) {
+		var properties = {};
+		for (var item in fragment) {
+			if ((fragment[item] == fragment.tagName) || (fragment[item] == fragment.nodeRef)) {
+			} else {
+				var frag = fragment[item];
+				if (frag.tagName && dojo.widget.tags[frag.tagName.toLowerCase()]) {
+				} else {
+					if (frag[0] && frag[0].value != "" && frag[0].value != null) {
+						try {
+							if (item.toLowerCase() == "dataprovider") {
+								var _this = this;
+								this.getDataProvider(_this, frag[0].value);
+								properties.dataProvider = this.dataProvider;
+							}
+							properties[item] = frag[0].value;
+							var nestedProperties = this.parseProperties(frag);
+							for (var property in nestedProperties) {
+								properties[property] = nestedProperties[property];
+							}
+						}
+						catch (e) {
+							dojo.debug(e);
+						}
+					}
+				}
+				switch (item.toLowerCase()) {
+				  case "checked":
+				  case "disabled":
+					if (typeof properties[item] != "boolean") {
+						properties[item] = true;
+					}
+					break;
+				}
+			}
+		}
+		return properties;
+	};
+	this.getDataProvider = function (objRef, dataUrl) {
+		dojo.io.bind({url:dataUrl, load:function (type, evaldObj) {
+			if (type == "load") {
+				objRef.dataProvider = evaldObj;
+			}
+		}, mimetype:"text/javascript", sync:true});
+	};
+	this.getPropertySetById = function (propertySetId) {
+		for (var x = 0; x < this.propertySetsList.length; x++) {
+			if (propertySetId == this.propertySetsList[x]["id"][0].value) {
+				return this.propertySetsList[x];
+			}
+		}
+		return "";
+	};
+	this.getPropertySetsByType = function (componentType) {
+		var propertySets = [];
+		for (var x = 0; x < this.propertySetsList.length; x++) {
+			var cpl = this.propertySetsList[x];
+			var cpcc = cpl.componentClass || cpl.componentType || null;
+			var propertySetId = this.propertySetsList[x]["id"][0].value;
+			if (cpcc && (propertySetId == cpcc[0].value)) {
+				propertySets.push(cpl);
+			}
+		}
+		return propertySets;
+	};
+	this.getPropertySets = function (fragment) {
+		var ppl = "dojo:propertyproviderlist";
+		var propertySets = [];
+		var tagname = fragment.tagName;
+		if (fragment[ppl]) {
+			var propertyProviderIds = fragment[ppl].value.split(" ");
+			for (var propertySetId in propertyProviderIds) {
+				if ((propertySetId.indexOf("..") == -1) && (propertySetId.indexOf("://") == -1)) {
+					var propertySet = this.getPropertySetById(propertySetId);
+					if (propertySet != "") {
+						propertySets.push(propertySet);
+					}
+				} else {
+				}
+			}
+		}
+		return this.getPropertySetsByType(tagname).concat(propertySets);
+	};
+	this.createComponentFromScript = function (nodeRef, componentName, properties, ns) {
+		properties.fastMixIn = true;
+		var ltn = (ns || "dojo") + ":" + componentName.toLowerCase();
+		if (dojo.widget.tags[ltn]) {
+			return [dojo.widget.tags[ltn](properties, this, null, null, properties)];
+		}
+		return [dojo.widget.buildWidgetFromParseTree(ltn, properties, this, null, null, properties)];
+	};
+};
+dojo.widget._parser_collection = {"dojo":new dojo.widget.Parse()};
+dojo.widget.getParser = function (name) {
+	if (!name) {
+		name = "dojo";
+	}
+	if (!this._parser_collection[name]) {
+		this._parser_collection[name] = new dojo.widget.Parse();
+	}
+	return this._parser_collection[name];
+};
+dojo.widget.createWidget = function (name, props, refNode, position) {
+	var isNode = false;
+	var isNameStr = (typeof name == "string");
+	if (isNameStr) {
+		var pos = name.indexOf(":");
+		var ns = (pos > -1) ? name.substring(0, pos) : "dojo";
+		if (pos > -1) {
+			name = name.substring(pos + 1);
+		}
+		var lowerCaseName = name.toLowerCase();
+		var namespacedName = ns + ":" + lowerCaseName;
+		isNode = (dojo.byId(name) && !dojo.widget.tags[namespacedName]);
+	}
+	if ((arguments.length == 1) && (isNode || !isNameStr)) {
+		var xp = new dojo.xml.Parse();
+		var tn = isNode ? dojo.byId(name) : name;
+		return dojo.widget.getParser().createComponents(xp.parseElement(tn, null, true))[0];
+	}
+	function fromScript(placeKeeperNode, name, props, ns) {
+		props[namespacedName] = {dojotype:[{value:lowerCaseName}], nodeRef:placeKeeperNode, fastMixIn:true};
+		props.ns = ns;
+		return dojo.widget.getParser().createComponentFromScript(placeKeeperNode, name, props, ns);
+	}
+	props = props || {};
+	var notRef = false;
+	var tn = null;
+	var h = dojo.render.html.capable;
+	if (h) {
+		tn = document.createElement("span");
+	}
+	if (!refNode) {
+		notRef = true;
+		refNode = tn;
+		if (h) {
+			dojo.body().appendChild(refNode);
+		}
+	} else {
+		if (position) {
+			dojo.dom.insertAtPosition(tn, refNode, position);
+		} else {
+			tn = refNode;
+		}
+	}
+	var widgetArray = fromScript(tn, name.toLowerCase(), props, ns);
+	if ((!widgetArray) || (!widgetArray[0]) || (typeof widgetArray[0].widgetType == "undefined")) {
+		throw new Error("createWidget: Creation of \"" + name + "\" widget failed.");
+	}
+	try {
+		if (notRef && widgetArray[0].domNode.parentNode) {
+			widgetArray[0].domNode.parentNode.removeChild(widgetArray[0].domNode);
+		}
+	}
+	catch (e) {
+		dojo.debug(e);
+	}
+	return widgetArray[0];
+};
+

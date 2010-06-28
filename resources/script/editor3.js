@@ -1,15 +1,268 @@
-var TTEditorResizer=function(a,c,b){this.target=a;this.documents=b||[document];this.resizer=c;this.rowResize=this.rowResizeDown=false;this.onResizeBegin=function(){};this.onResizeEnd=function(){}};TTEditorResizer.prototype.initialize=function(){for(var a=jQuery.proxy(this.docEventHandler,this),c=0,b;b=this.documents[c];++c){STD.addEventListener(b);jQuery(b).bind({"mousemove.doc":a,"mousedown.doc":a,"mouseup.doc":a,"selectstart.doc":a})}};
-TTEditorResizer.prototype.finalize=function(){for(var a=0,c;c=this.documents[a];++a)jQuery(c).unbind(".doc")};
-TTEditorResizer.prototype.docEventHandler=function(a){switch(a.type){case "mousemove":if(this.rowResizeDown){var c=parseInt(a.clientY);if(a.target.tagName!="BODY"&&a.target.tagName!="HTML"){c+=document.documentElement.scrollTop?document.documentElement.scrollTop:document.body.scrollTop;c-=getOffsetTop(this.target)}try{this.target.style.height=Math.min(2600,Math.max(300,c))+"px"}catch(b){}}else this.rowResize=a.target==this.resizer?true:false;break;case "mousedown":this.rowResizeDown=false;if(this.rowResize){this.onResizeBegin.apply(this);
-this.rowResizeDown=true}break;case "mouseup":this.rowResizeDown=false;this.onResizeEnd.apply(this);break;case "selectstart":return this.rowResizeDown?false:true}};var TTDefaultEditor=function(){};
-TTDefaultEditor.prototype.initialize=function(a){this.textarea=a;var c=this;STD.addEventListener(a);var b=function(){editorChanged();savePosition(c.textarea);return true};this.textareaEventHandler_bounded=b;a.addEventListener("select",b,false);a.addEventListener("click",b,false);a.addEventListener("keyup",b,false);this.resizer=new TTEditorResizer(a,getObject("status-container"));this.resizer.onResizeBegin=function(){getObject("attachManagerSelectNest").style.visibility="hidden"};this.resizer.onResizeEnd=
-function(){getObject("attachManagerSelectNest").style.visibility="visible"};this.resizer.initialize()};TTDefaultEditor.prototype.finalize=function(){this.resizer.finalize();var a=this.textarea;a.removeEventListener("select",this.textareaEventHandler_bounded,false);a.removeEventListener("click",this.textareaEventHandler_bounded,false);a.removeEventListener("keyup",this.textareaEventHandler_bounded,false)};TTDefaultEditor.prototype.syncTextarea=function(){};
-TTDefaultEditor.prototype.addObject=function(a){switch(a.mode){case "Image1L":case "Image1C":case "Image1R":case "ImageFree":var c=a.objects[0][2].replace(new RegExp('"',"g"),"&quot;").replace(new RegExp("'","g"),"&#39;");if(a.mode=="Image1L")a.objects[0][1]+=' style="float: left;"';if(a.mode=="Image1R")a.objects[0][1]+=' style="float: right;"';c='<img src="[##_ATTACH_PATH_##]/'+a.objects[0][0]+'" '+a.objects[0][1]+' title="'+c+'" />';if(a.mode=="Image1C")c='<p style="text-align: center;">'+c+"</p>\n";
-insertTag(this.textarea,c,"");return true;case "Image2C":case "Image3C":case "Gallery":for(c=0;a.objects[c];++c){a.mode=="Gallery"&&a.objects[c].push("");if(!this.addObject({mode:"Image1C",objects:[a.objects[c]]}))return false}return true;case "Imazing":alert(_t("\uc774 \ud3b8\uc9d1\uae30\uc5d0\uc11c\ub294 iMazing \uac24\ub7ec\ub9ac\ub97c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."));return false;case "Jukebox":alert(_t("\uc774 \ud3b8\uc9d1\uae30\uc5d0\uc11c\ub294 \uc8fc\ud06c\ubc15\uc2a4\ub97c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."));
-return false}return false};var iMazingProperties=[];iMazingProperties.width=450;iMazingProperties.height=350;iMazingProperties.frame="net_imazing_frame_none";iMazingProperties.transition="net_imazing_show_window_transition_alpha";iMazingProperties.navigation="net_imazing_show_window_navigation_simple";iMazingProperties.slideshowInterval=10;iMazingProperties.page=1;iMazingProperties.align="h";iMazingProperties.skinPath=servicePath+"/resources/script/gallery/iMazing/";
-function editorAddObject(a,c){var b=document.forms[0].TCfilelist,g=[],h={mode:c};switch(c){case "Image1L":case "Image1C":case "Image1R":case "Image2C":case "Image3C":for(var f=parseInt(c.substr(5)),d=0;d<b.options.length;d++)if(b.options[d].selected==true){var e=b.options[d].value.split("|"),i=/width=['"]?(\d+)/.exec(e[1]),j=/height=['"]?(\d+)/.exec(e[1]);if(i&&j){orgWidth=i[1];orgHeight=j[1];if(orgWidth>skinContentWidth/f){width=parseInt(skinContentWidth/f);height=parseInt(orgHeight*(skinContentWidth/
-f/orgWidth));e[1]=e[1].replace(new RegExp("width=['\"]?\\d+['\"]?","gi"),'width="'+width+'"');e[1]=e[1].replace(new RegExp("height=['\"]?\\d+['\"]?","gi"),'height="'+height+'"')}}e.length<3&&e.push("");g.push(e)}if(g.length!=f){switch(f){case 1:alert(_t("\ud30c\uc77c\uc744 \uc120\ud0dd\ud558\uc2ed\uc2dc\uc624."));break;case 2:alert(_t("\ud30c\uc77c \ub9ac\uc2a4\ud2b8\uc5d0\uc11c \uc774\ubbf8\uc9c0\ub97c 2\uac1c \uc120\ud0dd\ud574 \uc8fc\uc2ed\uc2dc\uc624. (ctrl + \ub9c8\uc6b0\uc2a4 \uc67c\ucabd \ud074\ub9ad)"));
-break;case 3:alert(_t("\ud30c\uc77c \ub9ac\uc2a4\ud2b8\uc5d0\uc11c \uc774\ubbf8\uc9c0\ub97c 3\uac1c \uc120\ud0dd\ud574 \uc8fc\uc2ed\uc2dc\uc624. (ctrl + \ub9c8\uc6b0\uc2a4 \uc67c\ucabd \ud074\ub9ad)"));break}return false}break;case "ImageFree":for(d=0;d<b.options.length;d++)if(b.options[d].selected){e=b.options[d].value.split("|");/\.(gif|jpe?g|png|bmp)$/i.test(e[0])&&g.push(e)}break;case "Imazing":case "Gallery":try{if(b.selectedIndex<0){alert(_t("\ud30c\uc77c\uc744 \uc120\ud0dd\ud558\uc2ed\uc2dc\uc624"));
-return false}b.options[b.selectedIndex].value.split("|");e=false;for(d=0;d<b.length;d++)if(b.options[d].selected){file=b[d].value.substr(b[d].value,b[d].value.indexOf("|"));if((new RegExp("\\.(jpe?g|gif|png)$","gi")).exec(file))g.push([file,""]);else e=true}if(g.length==0){alert(_t("\uc774\ubbf8\uc9c0 \ud30c\uc77c\ub9cc \uc0bd\uc785 \uac00\ub2a5\ud569\ub2c8\ub2e4."));return false}if(c=="Imazing"){e&&alert(_t("iMazing \uac24\ub7ec\ub9ac\ub294 JPG,PNG,GIF \ud30c\uc77c\ub9cc \uc9c0\uc6d0\ub429\ub2c8\ub2e4\n\uadf8 \uc678\uc758 \ud615\uc2dd\uc740 \ubaa9\ub85d\uc5d0\uc11c \uc81c\uc678\ud588\uc2b5\ub2c8\ub2e4"));
-b="";for(f in iMazingProperties)b+=f+"="+iMazingProperties[f]+" ";h.properties=b}}catch(k){return false}break;case "Jukebox":try{if(b.selectedIndex<0){alert(_t("\ud30c\uc77c\uc744 \uc120\ud0dd\ud558\uc2ed\uc2dc\uc624."));return false}b.options[b.selectedIndex].value.split("|");for(d=0;d<b.length;d++)if(b.options[d].selected){file=b[d].value.substr(b[d].value,b[d].value.indexOf("|"));if((new RegExp("\\.mp3$","gi")).exec(file)){f="";if(e=(new RegExp("(.*)\\.mp3","gi")).exec(b.options[d].text))f=e[1].replaceAll("|",
-"");g.push([file,f])}}if(g.length==0){alert(_t("MP3 \ud30c\uc77c\ub9cc \uc0bd\uc785 \uac00\ub2a5\ud569\ub2c8\ub2e4."));return false}}catch(l){return false}break;default:return false}h.objects=g;return a.addObject(h)};
+/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// All rights reserved. Licensed under the GPL.
+/// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
+
+var TTEditorResizer = function(target, resizer, documents) {
+	this.target = target;
+	this.documents = documents || [document];
+	this.resizer = resizer;
+	this.rowResize = this.rowResizeDown = false;
+	this.onResizeBegin = function() {};
+	this.onResizeEnd = function() {};
+};
+
+TTEditorResizer.prototype.initialize = function() {
+	var docEventHandler = jQuery.proxy(this.docEventHandler, this);
+	for (var i = 0, doc; doc = this.documents[i]; ++i) {
+		STD.addEventListener(doc);
+		jQuery(doc).bind({
+			'mousemove.doc': docEventHandler,
+			'mousedown.doc': docEventHandler,
+			'mouseup.doc': docEventHandler,
+			'selectstart.doc': docEventHandler
+		});
+	}
+};
+
+TTEditorResizer.prototype.finalize = function() {
+	for (var i = 0, doc; doc = this.documents[i]; ++i) {
+		jQuery(doc).unbind('.doc');
+	}
+};
+
+TTEditorResizer.prototype.docEventHandler = function(event) {
+	switch (event.type) {
+	case "mousemove":
+		if (this.rowResizeDown) {
+			var pageY = parseInt(event.clientY);
+			if (event.target.tagName != "BODY" && event.target.tagName != "HTML") {
+				pageY += document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop;
+				pageY -= getOffsetTop(this.target);
+			}
+			try {
+				// Resolution of QSXGA screen is 2560 by 2048. When it is rotated 90 degress, its height is 2560px.
+				this.target.style.height = Math.min(2600, Math.max(300, pageY)) + 'px';
+			} catch(e) {}
+		} else if(event.target == this.resizer) {
+			this.rowResize = true;
+		} else {
+			this.rowResize = false;
+		}
+		break;
+	case "mousedown":
+		this.rowResizeDown = false;
+		if(this.rowResize) {
+			this.onResizeBegin.apply(this);
+			this.rowResizeDown = true;
+		}
+		break;
+	case "mouseup":
+		this.rowResizeDown = false;
+		this.onResizeEnd.apply(this);
+		break;
+	case "selectstart":
+		return (this.rowResizeDown ? false : true);
+	}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+var TTDefaultEditor = function() {};
+
+// initialize the editor, with adding necessary things to given textarea
+TTDefaultEditor.prototype.initialize = function(textarea) {
+	this.textarea = textarea;
+	var _this = this;
+
+	// textarea event
+	STD.addEventListener(textarea);
+	var textareaEventHandler = function() { editorChanged(); savePosition(_this.textarea); return true; };
+	this.textareaEventHandler_bounded = textareaEventHandler; // keep it to remove the handler later
+	textarea.addEventListener("select", textareaEventHandler, false);
+	textarea.addEventListener("click", textareaEventHandler, false);
+	textarea.addEventListener("keyup", textareaEventHandler, false);
+
+	this.resizer = new TTEditorResizer(textarea, getObject('status-container'));
+	this.resizer.onResizeBegin = function() {
+		getObject('attachManagerSelectNest').style.visibility = 'hidden';
+	};
+	this.resizer.onResizeEnd = function() {
+		getObject('attachManagerSelectNest').style.visibility = 'visible';
+	};
+	this.resizer.initialize();
+}
+
+// finalize the editor, with removing things added by initialize method (required!)
+TTDefaultEditor.prototype.finalize = function() {
+	this.resizer.finalize();
+
+	var textarea = this.textarea;
+	textarea.removeEventListener("select", this.textareaEventHandler_bounded, false);
+	textarea.removeEventListener("click", this.textareaEventHandler_bounded, false);
+	textarea.removeEventListener("keyup", this.textareaEventHandler_bounded, false);
+}
+
+// if necessary, synchronize textarea to other editor elements
+TTDefaultEditor.prototype.syncTextarea = function() {
+	// do nothing
+}
+
+// add given objects (e.g. image, gallery, jukebox) to the editor
+TTDefaultEditor.prototype.addObject = function(data) {
+	switch (data.mode) {
+	case 'Image1L': case 'Image1C': case 'Image1R': case 'ImageFree':
+		var title = data.objects[0][2].replace(new RegExp('"', "g"), "&quot;").replace(new RegExp("'", "g"), "&#39;");
+		if (data.mode == 'Image1L') data.objects[0][1] += ' style="float: left;"';
+		if (data.mode == 'Image1R') data.objects[0][1] += ' style="float: right;"';
+		var html = '<img src="[##_ATTACH_PATH_##]/' + data.objects[0][0] + '" ' + data.objects[0][1] + ' title="' + title + '" />';
+		if (data.mode == 'Image1C') html = '<p style="text-align: center;">' + html + '</p>\n';
+		insertTag(this.textarea, html, "");
+		return true;
+
+	case 'Image2C': case 'Image3C': case 'Gallery':
+		for (var i = 0; data.objects[i]; ++i) {
+			if (data.mode == 'Gallery') data.objects[i].push('');
+			if (!this.addObject({mode: 'Image1C', objects: [data.objects[i]]})) return false;
+		}
+		return true;
+
+	case 'Imazing':
+		alert(_t('이 편집기에서는 iMazing 갤러리를 지원하지 않습니다.'));
+		return false;
+
+	case 'Jukebox':
+		alert(_t('이 편집기에서는 주크박스를 지원하지 않습니다.'));
+		return false;
+	}
+	return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+var iMazingProperties = new Array();
+iMazingProperties['width'] = 450;
+iMazingProperties['height'] = 350;
+iMazingProperties['frame'] = 'net_imazing_frame_none';
+iMazingProperties['transition'] = 'net_imazing_show_window_transition_alpha';
+iMazingProperties['navigation'] = 'net_imazing_show_window_navigation_simple';
+iMazingProperties['slideshowInterval'] = 10;
+iMazingProperties['page'] = 1;
+iMazingProperties['align'] = 'h';
+iMazingProperties['skinPath'] = servicePath + '/resources/script/gallery/iMazing/';
+
+function editorAddObject(editor, mode) {
+	var oSelect = document.forms[0].TCfilelist;
+	var objects = [];
+	var result = {mode: mode};
+
+	switch (mode) {
+	case 'Image1L': case 'Image1C': case 'Image1R': case 'Image2C': case 'Image3C':
+		var needed = parseInt(mode.substr(5));
+		for (var i = 0; i < oSelect.options.length; i++) {
+			if (oSelect.options[i].selected == true) {
+				var value = oSelect.options[i].value.split("|");
+				var result_w = new RegExp("width=['\"]?(\\d+)").exec(value[1]);
+				var result_h = new RegExp("height=['\"]?(\\d+)").exec(value[1]);
+				if (result_w && result_h) {
+					orgWidth = result_w[1];
+					orgHeight = result_h[1];
+					if (orgWidth > skinContentWidth / needed) {
+						width = parseInt(skinContentWidth / needed);
+						height = parseInt(orgHeight * (skinContentWidth / needed/ orgWidth));
+						value[1] = value[1].replace(new RegExp("width=['\"]?\\d+['\"]?", "gi"), 'width="' + width + '"');
+						value[1] = value[1].replace(new RegExp("height=['\"]?\\d+['\"]?", "gi"), 'height="' + height + '"');
+					}
+				}
+				if (value.length < 3) value.push('');
+				objects.push(value);
+			}
+		}
+		if (objects.length != needed) {
+			switch (needed) {
+			case 1: alert(_t('파일을 선택하십시오.')); break;
+			case 2: alert(_t('파일 리스트에서 이미지를 2개 선택해 주십시오. (ctrl + 마우스 왼쪽 클릭)')); break;
+			case 3: alert(_t('파일 리스트에서 이미지를 3개 선택해 주십시오. (ctrl + 마우스 왼쪽 클릭)')); break;
+			}
+			return false;
+		}
+		break;
+
+	case 'ImageFree':
+		for (var i = 0; i < oSelect.options.length; i++) {
+			if (oSelect.options[i].selected) {
+				var value = oSelect.options[i].value.split("|");
+				if(new RegExp("\\.(gif|jpe?g|png|bmp)$", "i").test(value[0])) objects.push(value);
+			}
+		}
+		break;
+
+	case 'Imazing': case 'Gallery':
+		try {
+			if (oSelect.selectedIndex < 0) {
+				alert(_t('파일을 선택하십시오'));
+				return false;
+			}
+			var value = oSelect.options[oSelect.selectedIndex].value.split("|");
+			
+			var ignored = false;
+			for (var i = 0; i<oSelect.length; i++) {
+				if (!oSelect.options[i].selected) continue;
+				file = (oSelect[i].value.substr(oSelect[i].value,oSelect[i].value.indexOf('|')));				
+				if (new RegExp("\\.(jpe?g|gif|png)$", "gi").exec(file)) {
+					objects.push([file, '']);
+				} else {
+					ignored = true;
+				}
+			}
+			if (objects.length == 0) {
+				//alert(_t('이미지 파일만 적용할 수 있습니다'));
+				alert(_t('이미지 파일만 삽입 가능합니다.'));
+				return false;
+			}
+			if (mode == 'Imazing') {
+				if (ignored) {
+					alert(_t('iMazing 갤러리는 JPG,PNG,GIF 파일만 지원됩니다\n그 외의 형식은 목록에서 제외했습니다'));
+				}
+				var props = '';
+				for (var name in iMazingProperties) {
+					props += name + '=' + iMazingProperties[name] + ' ';
+				}
+				result.properties = props;
+			}
+		} catch(e) { return false; }
+		break;
+
+	case 'Jukebox':
+		try {
+			if (oSelect.selectedIndex < 0) {
+				alert(_t('파일을 선택하십시오.'));
+				return false;
+			}
+			var value = oSelect.options[oSelect.selectedIndex].value.split("|");
+			
+			for (var i = 0; i<oSelect.length; i++) {
+				if (!oSelect.options[i].selected) continue;
+				file = (oSelect[i].value.substr(oSelect[i].value,oSelect[i].value.indexOf('|')));
+				if (new RegExp("\\.mp3$", "gi").exec(file))
+				{
+					var desc = '', match;
+					if (match = new RegExp("(.*)\\.mp3", "gi").exec(oSelect.options[i].text))
+						desc = match[1].replaceAll("|","");
+					objects.push([file, desc]);
+				}
+			}
+			if (objects.length == 0) {
+				alert(_t('MP3 파일만 삽입 가능합니다.'));
+				return false;
+			}
+		} catch(e) { return false; }
+		break;
+
+	default:
+		return false;
+	}
+
+	result.objects = objects;
+	return editor.addObject(result);
+}
+

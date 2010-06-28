@@ -1,14 +1,312 @@
-dojo.provide("dojo.widget.Widget");dojo.require("dojo.lang.func");dojo.require("dojo.lang.array");dojo.require("dojo.lang.extras");dojo.require("dojo.lang.declare");dojo.require("dojo.ns");dojo.require("dojo.widget.Manager");dojo.require("dojo.event.*");dojo.require("dojo.a11y");
-dojo.declare("dojo.widget.Widget",null,function(){this.children=[];this.extraArgs={}},{parent:null,isTopLevel:false,disabled:false,isContainer:false,widgetId:"",widgetType:"Widget",ns:"dojo",getNamespacedType:function(){return(this.ns?this.ns+":"+this.widgetType:this.widgetType).toLowerCase()},toString:function(){return"[Widget "+this.getNamespacedType()+", "+(this.widgetId||"NO ID")+"]"},repr:function(){return this.toString()},enable:function(){this.disabled=false},disable:function(){this.disabled=
-true},onResized:function(){this.notifyChildrenOfResize()},notifyChildrenOfResize:function(){for(var a=0;a<this.children.length;a++){var c=this.children[a];c.onResized&&c.onResized()}},create:function(a,c,b,e){if(e)this.ns=e;this.satisfyPropertySets(a,c,b);this.mixInProperties(a,c,b);this.postMixInProperties(a,c,b);dojo.widget.manager.add(this);this.buildRendering(a,c,b);this.initialize(a,c,b);this.postInitialize(a,c,b);this.postCreate(a,c,b);return this},destroy:function(a){this.parent&&this.parent.removeChild(this);
-this.destroyChildren();this.uninitialize();this.destroyRendering(a);dojo.widget.manager.removeById(this.widgetId)},destroyChildren:function(){for(var a,c=0;this.children.length>c;){a=this.children[c];if(a instanceof dojo.widget.Widget){this.removeChild(a);a.destroy()}else c++}},getChildrenOfType:function(a,c){var b=[],e=dojo.lang.isFunction(a);e||(a=a.toLowerCase());for(var d=0;d<this.children.length;d++){if(e)this.children[d]instanceof a&&b.push(this.children[d]);else this.children[d].widgetType.toLowerCase()==
-a&&b.push(this.children[d]);if(c)b=b.concat(this.children[d].getChildrenOfType(a,c))}return b},getDescendants:function(){for(var a=[],c=[this],b;b=c.pop();){a.push(b);b.children&&dojo.lang.forEach(b.children,function(e){c.push(e)})}return a},isFirstChild:function(){return this===this.parent.children[0]},isLastChild:function(){return this===this.parent.children[this.parent.children.length-1]},satisfyPropertySets:function(a){return a},mixInProperties:function(a,c){if(a.fastMixIn||c.fastMixIn)for(var b in a)this[b]=
-a[b];else{var e=dojo.widget.lcArgsCache[this.widgetType];if(e==null){e={};for(var d in this)e[(new String(d)).toLowerCase()]=d;dojo.widget.lcArgsCache[this.widgetType]=e}var g={};for(b in a){if(!this[b])if(d=e[(new String(b)).toLowerCase()]){a[d]=a[b];b=d}if(!g[b]){g[b]=true;if(typeof this[b]!=typeof void 0)if(typeof a[b]!="string")this[b]=a[b];else if(dojo.lang.isString(this[b]))this[b]=a[b];else if(dojo.lang.isNumber(this[b]))this[b]=new Number(a[b]);else if(dojo.lang.isBoolean(this[b]))this[b]=
-a[b].toLowerCase()=="false"?false:true;else if(dojo.lang.isFunction(this[b]))if(a[b].search(/[^\w\.]+/i)==-1)this[b]=dojo.evalObjPath(a[b],false);else{d=dojo.lang.nameAnonFunc(new Function(a[b]),this);dojo.event.kwConnect({srcObj:this,srcFunc:b,adviceObj:this,adviceFunc:d})}else if(dojo.lang.isArray(this[b]))this[b]=a[b].split(";");else if(this[b]instanceof Date)this[b]=new Date(Number(a[b]));else if(typeof this[b]=="object")if(this[b]instanceof dojo.uri.Uri)this[b]=dojo.uri.dojoUri(a[b]);else{var f=
-a[b].split(";");for(d=0;d<f.length;d++){var h=f[d].indexOf(":");if(h!=-1&&f[d].length>h)this[b][f[d].substr(0,h).replace(/^\s+|\s+$/g,"")]=f[d].substr(h+1)}}else this[b]=a[b];else this.extraArgs[b.toLowerCase()]=a[b]}}}},postMixInProperties:function(){},initialize:function(){return false},postInitialize:function(){return false},postCreate:function(){return false},uninitialize:function(){return false},buildRendering:function(){dojo.unimplemented("dojo.widget.Widget.buildRendering, on "+this.toString()+
-", ");return false},destroyRendering:function(){dojo.unimplemented("dojo.widget.Widget.destroyRendering");return false},addedTo:function(){},addChild:function(){dojo.unimplemented("dojo.widget.Widget.addChild");return false},removeChild:function(a){for(var c=0;c<this.children.length;c++)if(this.children[c]===a){this.children.splice(c,1);a.parent=null;break}return a},getPreviousSibling:function(){var a=this.getParentIndex();if(a<=0)return null;return this.parent.children[a-1]},getSiblings:function(){return this.parent.children},
-getParentIndex:function(){return dojo.lang.indexOf(this.parent.children,this,true)},getNextSibling:function(){var a=this.getParentIndex();if(a==this.parent.children.length-1)return null;if(a<0)return null;return this.parent.children[a+1]}});dojo.widget.lcArgsCache={};dojo.widget.tags={};
-dojo.widget.tags.addParseTreeHandler=function(){dojo.deprecated("addParseTreeHandler",". ParseTreeHandlers are now reserved for components. Any unfiltered DojoML tag without a ParseTreeHandler is assumed to be a widget","0.5")};dojo.widget.tags["dojo:propertyset"]=function(a,c){c.parseProperties(a["dojo:propertyset"])};dojo.widget.tags["dojo:connect"]=function(a,c){c.parseProperties(a["dojo:connect"])};
-dojo.widget.buildWidgetFromParseTree=function(a,c,b,e,d,g){dojo.a11y.setAccessibleMode();var f=a.split(":");f=f.length==2?f[1]:a;b=g||b.parseProperties(c[c.ns+":"+f]);if(f=dojo.widget.manager.getImplementation(f,null,null,c.ns)){if(!f.create)throw new Error('"'+a+'" widget object has no "create" method and does not appear to implement *Widget');}else throw new Error('cannot find "'+a+'" widget');b.dojoinsertionindex=d;return f.create(b,c,e,c.ns)};
-dojo.widget.defineWidget=function(){if(dojo.lang.isString(arguments[3]))dojo.widget._defineWidget(arguments[0],arguments[3],arguments[1],arguments[4],arguments[2]);else{var a=[arguments[0]],c=3;if(dojo.lang.isString(arguments[1]))a.push(arguments[1],arguments[2]);else{a.push("",arguments[1]);c=2}dojo.lang.isFunction(arguments[c])?a.push(arguments[c],arguments[c+1]):a.push(null,arguments[c]);dojo.widget._defineWidget.apply(this,a)}};dojo.widget.defineWidget.renderers="html|svg|vml";
-dojo.widget._defineWidget=function(a,c,b,e,d){var g=a.split("."),f=g.pop();c=a.search(new RegExp("\\.("+(c?c+"|":"")+dojo.widget.defineWidget.renderers+")\\."));g=c<0?g.join("."):a.substr(0,c);dojo.widget.manager.registerWidgetPackage(g);c=g.indexOf(".");c>-1&&g.substring(0,c);d=d||{};d.widgetType=f;if(!e&&d.classConstructor){e=d.classConstructor;delete d.classConstructor}dojo.declare(a,b,e,d)};
+/*
+	Copyright (c) 2004-2006, The Dojo Foundation
+	All Rights Reserved.
+
+	Licensed under the Academic Free License version 2.1 or above OR the
+	modified BSD license. For more information on Dojo licensing, see:
+
+		http://dojotoolkit.org/community/licensing.shtml
+*/
+
+
+
+dojo.provide("dojo.widget.Widget");
+dojo.require("dojo.lang.func");
+dojo.require("dojo.lang.array");
+dojo.require("dojo.lang.extras");
+dojo.require("dojo.lang.declare");
+dojo.require("dojo.ns");
+dojo.require("dojo.widget.Manager");
+dojo.require("dojo.event.*");
+dojo.require("dojo.a11y");
+dojo.declare("dojo.widget.Widget", null, function () {
+	this.children = [];
+	this.extraArgs = {};
+}, {parent:null, isTopLevel:false, disabled:false, isContainer:false, widgetId:"", widgetType:"Widget", ns:"dojo", getNamespacedType:function () {
+	return (this.ns ? this.ns + ":" + this.widgetType : this.widgetType).toLowerCase();
+}, toString:function () {
+	return "[Widget " + this.getNamespacedType() + ", " + (this.widgetId || "NO ID") + "]";
+}, repr:function () {
+	return this.toString();
+}, enable:function () {
+	this.disabled = false;
+}, disable:function () {
+	this.disabled = true;
+}, onResized:function () {
+	this.notifyChildrenOfResize();
+}, notifyChildrenOfResize:function () {
+	for (var i = 0; i < this.children.length; i++) {
+		var child = this.children[i];
+		if (child.onResized) {
+			child.onResized();
+		}
+	}
+}, create:function (args, fragment, parent, ns) {
+	if (ns) {
+		this.ns = ns;
+	}
+	this.satisfyPropertySets(args, fragment, parent);
+	this.mixInProperties(args, fragment, parent);
+	this.postMixInProperties(args, fragment, parent);
+	dojo.widget.manager.add(this);
+	this.buildRendering(args, fragment, parent);
+	this.initialize(args, fragment, parent);
+	this.postInitialize(args, fragment, parent);
+	this.postCreate(args, fragment, parent);
+	return this;
+}, destroy:function (finalize) {
+	if (this.parent) {
+		this.parent.removeChild(this);
+	}
+	this.destroyChildren();
+	this.uninitialize();
+	this.destroyRendering(finalize);
+	dojo.widget.manager.removeById(this.widgetId);
+}, destroyChildren:function () {
+	var widget;
+	var i = 0;
+	while (this.children.length > i) {
+		widget = this.children[i];
+		if (widget instanceof dojo.widget.Widget) {
+			this.removeChild(widget);
+			widget.destroy();
+			continue;
+		}
+		i++;
+	}
+}, getChildrenOfType:function (type, recurse) {
+	var ret = [];
+	var isFunc = dojo.lang.isFunction(type);
+	if (!isFunc) {
+		type = type.toLowerCase();
+	}
+	for (var x = 0; x < this.children.length; x++) {
+		if (isFunc) {
+			if (this.children[x] instanceof type) {
+				ret.push(this.children[x]);
+			}
+		} else {
+			if (this.children[x].widgetType.toLowerCase() == type) {
+				ret.push(this.children[x]);
+			}
+		}
+		if (recurse) {
+			ret = ret.concat(this.children[x].getChildrenOfType(type, recurse));
+		}
+	}
+	return ret;
+}, getDescendants:function () {
+	var result = [];
+	var stack = [this];
+	var elem;
+	while ((elem = stack.pop())) {
+		result.push(elem);
+		if (elem.children) {
+			dojo.lang.forEach(elem.children, function (elem) {
+				stack.push(elem);
+			});
+		}
+	}
+	return result;
+}, isFirstChild:function () {
+	return this === this.parent.children[0];
+}, isLastChild:function () {
+	return this === this.parent.children[this.parent.children.length - 1];
+}, satisfyPropertySets:function (args) {
+	return args;
+}, mixInProperties:function (args, frag) {
+	if ((args["fastMixIn"]) || (frag["fastMixIn"])) {
+		for (var x in args) {
+			this[x] = args[x];
+		}
+		return;
+	}
+	var undef;
+	var lcArgs = dojo.widget.lcArgsCache[this.widgetType];
+	if (lcArgs == null) {
+		lcArgs = {};
+		for (var y in this) {
+			lcArgs[((new String(y)).toLowerCase())] = y;
+		}
+		dojo.widget.lcArgsCache[this.widgetType] = lcArgs;
+	}
+	var visited = {};
+	for (var x in args) {
+		if (!this[x]) {
+			var y = lcArgs[(new String(x)).toLowerCase()];
+			if (y) {
+				args[y] = args[x];
+				x = y;
+			}
+		}
+		if (visited[x]) {
+			continue;
+		}
+		visited[x] = true;
+		if ((typeof this[x]) != (typeof undef)) {
+			if (typeof args[x] != "string") {
+				this[x] = args[x];
+			} else {
+				if (dojo.lang.isString(this[x])) {
+					this[x] = args[x];
+				} else {
+					if (dojo.lang.isNumber(this[x])) {
+						this[x] = new Number(args[x]);
+					} else {
+						if (dojo.lang.isBoolean(this[x])) {
+							this[x] = (args[x].toLowerCase() == "false") ? false : true;
+						} else {
+							if (dojo.lang.isFunction(this[x])) {
+								if (args[x].search(/[^\w\.]+/i) == -1) {
+									this[x] = dojo.evalObjPath(args[x], false);
+								} else {
+									var tn = dojo.lang.nameAnonFunc(new Function(args[x]), this);
+									dojo.event.kwConnect({srcObj:this, srcFunc:x, adviceObj:this, adviceFunc:tn});
+								}
+							} else {
+								if (dojo.lang.isArray(this[x])) {
+									this[x] = args[x].split(";");
+								} else {
+									if (this[x] instanceof Date) {
+										this[x] = new Date(Number(args[x]));
+									} else {
+										if (typeof this[x] == "object") {
+											if (this[x] instanceof dojo.uri.Uri) {
+												this[x] = dojo.uri.dojoUri(args[x]);
+											} else {
+												var pairs = args[x].split(";");
+												for (var y = 0; y < pairs.length; y++) {
+													var si = pairs[y].indexOf(":");
+													if ((si != -1) && (pairs[y].length > si)) {
+														this[x][pairs[y].substr(0, si).replace(/^\s+|\s+$/g, "")] = pairs[y].substr(si + 1);
+													}
+												}
+											}
+										} else {
+											this[x] = args[x];
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			this.extraArgs[x.toLowerCase()] = args[x];
+		}
+	}
+}, postMixInProperties:function (args, frag, parent) {
+}, initialize:function (args, frag, parent) {
+	return false;
+}, postInitialize:function (args, frag, parent) {
+	return false;
+}, postCreate:function (args, frag, parent) {
+	return false;
+}, uninitialize:function () {
+	return false;
+}, buildRendering:function (args, frag, parent) {
+	dojo.unimplemented("dojo.widget.Widget.buildRendering, on " + this.toString() + ", ");
+	return false;
+}, destroyRendering:function () {
+	dojo.unimplemented("dojo.widget.Widget.destroyRendering");
+	return false;
+}, addedTo:function (parent) {
+}, addChild:function (child) {
+	dojo.unimplemented("dojo.widget.Widget.addChild");
+	return false;
+}, removeChild:function (widget) {
+	for (var x = 0; x < this.children.length; x++) {
+		if (this.children[x] === widget) {
+			this.children.splice(x, 1);
+			widget.parent = null;
+			break;
+		}
+	}
+	return widget;
+}, getPreviousSibling:function () {
+	var idx = this.getParentIndex();
+	if (idx <= 0) {
+		return null;
+	}
+	return this.parent.children[idx - 1];
+}, getSiblings:function () {
+	return this.parent.children;
+}, getParentIndex:function () {
+	return dojo.lang.indexOf(this.parent.children, this, true);
+}, getNextSibling:function () {
+	var idx = this.getParentIndex();
+	if (idx == this.parent.children.length - 1) {
+		return null;
+	}
+	if (idx < 0) {
+		return null;
+	}
+	return this.parent.children[idx + 1];
+}});
+dojo.widget.lcArgsCache = {};
+dojo.widget.tags = {};
+dojo.widget.tags.addParseTreeHandler = function (type) {
+	dojo.deprecated("addParseTreeHandler", ". ParseTreeHandlers are now reserved for components. Any unfiltered DojoML tag without a ParseTreeHandler is assumed to be a widget", "0.5");
+};
+dojo.widget.tags["dojo:propertyset"] = function (fragment, widgetParser, parentComp) {
+	var properties = widgetParser.parseProperties(fragment["dojo:propertyset"]);
+};
+dojo.widget.tags["dojo:connect"] = function (fragment, widgetParser, parentComp) {
+	var properties = widgetParser.parseProperties(fragment["dojo:connect"]);
+};
+dojo.widget.buildWidgetFromParseTree = function (type, frag, parser, parentComp, insertionIndex, localProps) {
+	dojo.a11y.setAccessibleMode();
+	var stype = type.split(":");
+	stype = (stype.length == 2) ? stype[1] : type;
+	var localProperties = localProps || parser.parseProperties(frag[frag["ns"] + ":" + stype]);
+	var twidget = dojo.widget.manager.getImplementation(stype, null, null, frag["ns"]);
+	if (!twidget) {
+		throw new Error("cannot find \"" + type + "\" widget");
+	} else {
+		if (!twidget.create) {
+			throw new Error("\"" + type + "\" widget object has no \"create\" method and does not appear to implement *Widget");
+		}
+	}
+	localProperties["dojoinsertionindex"] = insertionIndex;
+	var ret = twidget.create(localProperties, frag, parentComp, frag["ns"]);
+	return ret;
+};
+dojo.widget.defineWidget = function (widgetClass, renderer, superclasses, init, props) {
+	if (dojo.lang.isString(arguments[3])) {
+		dojo.widget._defineWidget(arguments[0], arguments[3], arguments[1], arguments[4], arguments[2]);
+	} else {
+		var args = [arguments[0]], p = 3;
+		if (dojo.lang.isString(arguments[1])) {
+			args.push(arguments[1], arguments[2]);
+		} else {
+			args.push("", arguments[1]);
+			p = 2;
+		}
+		if (dojo.lang.isFunction(arguments[p])) {
+			args.push(arguments[p], arguments[p + 1]);
+		} else {
+			args.push(null, arguments[p]);
+		}
+		dojo.widget._defineWidget.apply(this, args);
+	}
+};
+dojo.widget.defineWidget.renderers = "html|svg|vml";
+dojo.widget._defineWidget = function (widgetClass, renderer, superclasses, init, props) {
+	var module = widgetClass.split(".");
+	var type = module.pop();
+	var regx = "\\.(" + (renderer ? renderer + "|" : "") + dojo.widget.defineWidget.renderers + ")\\.";
+	var r = widgetClass.search(new RegExp(regx));
+	module = (r < 0 ? module.join(".") : widgetClass.substr(0, r));
+	dojo.widget.manager.registerWidgetPackage(module);
+	var pos = module.indexOf(".");
+	var nsName = (pos > -1) ? module.substring(0, pos) : module;
+	props = (props) || {};
+	props.widgetType = type;
+	if ((!init) && (props["classConstructor"])) {
+		init = props.classConstructor;
+		delete props.classConstructor;
+	}
+	dojo.declare(widgetClass, superclasses, init, props);
+};
+

@@ -1,14 +1,295 @@
-dojo.provide("dojo.dnd.HtmlDragManager");dojo.require("dojo.dnd.DragAndDrop");dojo.require("dojo.event.*");dojo.require("dojo.lang.array");dojo.require("dojo.html.common");dojo.require("dojo.html.layout");
-dojo.declare("dojo.dnd.HtmlDragManager",dojo.dnd.DragManager,{disabled:false,nestedTargets:false,mouseDownTimer:null,dsCounter:0,dsPrefix:"dojoDragSource",dropTargetDimensions:[],currentDropTarget:null,previousDropTarget:null,_dragTriggered:false,selectedSources:[],dragObjects:[],dragSources:[],dropTargets:[],currentX:null,currentY:null,lastX:null,lastY:null,mouseDownX:null,mouseDownY:null,threshold:7,dropAcceptable:false,cancelEvent:function(a){a.stopPropagation();a.preventDefault()},registerDragSource:function(a){if(a.domNode){var b=
-this.dsPrefix,c=b+"Idx_"+this.dsCounter++;a.dragSourceId=c;this.dragSources[c]=a;a.domNode.setAttribute(b,c);dojo.render.html.ie&&dojo.event.browser.addListener(a.domNode,"ondragstart",this.cancelEvent)}},unregisterDragSource:function(a){if(a.domNode){var b=this.dsPrefix,c=a.dragSourceId;delete a.dragSourceId;delete this.dragSources[c];a.domNode.setAttribute(b,null);dojo.render.html.ie&&dojo.event.browser.removeListener(a.domNode,"ondragstart",this.cancelEvent)}},registerDropTarget:function(a){this.dropTargets.push(a)},
-unregisterDropTarget:function(a){a=dojo.lang.find(this.dropTargets,a,true);a>=0&&this.dropTargets.splice(a,1)},getDragSource:function(a){a=a.target;if(a!==dojo.body()){for(var b=dojo.html.getAttribute(a,this.dsPrefix);!b&&a;){a=a.parentNode;if(!a||a===dojo.body())return;b=dojo.html.getAttribute(a,this.dsPrefix)}return this.dragSources[b]}},onKeyDown:function(){},onMouseDown:function(a){if(!this.disabled){if(dojo.render.html.ie){if(a.button!=1)return}else if(a.which!=1)return;if(!dojo.html.isTag(a.target.nodeType==
-dojo.html.TEXT_NODE?a.target.parentNode:a.target,"button","textarea","input","select","option")){var b=this.getDragSource(a);if(b){if(!dojo.lang.inArray(this.selectedSources,b)){this.selectedSources.push(b);b.onSelected()}this.mouseDownX=a.pageX;this.mouseDownY=a.pageY;a.preventDefault();dojo.event.connect(document,"onmousemove",this,"onMouseMove")}}}},onMouseUp:function(a){if(this.selectedSources.length!=0){this.mouseDownY=this.mouseDownX=null;this._dragTriggered=false;a.dragSource=this.dragSource;
-if(!a.shiftKey&&!a.ctrlKey){this.currentDropTarget&&this.currentDropTarget.onDropStart();dojo.lang.forEach(this.dragObjects,function(b){var c=null;if(b){if(this.currentDropTarget){a.dragObject=b;var d=this.currentDropTarget.domNode.childNodes;if(d.length>0)for(a.dropTarget=d[0];a.dropTarget==b.domNode;)a.dropTarget=a.dropTarget.nextSibling;else a.dropTarget=this.currentDropTarget.domNode;if(this.dropAcceptable)c=this.currentDropTarget.onDrop(a);else this.currentDropTarget.onDragOut(a)}a.dragStatus=
-this.dropAcceptable&&c?"dropSuccess":"dropFailure";dojo.lang.delayThese([function(){try{b.dragSource.onDragEnd(a)}catch(f){var e={};for(var g in a)if(g=="type")e.type="mouseup";else e[g]=a[g];b.dragSource.onDragEnd(e)}},function(){b.onDragEnd(a)}])}},this);this.selectedSources=[];this.dragObjects=[];this.dragSource=null;this.currentDropTarget&&this.currentDropTarget.onDropEnd()}dojo.event.disconnect(document,"onmousemove",this,"onMouseMove");this.currentDropTarget=null}},onScroll:function(){for(var a=
-0;a<this.dragObjects.length;a++)this.dragObjects[a].updateDragOffset&&this.dragObjects[a].updateDragOffset();this.dragObjects.length&&this.cacheTargetLocations()},_dragStartDistance:function(a,b){if(this.mouseDownX&&this.mouseDownX){var c=Math.abs(a-this.mouseDownX),d=Math.abs(b-this.mouseDownY);return parseInt(Math.sqrt(c*c+d*d),10)}},cacheTargetLocations:function(){dojo.profile.start("cacheTargetLocations");this.dropTargetDimensions=[];dojo.lang.forEach(this.dropTargets,function(a){var b=a.domNode;
-if(b&&a.accepts([this.dragSource])){var c=dojo.html.getAbsolutePosition(b,true);b=dojo.html.getBorderBox(b);this.dropTargetDimensions.push([[c.x,c.y],[c.x+b.width,c.y+b.height],a])}},this);dojo.profile.end("cacheTargetLocations")},onMouseMove:function(a){if(dojo.render.html.ie&&a.button!=1){this.currentDropTarget=null;this.onMouseUp(a,true)}else{if(this.selectedSources.length&&!this.dragObjects.length){var b,c;if(!this._dragTriggered){this._dragTriggered=this._dragStartDistance(a.pageX,a.pageY)>this.threshold;
-if(!this._dragTriggered)return;b=a.pageX-this.mouseDownX;c=a.pageY-this.mouseDownY}this.dragSource=this.selectedSources[0];dojo.lang.forEach(this.selectedSources,function(f){if(f){var e=f.onDragStart(a);if(e){e.onDragStart(a);e.dragOffset.y+=c;e.dragOffset.x+=b;e.dragSource=f;this.dragObjects.push(e)}}},this);this.previousDropTarget=null;this.cacheTargetLocations()}dojo.lang.forEach(this.dragObjects,function(f){f&&f.onDragMove(a)});if(this.currentDropTarget){var d=dojo.html.toCoordinateObject(this.currentDropTarget.domNode,
-true);d=[[d.x,d.y],[d.x+d.width,d.y+d.height]]}if(!this.nestedTargets&&d&&this.isInsideBox(a,d))this.dropAcceptable&&this.currentDropTarget.onDragMove(a,this.dragObjects);else{d=this.findBestTarget(a);if(d.target===null){if(this.currentDropTarget){this.currentDropTarget.onDragOut(a);this.previousDropTarget=this.currentDropTarget;this.currentDropTarget=null}this.dropAcceptable=false}else if(this.currentDropTarget!==d.target){if(this.currentDropTarget){this.previousDropTarget=this.currentDropTarget;
-this.currentDropTarget.onDragOut(a)}this.currentDropTarget=d.target;a.dragObjects=this.dragObjects;this.dropAcceptable=this.currentDropTarget.onDragOver(a)}else this.dropAcceptable&&this.currentDropTarget.onDragMove(a,this.dragObjects)}}},findBestTarget:function(a){var b=this,c={};c.target=null;c.points=null;dojo.lang.every(this.dropTargetDimensions,function(d){if(!b.isInsideBox(a,d))return true;c.target=d[2];c.points=d;return Boolean(b.nestedTargets)});return c},isInsideBox:function(a,b){if(a.pageX>
-b[0][0]&&a.pageX<b[1][0]&&a.pageY>b[0][1]&&a.pageY<b[1][1])return true;return false},onMouseOver:function(){},onMouseOut:function(){}});dojo.dnd.dragManager=new dojo.dnd.HtmlDragManager;
-(function(){var a=document,b=dojo.dnd.dragManager;dojo.event.connect(a,"onkeydown",b,"onKeyDown");dojo.event.connect(a,"onmouseover",b,"onMouseOver");dojo.event.connect(a,"onmouseout",b,"onMouseOut");dojo.event.connect(a,"onmousedown",b,"onMouseDown");dojo.event.connect(a,"onmouseup",b,"onMouseUp");dojo.event.connect(window,"onscroll",b,"onScroll")})();
+/*
+	Copyright (c) 2004-2006, The Dojo Foundation
+	All Rights Reserved.
+
+	Licensed under the Academic Free License version 2.1 or above OR the
+	modified BSD license. For more information on Dojo licensing, see:
+
+		http://dojotoolkit.org/community/licensing.shtml
+*/
+
+
+
+dojo.provide("dojo.dnd.HtmlDragManager");
+dojo.require("dojo.dnd.DragAndDrop");
+dojo.require("dojo.event.*");
+dojo.require("dojo.lang.array");
+dojo.require("dojo.html.common");
+dojo.require("dojo.html.layout");
+dojo.declare("dojo.dnd.HtmlDragManager", dojo.dnd.DragManager, {disabled:false, nestedTargets:false, mouseDownTimer:null, dsCounter:0, dsPrefix:"dojoDragSource", dropTargetDimensions:[], currentDropTarget:null, previousDropTarget:null, _dragTriggered:false, selectedSources:[], dragObjects:[], dragSources:[], dropTargets:[], currentX:null, currentY:null, lastX:null, lastY:null, mouseDownX:null, mouseDownY:null, threshold:7, dropAcceptable:false, cancelEvent:function (e) {
+	e.stopPropagation();
+	e.preventDefault();
+}, registerDragSource:function (ds) {
+	if (ds["domNode"]) {
+		var dp = this.dsPrefix;
+		var dpIdx = dp + "Idx_" + (this.dsCounter++);
+		ds.dragSourceId = dpIdx;
+		this.dragSources[dpIdx] = ds;
+		ds.domNode.setAttribute(dp, dpIdx);
+		if (dojo.render.html.ie) {
+			dojo.event.browser.addListener(ds.domNode, "ondragstart", this.cancelEvent);
+		}
+	}
+}, unregisterDragSource:function (ds) {
+	if (ds["domNode"]) {
+		var dp = this.dsPrefix;
+		var dpIdx = ds.dragSourceId;
+		delete ds.dragSourceId;
+		delete this.dragSources[dpIdx];
+		ds.domNode.setAttribute(dp, null);
+		if (dojo.render.html.ie) {
+			dojo.event.browser.removeListener(ds.domNode, "ondragstart", this.cancelEvent);
+		}
+	}
+}, registerDropTarget:function (dt) {
+	this.dropTargets.push(dt);
+}, unregisterDropTarget:function (dt) {
+	var index = dojo.lang.find(this.dropTargets, dt, true);
+	if (index >= 0) {
+		this.dropTargets.splice(index, 1);
+	}
+}, getDragSource:function (e) {
+	var tn = e.target;
+	if (tn === dojo.body()) {
+		return;
+	}
+	var ta = dojo.html.getAttribute(tn, this.dsPrefix);
+	while ((!ta) && (tn)) {
+		tn = tn.parentNode;
+		if ((!tn) || (tn === dojo.body())) {
+			return;
+		}
+		ta = dojo.html.getAttribute(tn, this.dsPrefix);
+	}
+	return this.dragSources[ta];
+}, onKeyDown:function (e) {
+}, onMouseDown:function (e) {
+	if (this.disabled) {
+		return;
+	}
+	if (dojo.render.html.ie) {
+		if (e.button != 1) {
+			return;
+		}
+	} else {
+		if (e.which != 1) {
+			return;
+		}
+	}
+	var target = e.target.nodeType == dojo.html.TEXT_NODE ? e.target.parentNode : e.target;
+	if (dojo.html.isTag(target, "button", "textarea", "input", "select", "option")) {
+		return;
+	}
+	var ds = this.getDragSource(e);
+	if (!ds) {
+		return;
+	}
+	if (!dojo.lang.inArray(this.selectedSources, ds)) {
+		this.selectedSources.push(ds);
+		ds.onSelected();
+	}
+	this.mouseDownX = e.pageX;
+	this.mouseDownY = e.pageY;
+	e.preventDefault();
+	dojo.event.connect(document, "onmousemove", this, "onMouseMove");
+}, onMouseUp:function (e, cancel) {
+	if (this.selectedSources.length == 0) {
+		return;
+	}
+	this.mouseDownX = null;
+	this.mouseDownY = null;
+	this._dragTriggered = false;
+	e.dragSource = this.dragSource;
+	if ((!e.shiftKey) && (!e.ctrlKey)) {
+		if (this.currentDropTarget) {
+			this.currentDropTarget.onDropStart();
+		}
+		dojo.lang.forEach(this.dragObjects, function (tempDragObj) {
+			var ret = null;
+			if (!tempDragObj) {
+				return;
+			}
+			if (this.currentDropTarget) {
+				e.dragObject = tempDragObj;
+				var ce = this.currentDropTarget.domNode.childNodes;
+				if (ce.length > 0) {
+					e.dropTarget = ce[0];
+					while (e.dropTarget == tempDragObj.domNode) {
+						e.dropTarget = e.dropTarget.nextSibling;
+					}
+				} else {
+					e.dropTarget = this.currentDropTarget.domNode;
+				}
+				if (this.dropAcceptable) {
+					ret = this.currentDropTarget.onDrop(e);
+				} else {
+					this.currentDropTarget.onDragOut(e);
+				}
+			}
+			e.dragStatus = this.dropAcceptable && ret ? "dropSuccess" : "dropFailure";
+			dojo.lang.delayThese([function () {
+				try {
+					tempDragObj.dragSource.onDragEnd(e);
+				}
+				catch (err) {
+					var ecopy = {};
+					for (var i in e) {
+						if (i == "type") {
+							ecopy.type = "mouseup";
+							continue;
+						}
+						ecopy[i] = e[i];
+					}
+					tempDragObj.dragSource.onDragEnd(ecopy);
+				}
+			}, function () {
+				tempDragObj.onDragEnd(e);
+			}]);
+		}, this);
+		this.selectedSources = [];
+		this.dragObjects = [];
+		this.dragSource = null;
+		if (this.currentDropTarget) {
+			this.currentDropTarget.onDropEnd();
+		}
+	} else {
+	}
+	dojo.event.disconnect(document, "onmousemove", this, "onMouseMove");
+	this.currentDropTarget = null;
+}, onScroll:function () {
+	for (var i = 0; i < this.dragObjects.length; i++) {
+		if (this.dragObjects[i].updateDragOffset) {
+			this.dragObjects[i].updateDragOffset();
+		}
+	}
+	if (this.dragObjects.length) {
+		this.cacheTargetLocations();
+	}
+}, _dragStartDistance:function (x, y) {
+	if ((!this.mouseDownX) || (!this.mouseDownX)) {
+		return;
+	}
+	var dx = Math.abs(x - this.mouseDownX);
+	var dx2 = dx * dx;
+	var dy = Math.abs(y - this.mouseDownY);
+	var dy2 = dy * dy;
+	return parseInt(Math.sqrt(dx2 + dy2), 10);
+}, cacheTargetLocations:function () {
+	dojo.profile.start("cacheTargetLocations");
+	this.dropTargetDimensions = [];
+	dojo.lang.forEach(this.dropTargets, function (tempTarget) {
+		var tn = tempTarget.domNode;
+		if (!tn || !tempTarget.accepts([this.dragSource])) {
+			return;
+		}
+		var abs = dojo.html.getAbsolutePosition(tn, true);
+		var bb = dojo.html.getBorderBox(tn);
+		this.dropTargetDimensions.push([[abs.x, abs.y], [abs.x + bb.width, abs.y + bb.height], tempTarget]);
+	}, this);
+	dojo.profile.end("cacheTargetLocations");
+}, onMouseMove:function (e) {
+	if ((dojo.render.html.ie) && (e.button != 1)) {
+		this.currentDropTarget = null;
+		this.onMouseUp(e, true);
+		return;
+	}
+	if ((this.selectedSources.length) && (!this.dragObjects.length)) {
+		var dx;
+		var dy;
+		if (!this._dragTriggered) {
+			this._dragTriggered = (this._dragStartDistance(e.pageX, e.pageY) > this.threshold);
+			if (!this._dragTriggered) {
+				return;
+			}
+			dx = e.pageX - this.mouseDownX;
+			dy = e.pageY - this.mouseDownY;
+		}
+		this.dragSource = this.selectedSources[0];
+		dojo.lang.forEach(this.selectedSources, function (tempSource) {
+			if (!tempSource) {
+				return;
+			}
+			var tdo = tempSource.onDragStart(e);
+			if (tdo) {
+				tdo.onDragStart(e);
+				tdo.dragOffset.y += dy;
+				tdo.dragOffset.x += dx;
+				tdo.dragSource = tempSource;
+				this.dragObjects.push(tdo);
+			}
+		}, this);
+		this.previousDropTarget = null;
+		this.cacheTargetLocations();
+	}
+	dojo.lang.forEach(this.dragObjects, function (dragObj) {
+		if (dragObj) {
+			dragObj.onDragMove(e);
+		}
+	});
+	if (this.currentDropTarget) {
+		var c = dojo.html.toCoordinateObject(this.currentDropTarget.domNode, true);
+		var dtp = [[c.x, c.y], [c.x + c.width, c.y + c.height]];
+	}
+	if ((!this.nestedTargets) && (dtp) && (this.isInsideBox(e, dtp))) {
+		if (this.dropAcceptable) {
+			this.currentDropTarget.onDragMove(e, this.dragObjects);
+		}
+	} else {
+		var bestBox = this.findBestTarget(e);
+		if (bestBox.target === null) {
+			if (this.currentDropTarget) {
+				this.currentDropTarget.onDragOut(e);
+				this.previousDropTarget = this.currentDropTarget;
+				this.currentDropTarget = null;
+			}
+			this.dropAcceptable = false;
+			return;
+		}
+		if (this.currentDropTarget !== bestBox.target) {
+			if (this.currentDropTarget) {
+				this.previousDropTarget = this.currentDropTarget;
+				this.currentDropTarget.onDragOut(e);
+			}
+			this.currentDropTarget = bestBox.target;
+			e.dragObjects = this.dragObjects;
+			this.dropAcceptable = this.currentDropTarget.onDragOver(e);
+		} else {
+			if (this.dropAcceptable) {
+				this.currentDropTarget.onDragMove(e, this.dragObjects);
+			}
+		}
+	}
+}, findBestTarget:function (e) {
+	var _this = this;
+	var bestBox = new Object();
+	bestBox.target = null;
+	bestBox.points = null;
+	dojo.lang.every(this.dropTargetDimensions, function (tmpDA) {
+		if (!_this.isInsideBox(e, tmpDA)) {
+			return true;
+		}
+		bestBox.target = tmpDA[2];
+		bestBox.points = tmpDA;
+		return Boolean(_this.nestedTargets);
+	});
+	return bestBox;
+}, isInsideBox:function (e, coords) {
+	if ((e.pageX > coords[0][0]) && (e.pageX < coords[1][0]) && (e.pageY > coords[0][1]) && (e.pageY < coords[1][1])) {
+		return true;
+	}
+	return false;
+}, onMouseOver:function (e) {
+}, onMouseOut:function (e) {
+}});
+dojo.dnd.dragManager = new dojo.dnd.HtmlDragManager();
+(function () {
+	var d = document;
+	var dm = dojo.dnd.dragManager;
+	dojo.event.connect(d, "onkeydown", dm, "onKeyDown");
+	dojo.event.connect(d, "onmouseover", dm, "onMouseOver");
+	dojo.event.connect(d, "onmouseout", dm, "onMouseOut");
+	dojo.event.connect(d, "onmousedown", dm, "onMouseDown");
+	dojo.event.connect(d, "onmouseup", dm, "onMouseUp");
+	dojo.event.connect(window, "onscroll", dm, "onScroll");
+})();
+

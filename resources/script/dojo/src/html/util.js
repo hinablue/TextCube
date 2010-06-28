@@ -1,14 +1,356 @@
-dojo.provide("dojo.html.util");dojo.require("dojo.html.layout");dojo.html.getElementWindow=function(a){return dojo.html.getDocumentWindow(a.ownerDocument)};
-dojo.html.getDocumentWindow=function(a){if(dojo.render.html.safari&&!a._parentWindow){var c=function(b){b.document._parentWindow=b;for(var f=0;f<b.frames.length;f++)c(b.frames[f])};c(window.top)}if(dojo.render.html.ie&&window!==document.parentWindow&&!a._parentWindow){a.parentWindow.execScript("document._parentWindow = window;","Javascript");var d=a._parentWindow;a._parentWindow=null;return d}return a._parentWindow||a.parentWindow||a.defaultView};
-dojo.html.gravity=function(a,c){a=dojo.byId(a);var d=dojo.html.getCursorPosition(c);with(dojo.html){var b=getAbsolutePosition(a,true),f=getBorderBox(a),e=b.x+f.width/2;b=b.y+f.height/2}with(dojo.html.gravity)return(d.x<e?WEST:EAST)|(d.y<b?NORTH:SOUTH)};dojo.html.gravity.NORTH=1;dojo.html.gravity.SOUTH=2;dojo.html.gravity.EAST=4;dojo.html.gravity.WEST=8;
-dojo.html.overElement=function(a,c){a=dojo.byId(a);var d=dojo.html.getCursorPosition(c),b=dojo.html.getBorderBox(a),f=dojo.html.getAbsolutePosition(a,true,dojo.html.boxSizing.BORDER_BOX),e=f.y,g=e+b.height;f=f.x;b=f+b.width;return d.x>=f&&d.x<=b&&d.y>=e&&d.y<=g};
-dojo.html.renderedTextContent=function(a){a=dojo.byId(a);var c="";if(a==null)return c;for(var d=0;d<a.childNodes.length;d++)switch(a.childNodes[d].nodeType){case 1:case 5:var b="unknown";try{b=dojo.html.getStyle(a.childNodes[d],"display")}catch(f){}switch(b){case "block":case "list-item":case "run-in":case "table":case "table-row-group":case "table-header-group":case "table-footer-group":case "table-row":case "table-column-group":case "table-column":case "table-cell":case "table-caption":c+="\n";
-c+=dojo.html.renderedTextContent(a.childNodes[d]);c+="\n";break;case "none":break;default:c+=a.childNodes[d].tagName&&a.childNodes[d].tagName.toLowerCase()=="br"?"\n":dojo.html.renderedTextContent(a.childNodes[d]);break}break;case 3:case 2:case 4:var e=a.childNodes[d].nodeValue;b="unknown";try{b=dojo.html.getStyle(a,"text-transform")}catch(g){}switch(b){case "capitalize":e=e.split(" ");for(d=0;d<e.length;d++)e[d]=e[d].charAt(0).toUpperCase()+e[d].substring(1);e=e.join(" ");break;case "uppercase":e=
-e.toUpperCase();break;case "lowercase":e=e.toLowerCase();break;default:break}switch(b){case "nowrap":break;case "pre-wrap":break;case "pre-line":break;case "pre":break;default:e=e.replace(/\s+/," ");/\s$/.test(c)&&e.replace(/^\s/,"");break}c+=e;break;default:break}return c};
-dojo.html.createNodesFromText=function(a,c){if(c)a=a.replace(/^\s+|\s+$/g,"");var d=dojo.doc().createElement("div");d.style.visibility="hidden";dojo.body().appendChild(d);var b="none";if(/^<t[dh][\s\r\n>]/i.test(a.replace(/^\s+/))){a="<table><tbody><tr>"+a+"</tr></tbody></table>";b="cell"}else if(/^<tr[\s\r\n>]/i.test(a.replace(/^\s+/))){a="<table><tbody>"+a+"</tbody></table>";b="row"}else if(/^<(thead|tbody|tfoot)[\s\r\n>]/i.test(a.replace(/^\s+/))){a="<table>"+a+"</table>";b="section"}d.innerHTML=
-a;d.normalize&&d.normalize();var f=null;switch(b){case "cell":f=d.getElementsByTagName("tr")[0];break;case "row":f=d.getElementsByTagName("tbody")[0];break;case "section":f=d.getElementsByTagName("table")[0];break;default:f=d;break}b=[];for(var e=0;e<f.childNodes.length;e++)b.push(f.childNodes[e].cloneNode(true));d.style.display="none";dojo.html.destroyNode(d);return b};
-dojo.html.placeOnScreen=function(a,c,d,b,f,e,g){if(c instanceof Array||typeof c=="array"){g=e;e=f;f=b;b=d;d=c[1];c=c[0]}if(e instanceof String||typeof e=="string")e=e.split(",");if(isNaN(b))b instanceof Array||typeof b=="array"||(b=[0,0]);else b=[Number(b),Number(b)];var i=dojo.html.getScroll().offset,j=dojo.html.getViewport();a=dojo.byId(a);var h=a.style.display;a.style.display="";var k=dojo.html.getBorderBox(a),m=k.width;k=k.height;a.style.display=h;e instanceof Array||typeof e=="array"||(e=["TL"]);
-var n,t;h=Infinity;for(var u,v=0;v<e.length;++v){var q=e[v],l=true,r=c-(q.charAt(1)=="L"?0:m)+b[0]*(q.charAt(1)=="L"?1:-1),s=d-(q.charAt(0)=="T"?0:k)+b[1]*(q.charAt(0)=="T"?1:-1);if(f){r-=i.x;s-=i.y}if(r<0){r=0;l=false}if(s<0){s=0;l=false}var o;if(r+m>j.width){o=j.width-m;l=false}else o=r;o=Math.max(b[0],o)+i.x;var p;if(s+k>j.height){p=j.height-k;l=false}else p=s;p=Math.max(b[1],p)+i.y;if(l){n=o;t=p;h=0;u=q;break}else{l=Math.pow(o-r-i.x,2)+Math.pow(p-s-i.y,2);if(h>l){h=l;n=o;t=p;u=q}}}if(!g){a.style.left=
-n+"px";a.style.top=t+"px"}return{left:n,top:t,x:n,y:t,dist:h,corner:u}};dojo.html.placeOnScreenPoint=function(a,c,d,b,f){dojo.deprecated("dojo.html.placeOnScreenPoint","use dojo.html.placeOnScreen() instead","0.5");return dojo.html.placeOnScreen(a,c,d,b,f,["TL","TR","BL","BR"])};
-dojo.html.placeOnScreenAroundElement=function(a,c,d,b,f,e){var g,i=Infinity;c=dojo.byId(c);var j=c.style.display;c.style.display="";var h=dojo.html.getElementBox(c,b),k=h.width;h=h.height;b=dojo.html.getAbsolutePosition(c,true,b);c.style.display=j;for(var m in f){var n=f[m];c=b.x+(m.charAt(1)=="L"?0:k);j=b.y+(m.charAt(0)=="T"?0:h);c=dojo.html.placeOnScreen(a,c,j,d,true,n,true);if(c.dist==0){g=c;break}else if(i>c.dist){i=c.dist;g=c}}if(!e){a.style.left=g.left+"px";a.style.top=g.top+"px"}return g};
-dojo.html.scrollIntoView=function(a){if(a)if(dojo.render.html.ie)dojo.html.getBorderBox(a.parentNode).height<=a.parentNode.scrollHeight&&a.scrollIntoView(false);else if(dojo.render.html.mozilla)a.scrollIntoView(false);else{var c=a.parentNode,d=c.scrollTop+dojo.html.getBorderBox(c).height,b=a.offsetTop+dojo.html.getMarginBox(a).height;if(d<b)c.scrollTop+=b-d;else if(c.scrollTop>a.offsetTop)c.scrollTop-=c.scrollTop-a.offsetTop}};
+/*
+	Copyright (c) 2004-2006, The Dojo Foundation
+	All Rights Reserved.
+
+	Licensed under the Academic Free License version 2.1 or above OR the
+	modified BSD license. For more information on Dojo licensing, see:
+
+		http://dojotoolkit.org/community/licensing.shtml
+*/
+
+
+
+dojo.provide("dojo.html.util");
+dojo.require("dojo.html.layout");
+dojo.html.getElementWindow = function (element) {
+	return dojo.html.getDocumentWindow(element.ownerDocument);
+};
+dojo.html.getDocumentWindow = function (doc) {
+	if (dojo.render.html.safari && !doc._parentWindow) {
+		var fix = function (win) {
+			win.document._parentWindow = win;
+			for (var i = 0; i < win.frames.length; i++) {
+				fix(win.frames[i]);
+			}
+		};
+		fix(window.top);
+	}
+	if (dojo.render.html.ie && window !== document.parentWindow && !doc._parentWindow) {
+		doc.parentWindow.execScript("document._parentWindow = window;", "Javascript");
+		var win = doc._parentWindow;
+		doc._parentWindow = null;
+		return win;
+	}
+	return doc._parentWindow || doc.parentWindow || doc.defaultView;
+};
+dojo.html.gravity = function (node, e) {
+	node = dojo.byId(node);
+	var mouse = dojo.html.getCursorPosition(e);
+	with (dojo.html) {
+		var absolute = getAbsolutePosition(node, true);
+		var bb = getBorderBox(node);
+		var nodecenterx = absolute.x + (bb.width / 2);
+		var nodecentery = absolute.y + (bb.height / 2);
+	}
+	with (dojo.html.gravity) {
+		return ((mouse.x < nodecenterx ? WEST : EAST) | (mouse.y < nodecentery ? NORTH : SOUTH));
+	}
+};
+dojo.html.gravity.NORTH = 1;
+dojo.html.gravity.SOUTH = 1 << 1;
+dojo.html.gravity.EAST = 1 << 2;
+dojo.html.gravity.WEST = 1 << 3;
+dojo.html.overElement = function (element, e) {
+	element = dojo.byId(element);
+	var mouse = dojo.html.getCursorPosition(e);
+	var bb = dojo.html.getBorderBox(element);
+	var absolute = dojo.html.getAbsolutePosition(element, true, dojo.html.boxSizing.BORDER_BOX);
+	var top = absolute.y;
+	var bottom = top + bb.height;
+	var left = absolute.x;
+	var right = left + bb.width;
+	return (mouse.x >= left && mouse.x <= right && mouse.y >= top && mouse.y <= bottom);
+};
+dojo.html.renderedTextContent = function (node) {
+	node = dojo.byId(node);
+	var result = "";
+	if (node == null) {
+		return result;
+	}
+	for (var i = 0; i < node.childNodes.length; i++) {
+		switch (node.childNodes[i].nodeType) {
+		  case 1:
+		  case 5:
+			var display = "unknown";
+			try {
+				display = dojo.html.getStyle(node.childNodes[i], "display");
+			}
+			catch (E) {
+			}
+			switch (display) {
+			  case "block":
+			  case "list-item":
+			  case "run-in":
+			  case "table":
+			  case "table-row-group":
+			  case "table-header-group":
+			  case "table-footer-group":
+			  case "table-row":
+			  case "table-column-group":
+			  case "table-column":
+			  case "table-cell":
+			  case "table-caption":
+				result += "\n";
+				result += dojo.html.renderedTextContent(node.childNodes[i]);
+				result += "\n";
+				break;
+			  case "none":
+				break;
+			  default:
+				if (node.childNodes[i].tagName && node.childNodes[i].tagName.toLowerCase() == "br") {
+					result += "\n";
+				} else {
+					result += dojo.html.renderedTextContent(node.childNodes[i]);
+				}
+				break;
+			}
+			break;
+		  case 3:
+		  case 2:
+		  case 4:
+			var text = node.childNodes[i].nodeValue;
+			var textTransform = "unknown";
+			try {
+				textTransform = dojo.html.getStyle(node, "text-transform");
+			}
+			catch (E) {
+			}
+			switch (textTransform) {
+			  case "capitalize":
+				var words = text.split(" ");
+				for (var i = 0; i < words.length; i++) {
+					words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
+				}
+				text = words.join(" ");
+				break;
+			  case "uppercase":
+				text = text.toUpperCase();
+				break;
+			  case "lowercase":
+				text = text.toLowerCase();
+				break;
+			  default:
+				break;
+			}
+			switch (textTransform) {
+			  case "nowrap":
+				break;
+			  case "pre-wrap":
+				break;
+			  case "pre-line":
+				break;
+			  case "pre":
+				break;
+			  default:
+				text = text.replace(/\s+/, " ");
+				if (/\s$/.test(result)) {
+					text.replace(/^\s/, "");
+				}
+				break;
+			}
+			result += text;
+			break;
+		  default:
+			break;
+		}
+	}
+	return result;
+};
+dojo.html.createNodesFromText = function (txt, trim) {
+	if (trim) {
+		txt = txt.replace(/^\s+|\s+$/g, "");
+	}
+	var tn = dojo.doc().createElement("div");
+	tn.style.visibility = "hidden";
+	dojo.body().appendChild(tn);
+	var tableType = "none";
+	if ((/^<t[dh][\s\r\n>]/i).test(txt.replace(/^\s+/))) {
+		txt = "<table><tbody><tr>" + txt + "</tr></tbody></table>";
+		tableType = "cell";
+	} else {
+		if ((/^<tr[\s\r\n>]/i).test(txt.replace(/^\s+/))) {
+			txt = "<table><tbody>" + txt + "</tbody></table>";
+			tableType = "row";
+		} else {
+			if ((/^<(thead|tbody|tfoot)[\s\r\n>]/i).test(txt.replace(/^\s+/))) {
+				txt = "<table>" + txt + "</table>";
+				tableType = "section";
+			}
+		}
+	}
+	tn.innerHTML = txt;
+	if (tn["normalize"]) {
+		tn.normalize();
+	}
+	var parent = null;
+	switch (tableType) {
+	  case "cell":
+		parent = tn.getElementsByTagName("tr")[0];
+		break;
+	  case "row":
+		parent = tn.getElementsByTagName("tbody")[0];
+		break;
+	  case "section":
+		parent = tn.getElementsByTagName("table")[0];
+		break;
+	  default:
+		parent = tn;
+		break;
+	}
+	var nodes = [];
+	for (var x = 0; x < parent.childNodes.length; x++) {
+		nodes.push(parent.childNodes[x].cloneNode(true));
+	}
+	tn.style.display = "none";
+	dojo.html.destroyNode(tn);
+	return nodes;
+};
+dojo.html.placeOnScreen = function (node, desiredX, desiredY, padding, hasScroll, corners, tryOnly) {
+	if (desiredX instanceof Array || typeof desiredX == "array") {
+		tryOnly = corners;
+		corners = hasScroll;
+		hasScroll = padding;
+		padding = desiredY;
+		desiredY = desiredX[1];
+		desiredX = desiredX[0];
+	}
+	if (corners instanceof String || typeof corners == "string") {
+		corners = corners.split(",");
+	}
+	if (!isNaN(padding)) {
+		padding = [Number(padding), Number(padding)];
+	} else {
+		if (!(padding instanceof Array || typeof padding == "array")) {
+			padding = [0, 0];
+		}
+	}
+	var scroll = dojo.html.getScroll().offset;
+	var view = dojo.html.getViewport();
+	node = dojo.byId(node);
+	var oldDisplay = node.style.display;
+	node.style.display = "";
+	var bb = dojo.html.getBorderBox(node);
+	var w = bb.width;
+	var h = bb.height;
+	node.style.display = oldDisplay;
+	if (!(corners instanceof Array || typeof corners == "array")) {
+		corners = ["TL"];
+	}
+	var bestx, besty, bestDistance = Infinity, bestCorner;
+	for (var cidex = 0; cidex < corners.length; ++cidex) {
+		var corner = corners[cidex];
+		var match = true;
+		var tryX = desiredX - (corner.charAt(1) == "L" ? 0 : w) + padding[0] * (corner.charAt(1) == "L" ? 1 : -1);
+		var tryY = desiredY - (corner.charAt(0) == "T" ? 0 : h) + padding[1] * (corner.charAt(0) == "T" ? 1 : -1);
+		if (hasScroll) {
+			tryX -= scroll.x;
+			tryY -= scroll.y;
+		}
+		if (tryX < 0) {
+			tryX = 0;
+			match = false;
+		}
+		if (tryY < 0) {
+			tryY = 0;
+			match = false;
+		}
+		var x = tryX + w;
+		if (x > view.width) {
+			x = view.width - w;
+			match = false;
+		} else {
+			x = tryX;
+		}
+		x = Math.max(padding[0], x) + scroll.x;
+		var y = tryY + h;
+		if (y > view.height) {
+			y = view.height - h;
+			match = false;
+		} else {
+			y = tryY;
+		}
+		y = Math.max(padding[1], y) + scroll.y;
+		if (match) {
+			bestx = x;
+			besty = y;
+			bestDistance = 0;
+			bestCorner = corner;
+			break;
+		} else {
+			var dist = Math.pow(x - tryX - scroll.x, 2) + Math.pow(y - tryY - scroll.y, 2);
+			if (bestDistance > dist) {
+				bestDistance = dist;
+				bestx = x;
+				besty = y;
+				bestCorner = corner;
+			}
+		}
+	}
+	if (!tryOnly) {
+		node.style.left = bestx + "px";
+		node.style.top = besty + "px";
+	}
+	return {left:bestx, top:besty, x:bestx, y:besty, dist:bestDistance, corner:bestCorner};
+};
+dojo.html.placeOnScreenPoint = function (node, desiredX, desiredY, padding, hasScroll) {
+	dojo.deprecated("dojo.html.placeOnScreenPoint", "use dojo.html.placeOnScreen() instead", "0.5");
+	return dojo.html.placeOnScreen(node, desiredX, desiredY, padding, hasScroll, ["TL", "TR", "BL", "BR"]);
+};
+dojo.html.placeOnScreenAroundElement = function (node, aroundNode, padding, aroundType, aroundCorners, tryOnly) {
+	var best, bestDistance = Infinity;
+	aroundNode = dojo.byId(aroundNode);
+	var oldDisplay = aroundNode.style.display;
+	aroundNode.style.display = "";
+	var mb = dojo.html.getElementBox(aroundNode, aroundType);
+	var aroundNodeW = mb.width;
+	var aroundNodeH = mb.height;
+	var aroundNodePos = dojo.html.getAbsolutePosition(aroundNode, true, aroundType);
+	aroundNode.style.display = oldDisplay;
+	for (var nodeCorner in aroundCorners) {
+		var pos, desiredX, desiredY;
+		var corners = aroundCorners[nodeCorner];
+		desiredX = aroundNodePos.x + (nodeCorner.charAt(1) == "L" ? 0 : aroundNodeW);
+		desiredY = aroundNodePos.y + (nodeCorner.charAt(0) == "T" ? 0 : aroundNodeH);
+		pos = dojo.html.placeOnScreen(node, desiredX, desiredY, padding, true, corners, true);
+		if (pos.dist == 0) {
+			best = pos;
+			break;
+		} else {
+			if (bestDistance > pos.dist) {
+				bestDistance = pos.dist;
+				best = pos;
+			}
+		}
+	}
+	if (!tryOnly) {
+		node.style.left = best.left + "px";
+		node.style.top = best.top + "px";
+	}
+	return best;
+};
+dojo.html.scrollIntoView = function (node) {
+	if (!node) {
+		return;
+	}
+	if (dojo.render.html.ie) {
+		if (dojo.html.getBorderBox(node.parentNode).height <= node.parentNode.scrollHeight) {
+			node.scrollIntoView(false);
+		}
+	} else {
+		if (dojo.render.html.mozilla) {
+			node.scrollIntoView(false);
+		} else {
+			var parent = node.parentNode;
+			var parentBottom = parent.scrollTop + dojo.html.getBorderBox(parent).height;
+			var nodeBottom = node.offsetTop + dojo.html.getMarginBox(node).height;
+			if (parentBottom < nodeBottom) {
+				parent.scrollTop += (nodeBottom - parentBottom);
+			} else {
+				if (parent.scrollTop > node.offsetTop) {
+					parent.scrollTop -= (parent.scrollTop - node.offsetTop);
+				}
+			}
+		}
+	}
+};
+

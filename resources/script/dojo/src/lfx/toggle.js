@@ -1,2 +1,41 @@
-dojo.provide("dojo.lfx.toggle");dojo.require("dojo.lfx.*");dojo.lfx.toggle.plain={show:function(b,c,d,a){dojo.html.show(b);dojo.lang.isFunction(a)&&a()},hide:function(b,c,d,a){dojo.html.hide(b);dojo.lang.isFunction(a)&&a()}};dojo.lfx.toggle.fade={show:function(b,c,d,a){dojo.lfx.fadeShow(b,c,d,a).play()},hide:function(b,c,d,a){dojo.lfx.fadeHide(b,c,d,a).play()}};dojo.lfx.toggle.wipe={show:function(b,c,d,a){dojo.lfx.wipeIn(b,c,d,a).play()},hide:function(b,c,d,a){dojo.lfx.wipeOut(b,c,d,a).play()}};
-dojo.lfx.toggle.explode={show:function(b,c,d,a,e){dojo.lfx.explode(e||{x:0,y:0,width:0,height:0},b,c,d,a).play()},hide:function(b,c,d,a,e){dojo.lfx.implode(b,e||{x:0,y:0,width:0,height:0},c,d,a).play()}};
+/*
+	Copyright (c) 2004-2006, The Dojo Foundation
+	All Rights Reserved.
+
+	Licensed under the Academic Free License version 2.1 or above OR the
+	modified BSD license. For more information on Dojo licensing, see:
+
+		http://dojotoolkit.org/community/licensing.shtml
+*/
+
+
+
+dojo.provide("dojo.lfx.toggle");
+dojo.require("dojo.lfx.*");
+dojo.lfx.toggle.plain = {show:function (node, duration, easing, callback) {
+	dojo.html.show(node);
+	if (dojo.lang.isFunction(callback)) {
+		callback();
+	}
+}, hide:function (node, duration, easing, callback) {
+	dojo.html.hide(node);
+	if (dojo.lang.isFunction(callback)) {
+		callback();
+	}
+}};
+dojo.lfx.toggle.fade = {show:function (node, duration, easing, callback) {
+	dojo.lfx.fadeShow(node, duration, easing, callback).play();
+}, hide:function (node, duration, easing, callback) {
+	dojo.lfx.fadeHide(node, duration, easing, callback).play();
+}};
+dojo.lfx.toggle.wipe = {show:function (node, duration, easing, callback) {
+	dojo.lfx.wipeIn(node, duration, easing, callback).play();
+}, hide:function (node, duration, easing, callback) {
+	dojo.lfx.wipeOut(node, duration, easing, callback).play();
+}};
+dojo.lfx.toggle.explode = {show:function (node, duration, easing, callback, explodeSrc) {
+	dojo.lfx.explode(explodeSrc || {x:0, y:0, width:0, height:0}, node, duration, easing, callback).play();
+}, hide:function (node, duration, easing, callback, explodeSrc) {
+	dojo.lfx.implode(node, explodeSrc || {x:0, y:0, width:0, height:0}, duration, easing, callback).play();
+}};
+

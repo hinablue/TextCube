@@ -1,4 +1,70 @@
-function Converter(a,b){this.doc=a;this.targets=b;this.xmlHeader='<?xml version="1.0" encoding="utf-8"?><config>';this.xmlfooter="</config>"}Converter.prototype.getXMLData=function(){for(var a="",b=0;b<this.targets.length;b++)try{a+=this.makeDataSet(this.targets[b])}catch(c){}return this.xmlHeader+a+this.xmlfooter};
-Converter.prototype.makeDataSet=function(a){var b="",c=this.getControl(a),d=this.getType(c);b+='<field   name = "'+a+'" type="'+d+'" >';switch(d){case "select":case "SELECT":case "text":b+="<![CDATA["+c.value+"]]\>";break;case "textarea":case "TEXTAREA":b+="<![CDATA["+c.value+"]]\>";break;case "radio":b+=this.getRadioData(c);break;case "checkbox":b+=this.getCheckBoxData(c);break;default:throw new Error(0,"\uc54c\uc218 \uc5c6\ub294 \ud0c0\uc785");}b+="</field >\n";return b};
-Converter.prototype.getCheckBoxData=function(a){return true==a.checked?a.value:""};Converter.prototype.getRadioData=function(a){for(var b="",c=0;c<a.length;c++)if("radio"==a[c].type&&true==a[c].checked){b=a[c].value;break}return b};Converter.prototype.getControl=function(a){if(undefined==this.doc.getElementById(a))return this.doc.getElementsByName(a);if("radio"==this.doc.getElementById(a).type)return this.doc.getElementsByName(a);return this.doc.getElementById(a)};
-Converter.prototype.getType=function(a){if(undefined==a)throw new Error(0,"objList \uac00 \uc815\uc758 \uc548\ub428");if(undefined!=a.length&&"INPUT"==a[0].tagName)return a[0].getAttribute("type");var b=a.tagName;a=a.getAttribute("type");if("SELECT"==b||"TEXTAREA"==b)return b;if(undefined!=a)return a;throw new Error(0,"type\uc5d0 \uc811\uadfc \uc548\ub428");};
+/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// All rights reserved. Licensed under the GPL.
+/// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
+
+function Converter(obj_document , treat_control_list ){
+	this.doc= obj_document;
+	this.targets = treat_control_list;
+	this.xmlHeader = '<' + '?xml version="1.0" encoding="utf-8"?><config>';
+	this.xmlfooter = '</config>';
+}
+Converter.prototype.getXMLData = function(){
+	var innerXml ='';
+	for( var i =0 ; i < this.targets.length ; i++){
+		try{			
+			innerXml += this.makeDataSet( this.targets[i] );
+		} catch(e){}
+	}	
+	return this.xmlHeader + innerXml + this.xmlfooter;
+};
+Converter.prototype.makeDataSet = function( fieldName ){
+	var ele ='';
+	var con = this.getControl( fieldName);
+	var type = this.getType(con); 
+	ele += '<field   name = "' + fieldName +'" type="' + type+ '" >';
+	switch( type){
+		case 'select':
+		case 'SELECT':
+		case 'text':
+			ele += '<![CDATA['+con.value+']]>';break;		
+		case 'textarea':
+		case 'TEXTAREA':
+			ele += '<![CDATA['+con.value +']]>';break;
+		case 'radio':
+			ele += this.getRadioData(  con );break;
+		case 'checkbox':	
+			ele += this.getCheckBoxData( con); break;			
+		default:
+			throw new Error(0,'알수 없는 타입');
+	}
+	ele += '</field >\n';
+	return ele;
+};
+Converter.prototype.getCheckBoxData = function ( con){
+	return true == con.checked ? con.value: '';
+};
+Converter.prototype.getRadioData = function( cons ){
+	var val="";
+	for( var i= 0 ; i < cons.length ; i++){
+		if( "radio" == cons[i].type && true == cons[i].checked ){
+			val = cons[i].value;
+			break;
+		}
+	}
+	return val;
+};
+Converter.prototype.getControl = function( name){
+
+	if( undefined == this.doc.getElementById(name)) return this.doc.getElementsByName(name);
+	if( 'radio' == this.doc.getElementById(name).type ) return this.doc.getElementsByName(name);	
+	return this.doc.getElementById(name);
+};
+Converter.prototype.getType = function( objList ){
+	if( undefined == objList ) throw new Error( 0 , 'objList 가 정의 안됨');
+	if( undefined != objList.length && 'INPUT' == objList[0].tagName)	return ( objList[0].getAttribute( 'type' ) ) ;
+	var tagName = objList.tagName ;
+	var type = objList.getAttribute( 'type' );
+	if( 'SELECT' == tagName || 'TEXTAREA' == tagName  ) return tagName;
+	if( undefined != type  ) return type;
+	throw new Error( 0 , 'type에 접근 안됨');
+}

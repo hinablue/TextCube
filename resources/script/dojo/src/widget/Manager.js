@@ -1,11 +1,288 @@
-dojo.provide("dojo.widget.Manager");dojo.require("dojo.lang.array");dojo.require("dojo.lang.func");dojo.require("dojo.event.*");
-dojo.widget.manager=new (function(){this.widgets=[];this.widgetIds=[];this.topWidgets={};var i={},h=[];this.getUniqueId=function(a){var b;do b=a+"_"+(i[a]!=undefined?++i[a]:(i[a]=0));while(this.getWidgetById(b));return b};this.add=function(a){this.widgets.push(a);a.extraArgs.id||(a.extraArgs.id=a.extraArgs.ID);if(a.widgetId=="")a.widgetId=a.id?a.id:a.extraArgs.id?a.extraArgs.id:this.getUniqueId(a.ns+"_"+a.widgetType);this.widgetIds[a.widgetId]&&dojo.debug("widget ID collision on ID: "+a.widgetId);
-this.widgetIds[a.widgetId]=a};this.destroyAll=function(){for(var a=this.widgets.length-1;a>=0;a--)try{this.widgets[a].destroy(true);delete this.widgets[a]}catch(b){}};this.remove=function(a){if(dojo.lang.isNumber(a)){var b=this.widgets[a].widgetId;delete this.topWidgets[b];delete this.widgetIds[b];this.widgets.splice(a,1)}else this.removeById(a)};this.removeById=function(a){if(!dojo.lang.isString(a)){a=a.widgetId;if(!a){dojo.debug("invalid widget or id passed to removeById");return}}for(var b=0;b<
-this.widgets.length;b++)if(this.widgets[b].widgetId==a){this.remove(b);break}};this.getWidgetById=function(a){if(dojo.lang.isString(a))return this.widgetIds[a];return a};this.getWidgetsByType=function(a){var b=a.toLowerCase(),c=a.indexOf(":")<0?function(e){return e.widgetType.toLowerCase()}:function(e){return e.getNamespacedType()},g=[];dojo.lang.forEach(this.widgets,function(e){c(e)==b&&g.push(e)});return g};this.getWidgetsByFilter=function(a,b){var c=[];dojo.lang.every(this.widgets,function(g){if(a(g)){c.push(g);
-if(b)return false}return true});return b?c[0]:c};this.getAllWidgets=function(){return this.widgets.concat()};this.getWidgetByNode=function(a){var b=this.getAllWidgets();a=dojo.byId(a);for(var c=0;c<b.length;c++)if(b[c].domNode==a)return b[c];return null};this.byId=this.getWidgetById;this.byType=this.getWidgetsByType;this.byFilter=this.getWidgetsByFilter;this.byNode=this.getWidgetByNode;for(var m={},d=["dojo.widget"],k=0;k<d.length;k++)d[d[k]]=true;this.registerWidgetPackage=function(a){if(!d[a]){d[a]=
-true;d.push(a)}};this.getWidgetPackageList=function(){return dojo.lang.map(d,function(a){return a!==true?a:undefined})};this.getImplementation=function(a,b,c,g){if(a=this.getImplementationName(a,g))return b?new a(b):new a};var l=function(a,b){var c=dojo.evalObjPath(b,false);if(c)a:{if(c)for(var g=0,e=h.length,f;g<=e;g++)if(f=g<e?c[h[g]]:c)for(var j in f)if(j.toLowerCase()==a){c=f[j];break a}c=null}else c=null;return c};this.getImplementationName=function(a,b){var c=a.toLowerCase();b=b||"dojo";var g=
-m[b]||(m[b]={}),e=g[c];if(e)return e;if(!h.length)for(var f in dojo.render)if(dojo.render[f].capable===true){e=dojo.render[f].prefixes;for(var j=0;j<e.length;j++)h.push(e[j].toLowerCase())}f=dojo.ns.get(b);if(!f){dojo.ns.register(b,b+".widget");f=dojo.ns.get(b)}f&&f.resolve(a);if(e=l(c,f.module))return g[c]=e;if((f=dojo.ns.require(b))&&f.resolver){f.resolve(a);if(e=l(c,f.module))return g[c]=e}dojo.deprecated("dojo.widget.Manager.getImplementationName",'Could not locate widget implementation for "'+
-a+'" in "'+f.module+'" registered to namespace "'+f.name+'". Developers must specify correct namespaces for all non-Dojo widgets',"0.5");for(j=0;j<d.length;j++)if(e=l(c,d[j]))return g[c]=e;throw new Error('Could not locate widget implementation for "'+a+'" in "'+f.module+'" registered to namespace "'+f.name+'"');};this.resizing=false;this.onWindowResized=function(){if(!this.resizing)try{this.resizing=true;for(var a in this.topWidgets){var b=this.topWidgets[a];b.checkSize&&b.checkSize()}}catch(c){}finally{this.resizing=
-false}};if(typeof window!="undefined"){dojo.addOnLoad(this,"onWindowResized");dojo.event.connect(window,"onresize",this,"onWindowResized")}});
-(function(){var i=dojo.widget,h=i.manager,m=dojo.lang.curry(dojo.lang,"hitch",h),d=function(k,l){i[l||k]=m(k)};d("add","addWidget");d("destroyAll","destroyAllWidgets");d("remove","removeWidget");d("removeById","removeWidgetById");d("getWidgetById");d("getWidgetById","byId");d("getWidgetsByType");d("getWidgetsByFilter");d("getWidgetsByType","byType");d("getWidgetsByFilter","byFilter");d("getWidgetByNode","byNode");i.all=function(k){var l=h.getAllWidgets.apply(h,arguments);if(arguments.length>0)return l[k];
-return l};d("registerWidgetPackage");d("getImplementation","getWidgetImplementation");d("getImplementationName","getWidgetImplementationName");i.widgets=h.widgets;i.widgetIds=h.widgetIds;i.root=h.root})();
+/*
+	Copyright (c) 2004-2006, The Dojo Foundation
+	All Rights Reserved.
+
+	Licensed under the Academic Free License version 2.1 or above OR the
+	modified BSD license. For more information on Dojo licensing, see:
+
+		http://dojotoolkit.org/community/licensing.shtml
+*/
+
+
+
+dojo.provide("dojo.widget.Manager");
+dojo.require("dojo.lang.array");
+dojo.require("dojo.lang.func");
+dojo.require("dojo.event.*");
+dojo.widget.manager = new function () {
+	this.widgets = [];
+	this.widgetIds = [];
+	this.topWidgets = {};
+	var widgetTypeCtr = {};
+	var renderPrefixCache = [];
+	this.getUniqueId = function (widgetType) {
+		var widgetId;
+		do {
+			widgetId = widgetType + "_" + (widgetTypeCtr[widgetType] != undefined ? ++widgetTypeCtr[widgetType] : widgetTypeCtr[widgetType] = 0);
+		} while (this.getWidgetById(widgetId));
+		return widgetId;
+	};
+	this.add = function (widget) {
+		this.widgets.push(widget);
+		if (!widget.extraArgs["id"]) {
+			widget.extraArgs["id"] = widget.extraArgs["ID"];
+		}
+		if (widget.widgetId == "") {
+			if (widget["id"]) {
+				widget.widgetId = widget["id"];
+			} else {
+				if (widget.extraArgs["id"]) {
+					widget.widgetId = widget.extraArgs["id"];
+				} else {
+					widget.widgetId = this.getUniqueId(widget.ns + "_" + widget.widgetType);
+				}
+			}
+		}
+		if (this.widgetIds[widget.widgetId]) {
+			dojo.debug("widget ID collision on ID: " + widget.widgetId);
+		}
+		this.widgetIds[widget.widgetId] = widget;
+	};
+	this.destroyAll = function () {
+		for (var x = this.widgets.length - 1; x >= 0; x--) {
+			try {
+				this.widgets[x].destroy(true);
+				delete this.widgets[x];
+			}
+			catch (e) {
+			}
+		}
+	};
+	this.remove = function (widgetIndex) {
+		if (dojo.lang.isNumber(widgetIndex)) {
+			var tw = this.widgets[widgetIndex].widgetId;
+			delete this.topWidgets[tw];
+			delete this.widgetIds[tw];
+			this.widgets.splice(widgetIndex, 1);
+		} else {
+			this.removeById(widgetIndex);
+		}
+	};
+	this.removeById = function (id) {
+		if (!dojo.lang.isString(id)) {
+			id = id["widgetId"];
+			if (!id) {
+				dojo.debug("invalid widget or id passed to removeById");
+				return;
+			}
+		}
+		for (var i = 0; i < this.widgets.length; i++) {
+			if (this.widgets[i].widgetId == id) {
+				this.remove(i);
+				break;
+			}
+		}
+	};
+	this.getWidgetById = function (id) {
+		if (dojo.lang.isString(id)) {
+			return this.widgetIds[id];
+		}
+		return id;
+	};
+	this.getWidgetsByType = function (type) {
+		var lt = type.toLowerCase();
+		var getType = (type.indexOf(":") < 0 ? function (x) {
+			return x.widgetType.toLowerCase();
+		} : function (x) {
+			return x.getNamespacedType();
+		});
+		var ret = [];
+		dojo.lang.forEach(this.widgets, function (x) {
+			if (getType(x) == lt) {
+				ret.push(x);
+			}
+		});
+		return ret;
+	};
+	this.getWidgetsByFilter = function (unaryFunc, onlyOne) {
+		var ret = [];
+		dojo.lang.every(this.widgets, function (x) {
+			if (unaryFunc(x)) {
+				ret.push(x);
+				if (onlyOne) {
+					return false;
+				}
+			}
+			return true;
+		});
+		return (onlyOne ? ret[0] : ret);
+	};
+	this.getAllWidgets = function () {
+		return this.widgets.concat();
+	};
+	this.getWidgetByNode = function (node) {
+		var w = this.getAllWidgets();
+		node = dojo.byId(node);
+		for (var i = 0; i < w.length; i++) {
+			if (w[i].domNode == node) {
+				return w[i];
+			}
+		}
+		return null;
+	};
+	this.byId = this.getWidgetById;
+	this.byType = this.getWidgetsByType;
+	this.byFilter = this.getWidgetsByFilter;
+	this.byNode = this.getWidgetByNode;
+	var knownWidgetImplementations = {};
+	var widgetPackages = ["dojo.widget"];
+	for (var i = 0; i < widgetPackages.length; i++) {
+		widgetPackages[widgetPackages[i]] = true;
+	}
+	this.registerWidgetPackage = function (pname) {
+		if (!widgetPackages[pname]) {
+			widgetPackages[pname] = true;
+			widgetPackages.push(pname);
+		}
+	};
+	this.getWidgetPackageList = function () {
+		return dojo.lang.map(widgetPackages, function (elt) {
+			return (elt !== true ? elt : undefined);
+		});
+	};
+	this.getImplementation = function (widgetName, ctorObject, mixins, ns) {
+		var impl = this.getImplementationName(widgetName, ns);
+		if (impl) {
+			var ret = ctorObject ? new impl(ctorObject) : new impl();
+			return ret;
+		}
+	};
+	function buildPrefixCache() {
+		for (var renderer in dojo.render) {
+			if (dojo.render[renderer]["capable"] === true) {
+				var prefixes = dojo.render[renderer].prefixes;
+				for (var i = 0; i < prefixes.length; i++) {
+					renderPrefixCache.push(prefixes[i].toLowerCase());
+				}
+			}
+		}
+	}
+	var findImplementationInModule = function (lowerCaseWidgetName, module) {
+		if (!module) {
+			return null;
+		}
+		for (var i = 0, l = renderPrefixCache.length, widgetModule; i <= l; i++) {
+			widgetModule = (i < l ? module[renderPrefixCache[i]] : module);
+			if (!widgetModule) {
+				continue;
+			}
+			for (var name in widgetModule) {
+				if (name.toLowerCase() == lowerCaseWidgetName) {
+					return widgetModule[name];
+				}
+			}
+		}
+		return null;
+	};
+	var findImplementation = function (lowerCaseWidgetName, moduleName) {
+		var module = dojo.evalObjPath(moduleName, false);
+		return (module ? findImplementationInModule(lowerCaseWidgetName, module) : null);
+	};
+	this.getImplementationName = function (widgetName, ns) {
+		var lowerCaseWidgetName = widgetName.toLowerCase();
+		ns = ns || "dojo";
+		var imps = knownWidgetImplementations[ns] || (knownWidgetImplementations[ns] = {});
+		var impl = imps[lowerCaseWidgetName];
+		if (impl) {
+			return impl;
+		}
+		if (!renderPrefixCache.length) {
+			buildPrefixCache();
+		}
+		var nsObj = dojo.ns.get(ns);
+		if (!nsObj) {
+			dojo.ns.register(ns, ns + ".widget");
+			nsObj = dojo.ns.get(ns);
+		}
+		if (nsObj) {
+			nsObj.resolve(widgetName);
+		}
+		impl = findImplementation(lowerCaseWidgetName, nsObj.module);
+		if (impl) {
+			return (imps[lowerCaseWidgetName] = impl);
+		}
+		nsObj = dojo.ns.require(ns);
+		if ((nsObj) && (nsObj.resolver)) {
+			nsObj.resolve(widgetName);
+			impl = findImplementation(lowerCaseWidgetName, nsObj.module);
+			if (impl) {
+				return (imps[lowerCaseWidgetName] = impl);
+			}
+		}
+		dojo.deprecated("dojo.widget.Manager.getImplementationName", "Could not locate widget implementation for \"" + widgetName + "\" in \"" + nsObj.module + "\" registered to namespace \"" + nsObj.name + "\". " + "Developers must specify correct namespaces for all non-Dojo widgets", "0.5");
+		for (var i = 0; i < widgetPackages.length; i++) {
+			impl = findImplementation(lowerCaseWidgetName, widgetPackages[i]);
+			if (impl) {
+				return (imps[lowerCaseWidgetName] = impl);
+			}
+		}
+		throw new Error("Could not locate widget implementation for \"" + widgetName + "\" in \"" + nsObj.module + "\" registered to namespace \"" + nsObj.name + "\"");
+	};
+	this.resizing = false;
+	this.onWindowResized = function () {
+		if (this.resizing) {
+			return;
+		}
+		try {
+			this.resizing = true;
+			for (var id in this.topWidgets) {
+				var child = this.topWidgets[id];
+				if (child.checkSize) {
+					child.checkSize();
+				}
+			}
+		}
+		catch (e) {
+		}
+		finally {
+			this.resizing = false;
+		}
+	};
+	if (typeof window != "undefined") {
+		dojo.addOnLoad(this, "onWindowResized");
+		dojo.event.connect(window, "onresize", this, "onWindowResized");
+	}
+};
+(function () {
+	var dw = dojo.widget;
+	var dwm = dw.manager;
+	var h = dojo.lang.curry(dojo.lang, "hitch", dwm);
+	var g = function (oldName, newName) {
+		dw[(newName || oldName)] = h(oldName);
+	};
+	g("add", "addWidget");
+	g("destroyAll", "destroyAllWidgets");
+	g("remove", "removeWidget");
+	g("removeById", "removeWidgetById");
+	g("getWidgetById");
+	g("getWidgetById", "byId");
+	g("getWidgetsByType");
+	g("getWidgetsByFilter");
+	g("getWidgetsByType", "byType");
+	g("getWidgetsByFilter", "byFilter");
+	g("getWidgetByNode", "byNode");
+	dw.all = function (n) {
+		var widgets = dwm.getAllWidgets.apply(dwm, arguments);
+		if (arguments.length > 0) {
+			return widgets[n];
+		}
+		return widgets;
+	};
+	g("registerWidgetPackage");
+	g("getImplementation", "getWidgetImplementation");
+	g("getImplementationName", "getWidgetImplementationName");
+	dw.widgets = dwm.widgets;
+	dw.widgetIds = dwm.widgetIds;
+	dw.root = dwm.root;
+})();
+

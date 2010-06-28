@@ -1,5 +1,100 @@
+/*
+	Copyright (c) 2004-2006, The Dojo Foundation
+	All Rights Reserved.
+
+	Licensed under the Academic Free License version 2.1 or above OR the
+	modified BSD license. For more information on Dojo licensing, see:
+
+		http://dojotoolkit.org/community/licensing.shtml
+*/
+
+
+
 dojo.provide("dojo.ns");
-dojo.ns={namespaces:{},failed:{},loading:{},loaded:{},register:function(a,b,c,d){if(!d||!this.namespaces[a])this.namespaces[a]=new dojo.ns.Ns(a,b,c)},allow:function(a){if(this.failed[a])return false;if(djConfig.excludeNamespace&&dojo.lang.inArray(djConfig.excludeNamespace,a))return false;return a==this.dojo||!djConfig.includeNamespace||dojo.lang.inArray(djConfig.includeNamespace,a)},get:function(a){return this.namespaces[a]},require:function(a){var b=this.namespaces[a];if(b&&this.loaded[a])return b;
-if(!this.allow(a))return false;if(this.loading[a]){dojo.debug('dojo.namespace.require: re-entrant request to load namespace "'+a+'" must fail.');return false}b=dojo.require;this.loading[a]=true;try{if(a=="dojo")b("dojo.namespaces.dojo");else{dojo.hostenv.moduleHasPrefix(a)||dojo.registerModulePath(a,"../"+a);b([a,"manifest"].join("."),false,true)}this.namespaces[a]||(this.failed[a]=true)}finally{this.loading[a]=false}return this.namespaces[a]}};
-dojo.ns.Ns=function(a,b,c){this.name=a;this.module=b;this.resolver=c;this._loaded=[];this._failed=[]};dojo.ns.Ns.prototype.resolve=function(a,b,c){if(!this.resolver||djConfig.skipAutoRequire)return false;if((a=this.resolver(a,b))&&!this._loaded[a]&&!this._failed[a]){b=dojo.require;b(a,false,true);if(dojo.hostenv.findModule(a,false))this._loaded[a]=true;else{c||dojo.raise("dojo.ns.Ns.resolve: module '"+a+"' not found after loading via namespace '"+this.name+"'");this._failed[a]=true}}return Boolean(this._loaded[a])};
-dojo.registerNamespace=function(){dojo.ns.register.apply(dojo.ns,arguments)};dojo.registerNamespaceResolver=function(a,b){var c=dojo.ns.namespaces[a];if(c)c.resolver=b};dojo.registerNamespaceManifest=function(a,b,c,d,e){dojo.registerModulePath(c,b);dojo.registerNamespace(c,d,e)};dojo.registerNamespace("dojo","dojo.widget");
+dojo.ns = {namespaces:{}, failed:{}, loading:{}, loaded:{}, register:function (name, module, resolver, noOverride) {
+	if (!noOverride || !this.namespaces[name]) {
+		this.namespaces[name] = new dojo.ns.Ns(name, module, resolver);
+	}
+}, allow:function (name) {
+	if (this.failed[name]) {
+		return false;
+	}
+	if ((djConfig.excludeNamespace) && (dojo.lang.inArray(djConfig.excludeNamespace, name))) {
+		return false;
+	}
+	return ((name == this.dojo) || (!djConfig.includeNamespace) || (dojo.lang.inArray(djConfig.includeNamespace, name)));
+}, get:function (name) {
+	return this.namespaces[name];
+}, require:function (name) {
+	var ns = this.namespaces[name];
+	if ((ns) && (this.loaded[name])) {
+		return ns;
+	}
+	if (!this.allow(name)) {
+		return false;
+	}
+	if (this.loading[name]) {
+		dojo.debug("dojo.namespace.require: re-entrant request to load namespace \"" + name + "\" must fail.");
+		return false;
+	}
+	var req = dojo.require;
+	this.loading[name] = true;
+	try {
+		if (name == "dojo") {
+			req("dojo.namespaces.dojo");
+		} else {
+			if (!dojo.hostenv.moduleHasPrefix(name)) {
+				dojo.registerModulePath(name, "../" + name);
+			}
+			req([name, "manifest"].join("."), false, true);
+		}
+		if (!this.namespaces[name]) {
+			this.failed[name] = true;
+		}
+	}
+	finally {
+		this.loading[name] = false;
+	}
+	return this.namespaces[name];
+}};
+dojo.ns.Ns = function (name, module, resolver) {
+	this.name = name;
+	this.module = module;
+	this.resolver = resolver;
+	this._loaded = [];
+	this._failed = [];
+};
+dojo.ns.Ns.prototype.resolve = function (name, domain, omitModuleCheck) {
+	if (!this.resolver || djConfig["skipAutoRequire"]) {
+		return false;
+	}
+	var fullName = this.resolver(name, domain);
+	if ((fullName) && (!this._loaded[fullName]) && (!this._failed[fullName])) {
+		var req = dojo.require;
+		req(fullName, false, true);
+		if (dojo.hostenv.findModule(fullName, false)) {
+			this._loaded[fullName] = true;
+		} else {
+			if (!omitModuleCheck) {
+				dojo.raise("dojo.ns.Ns.resolve: module '" + fullName + "' not found after loading via namespace '" + this.name + "'");
+			}
+			this._failed[fullName] = true;
+		}
+	}
+	return Boolean(this._loaded[fullName]);
+};
+dojo.registerNamespace = function (name, module, resolver) {
+	dojo.ns.register.apply(dojo.ns, arguments);
+};
+dojo.registerNamespaceResolver = function (name, resolver) {
+	var n = dojo.ns.namespaces[name];
+	if (n) {
+		n.resolver = resolver;
+	}
+};
+dojo.registerNamespaceManifest = function (module, path, name, widgetModule, resolver) {
+	dojo.registerModulePath(name, path);
+	dojo.registerNamespace(name, widgetModule, resolver);
+};
+dojo.registerNamespace("dojo", "dojo.widget");
+

@@ -1,19 +1,441 @@
-dojo.provide("dojo.widget.ContentPane");dojo.require("dojo.widget.*");dojo.require("dojo.io.*");dojo.require("dojo.widget.HtmlWidget");dojo.require("dojo.string");dojo.require("dojo.string.extras");dojo.require("dojo.html.style");
-dojo.widget.defineWidget("dojo.widget.ContentPane",dojo.widget.HtmlWidget,function(){this._styleNodes=[];this._onLoadStack=[];this._onUnloadStack=[];this._callOnUnload=false;this.bindArgs={}},{isContainer:true,adjustPaths:true,href:"",extractContent:true,parseContent:true,cacheContent:true,preload:false,refreshOnShow:false,handler:"",executeScripts:false,scriptSeparation:true,loadingMessage:"Loading...",isLoaded:false,postCreate:function(){this.handler!==""&&this.setHandler(this.handler);if(this.isShowing()||
-this.preload)this.loadContents()},show:function(){this.refreshOnShow?this.refresh():this.loadContents();dojo.widget.ContentPane.superclass.show.call(this)},refresh:function(){this.isLoaded=false;this.loadContents()},loadContents:function(){if(!this.isLoaded)if(dojo.lang.isFunction(this.handler))this._runHandler();else this.href!=""&&this._downloadExternalContent(this.href,this.cacheContent&&!this.refreshOnShow)},setUrl:function(a){this.href=a;this.isLoaded=false;if(this.preload||this.isShowing())this.loadContents()},
-abort:function(){var a=this._ioBindObj;if(a&&a.abort){a.abort();delete this._ioBindObj}},_downloadExternalContent:function(a,b){this.abort();this._handleDefaults(this.loadingMessage,"onDownloadStart");var d=this;this._ioBindObj=dojo.io.bind(this._cacheSetting({url:a,mimetype:"text/html",handler:function(g,e,c){delete d._ioBindObj;if(g=="load")d.onDownloadEnd.call(d,a,e);else{g={responseText:c.responseText,status:c.status,statusText:c.statusText,responseHeaders:c.getAllResponseHeaders(),text:"Error loading '"+
-a+"' ("+c.status+" "+c.statusText+")"};d._handleDefaults.call(d,g,"onDownloadError");d.onLoad()}}},b))},_cacheSetting:function(a,b){for(var d in this.bindArgs)if(dojo.lang.isUndefined(a[d]))a[d]=this.bindArgs[d];if(dojo.lang.isUndefined(a.useCache))a.useCache=b;if(dojo.lang.isUndefined(a.preventCache))a.preventCache=!b;if(dojo.lang.isUndefined(a.mimetype))a.mimetype="text/html";return a},onLoad:function(){this._runStack("_onLoadStack");this.isLoaded=true},onUnLoad:function(){dojo.deprecated(this.widgetType+
-".onUnLoad, use .onUnload (lowercased load)",0.5)},onUnload:function(){this._runStack("_onUnloadStack");delete this.scriptScope;this.onUnLoad!==dojo.widget.ContentPane.prototype.onUnLoad&&this.onUnLoad.apply(this,arguments)},_runStack:function(a){for(var b=this[a],d="",g=this.scriptScope||window,e=0;e<b.length;e++)try{b[e].call(g)}catch(c){d+="\n"+b[e]+" failed: "+c.description}this[a]=[];if(d.length)this._handleDefaults((a=="_onLoadStack"?"addOnLoad":"addOnUnLoad")+" failure\n "+d,"onExecError",
-"debug")},addOnLoad:function(a,b){this._pushOnStack(this._onLoadStack,a,b)},addOnUnload:function(a,b){this._pushOnStack(this._onUnloadStack,a,b)},addOnUnLoad:function(){dojo.deprecated(this.widgetType+".addOnUnLoad, use addOnUnload instead. (lowercased Load)",0.5);this.addOnUnload.apply(this,arguments)},_pushOnStack:function(a,b,d){typeof d=="undefined"?a.push(b):a.push(function(){b[d]()})},destroy:function(){this.onUnload();dojo.widget.ContentPane.superclass.destroy.call(this)},onExecError:function(){},
-onContentError:function(){},onDownloadError:function(){},onDownloadStart:function(){},onDownloadEnd:function(a,b){b=this.splitAndFixPaths(b,a);this.setContent(b)},_handleDefaults:function(a,b,d){b||(b="onContentError");if(dojo.lang.isString(a))a={text:a};if(!a.text)a.text=a.toString();a.toString=function(){return this.text};if(typeof a.returnValue!="boolean")a.returnValue=true;if(typeof a.preventDefault!="function")a.preventDefault=function(){this.returnValue=false};this[b](a);if(a.returnValue)switch(d){case true:case "alert":alert(a.toString());
-break;case "debug":dojo.debug(a.toString());break;default:this._callOnUnload&&this.onUnload();this._callOnUnload=false;if(arguments.callee._loopStop)dojo.debug(a.toString());else{arguments.callee._loopStop=true;this._setContent(a.toString())}}arguments.callee._loopStop=false},splitAndFixPaths:function(a,b){var d=[],g=[],e=[],c=[],l=[],f=[],k=[],i="",h="";h=c=e=h="";b||(b="./");if(a){for(var j=/<title[^>]*>([\s\S]*?)<\/title>/i;c=j.exec(a);){d.push(c[1]);a=a.substring(0,c.index)+a.substr(c.index+c[0].length)}if(this.adjustPaths){j=
-/<[a-z][a-z0-9]*[^>]*\s(?:(?:src|href|style)=[^>])+[^>]*>/i;for(var m=/\s(src|href|style)=(['"]?)([\w()\[\]\/.,\\'"-:;#=&?\s@]+?)\2/i,n=/^(?:[#]|(?:(?:https?|ftps?|file|javascript|mailto|news):))/;c=j.exec(a);){i+=a.substring(0,c.index);a=a.substring(c.index+c[0].length,a.length);c=c[0];for(e="";f=m.exec(c);){h=f[3];switch(f[1].toLowerCase()){case "src":case "href":h=n.exec(h)?h:(new dojo.uri.Uri(b,h)).toString();break;case "style":h=dojo.html.fixPathsInCssText(h,b);break;default:h=h}h=" "+f[1]+"="+
-f[2]+h+f[2];e+=c.substring(0,f.index)+h;c=c.substring(f.index+f[0].length,c.length)}i+=e+c}a=i+a}for(j=/(?:<(style)[^>]*>([\s\S]*?)<\/style>|<link ([^>]*rel=['"]?stylesheet['"]?[^>]*)>)/i;c=j.exec(a);){if(c[1]&&c[1].toLowerCase()=="style")k.push(dojo.html.fixPathsInCssText(c[2],b));else if(f=c[3].match(/href=(['"]?)([^'">]*)\1/i))k.push({path:f[2]});a=a.substring(0,c.index)+a.substr(c.index+c[0].length)}j=/<script([^>]*)>([\s\S]*?)<\/script>/i;i=/src=(['"]?)([^"']*)\1/i;m=/.*(\bdojo\b\.js(?:\.uncompressed\.js)?)$/;
-n=/(?:var )?\bdjConfig\b(?:[\s]*=[\s]*\{[^}]+\}|\.[\w]*[\s]*=[\s]*[^;\n]*)?;?|dojo\.hostenv\.writeIncludes\(\s*\);?/g;for(h=/dojo\.(?:(?:require(?:After)?(?:If)?)|(?:widget\.(?:manager\.)?registerWidgetPackage)|(?:(?:hostenv\.)?setModulePrefix|registerModulePath)|defineNamespace)\((['"]).*?\1\)\s*;?/;c=j.exec(a);){if(this.executeScripts&&c[1])if(f=i.exec(c[1]))m.exec(f[2])?dojo.debug("Security note! inhibit:"+f[2]+" from  being loaded again."):g.push({path:f[2]});if(c[2]){f=c[2].replace(n,"");if(!f)continue;
-for(;e=h.exec(f);){l.push(e[0]);f=f.substring(0,e.index)+f.substr(e.index+e[0].length)}this.executeScripts&&g.push(f)}a=a.substr(0,c.index)+a.substr(c.index+c[0].length)}if(this.extractContent)if(c=a.match(/<body[^>]*>\s*([\s\S]+)\s*<\/body>/im))a=c[1];if(this.executeScripts&&this.scriptSeparation){j=/(<[a-zA-Z][a-zA-Z0-9]*\s[^>]*?\S=)((['"])[^>]*scriptScope[^>]*>)/;m=/([\s'";:\(])scriptScope(.*)/;for(i="";c=j.exec(a);){e=c[3]=="'"?'"':"'";for(i+=a.substring(0,c.index)+c[1];f=m.exec(c[2]);)c[2]=c[2].substring(0,
-f.index)+f[1]+"dojo.widget.byId("+e+this.widgetId+e+").scriptScope"+f[2];i+=c[2];a=a.substr(c.index+c[0].length)}a=i+a}}return{xml:a,styles:k,titles:d,requires:l,scripts:g,url:b}},_setContent:function(a){this.destroyChildren();for(var b=0;b<this._styleNodes.length;b++)this._styleNodes[b]&&this._styleNodes[b].parentNode&&this._styleNodes[b].parentNode.removeChild(this._styleNodes[b]);this._styleNodes=[];try{for(var d=this.containerNode||this.domNode;d.firstChild;)dojo.html.destroyNode(d.firstChild);
-if(typeof a!="string")d.appendChild(a);else d.innerHTML=a}catch(g){g.text="Couldn't load content:"+g.description;this._handleDefaults(g,"onContentError")}},setContent:function(a){this.abort();this._callOnUnload&&this.onUnload();this._callOnUnload=true;if(!a||dojo.html.isNode(a)){this._setContent(a);this.onResized();this.onLoad()}else{if(typeof a.xml!="string"){this.href="";a=this.splitAndFixPaths(a)}this._setContent(a.xml);for(var b=0;b<a.styles.length;b++)a.styles[b].path?this._styleNodes.push(dojo.html.insertCssFile(a.styles[b].path,
-dojo.doc(),false,true)):this._styleNodes.push(dojo.html.insertCssText(a.styles[b]));if(this.parseContent)for(b=0;b<a.requires.length;b++)try{eval(a.requires[b])}catch(d){d.text="ContentPane: error in package loading calls, "+(d.description||d);this._handleDefaults(d,"onContentError","debug")}var g=this;b=function(){g.executeScripts&&g._executeScripts(a.scripts);if(g.parseContent){var e=g.containerNode||g.domNode;e=(new dojo.xml.Parse).parseElement(e,null,true);dojo.widget.getParser().createSubComponents(e,
-g)}g.onResized();g.onLoad()};dojo.hostenv.isXDomain&&a.requires.length?dojo.addOnLoad(b):b()}},setHandler:function(a){var b=dojo.lang.isFunction(a)?a:window[a];if(dojo.lang.isFunction(b))this.handler=function(){return b.apply(this,arguments)};else this._handleDefaults("Unable to set handler, '"+a+"' not a function.","onExecError",true)},_runHandler:function(){var a=true;if(dojo.lang.isFunction(this.handler)){this.handler(this,this.domNode);a=false}this.onLoad();return a},_executeScripts:function(a){for(var b=
-this,d="",g="",e=0;e<a.length;e++)if(a[e].path){dojo.io.bind(this._cacheSetting({url:a[e].path,load:function(i,h){dojo.lang.hitch(b,d=";"+h)},error:function(i,h){h.text=i+" downloading remote script";b._handleDefaults.call(b,h,"onExecError","debug")},mimetype:"text/plain",sync:true},this.cacheContent));g+=d}else g+=a[e];try{if(this.scriptSeparation){delete this.scriptScope;this.scriptScope=new new Function("_container_",g+"; return this;")(b)}else{var c=dojo.global();if(c.execScript)c.execScript(g);
-else{var l=dojo.doc(),f=l.createElement("script");f.appendChild(l.createTextNode(g));(this.containerNode||this.domNode).appendChild(f)}}}catch(k){k.text="Error running scripts from content:\n"+k.description;this._handleDefaults(k,"onExecError","debug")}}});
+/*
+	Copyright (c) 2004-2006, The Dojo Foundation
+	All Rights Reserved.
+
+	Licensed under the Academic Free License version 2.1 or above OR the
+	modified BSD license. For more information on Dojo licensing, see:
+
+		http://dojotoolkit.org/community/licensing.shtml
+*/
+
+
+
+dojo.provide("dojo.widget.ContentPane");
+dojo.require("dojo.widget.*");
+dojo.require("dojo.io.*");
+dojo.require("dojo.widget.HtmlWidget");
+dojo.require("dojo.string");
+dojo.require("dojo.string.extras");
+dojo.require("dojo.html.style");
+dojo.widget.defineWidget("dojo.widget.ContentPane", dojo.widget.HtmlWidget, function () {
+	this._styleNodes = [];
+	this._onLoadStack = [];
+	this._onUnloadStack = [];
+	this._callOnUnload = false;
+	this._ioBindObj;
+	this.scriptScope;
+	this.bindArgs = {};
+}, {isContainer:true, adjustPaths:true, href:"", extractContent:true, parseContent:true, cacheContent:true, preload:false, refreshOnShow:false, handler:"", executeScripts:false, scriptSeparation:true, loadingMessage:"Loading...", isLoaded:false, postCreate:function (args, frag, parentComp) {
+	if (this.handler !== "") {
+		this.setHandler(this.handler);
+	}
+	if (this.isShowing() || this.preload) {
+		this.loadContents();
+	}
+}, show:function () {
+	if (this.refreshOnShow) {
+		this.refresh();
+	} else {
+		this.loadContents();
+	}
+	dojo.widget.ContentPane.superclass.show.call(this);
+}, refresh:function () {
+	this.isLoaded = false;
+	this.loadContents();
+}, loadContents:function () {
+	if (this.isLoaded) {
+		return;
+	}
+	if (dojo.lang.isFunction(this.handler)) {
+		this._runHandler();
+	} else {
+		if (this.href != "") {
+			this._downloadExternalContent(this.href, this.cacheContent && !this.refreshOnShow);
+		}
+	}
+}, setUrl:function (url) {
+	this.href = url;
+	this.isLoaded = false;
+	if (this.preload || this.isShowing()) {
+		this.loadContents();
+	}
+}, abort:function () {
+	var bind = this._ioBindObj;
+	if (!bind || !bind.abort) {
+		return;
+	}
+	bind.abort();
+	delete this._ioBindObj;
+}, _downloadExternalContent:function (url, useCache) {
+	this.abort();
+	this._handleDefaults(this.loadingMessage, "onDownloadStart");
+	var self = this;
+	this._ioBindObj = dojo.io.bind(this._cacheSetting({url:url, mimetype:"text/html", handler:function (type, data, xhr) {
+		delete self._ioBindObj;
+		if (type == "load") {
+			self.onDownloadEnd.call(self, url, data);
+		} else {
+			var e = {responseText:xhr.responseText, status:xhr.status, statusText:xhr.statusText, responseHeaders:xhr.getAllResponseHeaders(), text:"Error loading '" + url + "' (" + xhr.status + " " + xhr.statusText + ")"};
+			self._handleDefaults.call(self, e, "onDownloadError");
+			self.onLoad();
+		}
+	}}, useCache));
+}, _cacheSetting:function (bindObj, useCache) {
+	for (var x in this.bindArgs) {
+		if (dojo.lang.isUndefined(bindObj[x])) {
+			bindObj[x] = this.bindArgs[x];
+		}
+	}
+	if (dojo.lang.isUndefined(bindObj.useCache)) {
+		bindObj.useCache = useCache;
+	}
+	if (dojo.lang.isUndefined(bindObj.preventCache)) {
+		bindObj.preventCache = !useCache;
+	}
+	if (dojo.lang.isUndefined(bindObj.mimetype)) {
+		bindObj.mimetype = "text/html";
+	}
+	return bindObj;
+}, onLoad:function (e) {
+	this._runStack("_onLoadStack");
+	this.isLoaded = true;
+}, onUnLoad:function (e) {
+	dojo.deprecated(this.widgetType + ".onUnLoad, use .onUnload (lowercased load)", 0.5);
+}, onUnload:function (e) {
+	this._runStack("_onUnloadStack");
+	delete this.scriptScope;
+	if (this.onUnLoad !== dojo.widget.ContentPane.prototype.onUnLoad) {
+		this.onUnLoad.apply(this, arguments);
+	}
+}, _runStack:function (stName) {
+	var st = this[stName];
+	var err = "";
+	var scope = this.scriptScope || window;
+	for (var i = 0; i < st.length; i++) {
+		try {
+			st[i].call(scope);
+		}
+		catch (e) {
+			err += "\n" + st[i] + " failed: " + e.description;
+		}
+	}
+	this[stName] = [];
+	if (err.length) {
+		var name = (stName == "_onLoadStack") ? "addOnLoad" : "addOnUnLoad";
+		this._handleDefaults(name + " failure\n " + err, "onExecError", "debug");
+	}
+}, addOnLoad:function (obj, func) {
+	this._pushOnStack(this._onLoadStack, obj, func);
+}, addOnUnload:function (obj, func) {
+	this._pushOnStack(this._onUnloadStack, obj, func);
+}, addOnUnLoad:function () {
+	dojo.deprecated(this.widgetType + ".addOnUnLoad, use addOnUnload instead. (lowercased Load)", 0.5);
+	this.addOnUnload.apply(this, arguments);
+}, _pushOnStack:function (stack, obj, func) {
+	if (typeof func == "undefined") {
+		stack.push(obj);
+	} else {
+		stack.push(function () {
+			obj[func]();
+		});
+	}
+}, destroy:function () {
+	this.onUnload();
+	dojo.widget.ContentPane.superclass.destroy.call(this);
+}, onExecError:function (e) {
+}, onContentError:function (e) {
+}, onDownloadError:function (e) {
+}, onDownloadStart:function (e) {
+}, onDownloadEnd:function (url, data) {
+	data = this.splitAndFixPaths(data, url);
+	this.setContent(data);
+}, _handleDefaults:function (e, handler, messType) {
+	if (!handler) {
+		handler = "onContentError";
+	}
+	if (dojo.lang.isString(e)) {
+		e = {text:e};
+	}
+	if (!e.text) {
+		e.text = e.toString();
+	}
+	e.toString = function () {
+		return this.text;
+	};
+	if (typeof e.returnValue != "boolean") {
+		e.returnValue = true;
+	}
+	if (typeof e.preventDefault != "function") {
+		e.preventDefault = function () {
+			this.returnValue = false;
+		};
+	}
+	this[handler](e);
+	if (e.returnValue) {
+		switch (messType) {
+		  case true:
+		  case "alert":
+			alert(e.toString());
+			break;
+		  case "debug":
+			dojo.debug(e.toString());
+			break;
+		  default:
+			if (this._callOnUnload) {
+				this.onUnload();
+			}
+			this._callOnUnload = false;
+			if (arguments.callee._loopStop) {
+				dojo.debug(e.toString());
+			} else {
+				arguments.callee._loopStop = true;
+				this._setContent(e.toString());
+			}
+		}
+	}
+	arguments.callee._loopStop = false;
+}, splitAndFixPaths:function (s, url) {
+	var titles = [], scripts = [], tmp = [];
+	var match = [], requires = [], attr = [], styles = [];
+	var str = "", path = "", fix = "", tagFix = "", tag = "", origPath = "";
+	if (!url) {
+		url = "./";
+	}
+	if (s) {
+		var regex = /<title[^>]*>([\s\S]*?)<\/title>/i;
+		while (match = regex.exec(s)) {
+			titles.push(match[1]);
+			s = s.substring(0, match.index) + s.substr(match.index + match[0].length);
+		}
+		if (this.adjustPaths) {
+			var regexFindTag = /<[a-z][a-z0-9]*[^>]*\s(?:(?:src|href|style)=[^>])+[^>]*>/i;
+			var regexFindAttr = /\s(src|href|style)=(['"]?)([\w()\[\]\/.,\\'"-:;#=&?\s@]+?)\2/i;
+			var regexProtocols = /^(?:[#]|(?:(?:https?|ftps?|file|javascript|mailto|news):))/;
+			while (tag = regexFindTag.exec(s)) {
+				str += s.substring(0, tag.index);
+				s = s.substring((tag.index + tag[0].length), s.length);
+				tag = tag[0];
+				tagFix = "";
+				while (attr = regexFindAttr.exec(tag)) {
+					path = "";
+					origPath = attr[3];
+					switch (attr[1].toLowerCase()) {
+					  case "src":
+					  case "href":
+						if (regexProtocols.exec(origPath)) {
+							path = origPath;
+						} else {
+							path = (new dojo.uri.Uri(url, origPath).toString());
+						}
+						break;
+					  case "style":
+						path = dojo.html.fixPathsInCssText(origPath, url);
+						break;
+					  default:
+						path = origPath;
+					}
+					fix = " " + attr[1] + "=" + attr[2] + path + attr[2];
+					tagFix += tag.substring(0, attr.index) + fix;
+					tag = tag.substring((attr.index + attr[0].length), tag.length);
+				}
+				str += tagFix + tag;
+			}
+			s = str + s;
+		}
+		regex = /(?:<(style)[^>]*>([\s\S]*?)<\/style>|<link ([^>]*rel=['"]?stylesheet['"]?[^>]*)>)/i;
+		while (match = regex.exec(s)) {
+			if (match[1] && match[1].toLowerCase() == "style") {
+				styles.push(dojo.html.fixPathsInCssText(match[2], url));
+			} else {
+				if (attr = match[3].match(/href=(['"]?)([^'">]*)\1/i)) {
+					styles.push({path:attr[2]});
+				}
+			}
+			s = s.substring(0, match.index) + s.substr(match.index + match[0].length);
+		}
+		var regex = /<script([^>]*)>([\s\S]*?)<\/script>/i;
+		var regexSrc = /src=(['"]?)([^"']*)\1/i;
+		var regexDojoJs = /.*(\bdojo\b\.js(?:\.uncompressed\.js)?)$/;
+		var regexInvalid = /(?:var )?\bdjConfig\b(?:[\s]*=[\s]*\{[^}]+\}|\.[\w]*[\s]*=[\s]*[^;\n]*)?;?|dojo\.hostenv\.writeIncludes\(\s*\);?/g;
+		var regexRequires = /dojo\.(?:(?:require(?:After)?(?:If)?)|(?:widget\.(?:manager\.)?registerWidgetPackage)|(?:(?:hostenv\.)?setModulePrefix|registerModulePath)|defineNamespace)\((['"]).*?\1\)\s*;?/;
+		while (match = regex.exec(s)) {
+			if (this.executeScripts && match[1]) {
+				if (attr = regexSrc.exec(match[1])) {
+					if (regexDojoJs.exec(attr[2])) {
+						dojo.debug("Security note! inhibit:" + attr[2] + " from  being loaded again.");
+					} else {
+						scripts.push({path:attr[2]});
+					}
+				}
+			}
+			if (match[2]) {
+				var sc = match[2].replace(regexInvalid, "");
+				if (!sc) {
+					continue;
+				}
+				while (tmp = regexRequires.exec(sc)) {
+					requires.push(tmp[0]);
+					sc = sc.substring(0, tmp.index) + sc.substr(tmp.index + tmp[0].length);
+				}
+				if (this.executeScripts) {
+					scripts.push(sc);
+				}
+			}
+			s = s.substr(0, match.index) + s.substr(match.index + match[0].length);
+		}
+		if (this.extractContent) {
+			match = s.match(/<body[^>]*>\s*([\s\S]+)\s*<\/body>/im);
+			if (match) {
+				s = match[1];
+			}
+		}
+		if (this.executeScripts && this.scriptSeparation) {
+			var regex = /(<[a-zA-Z][a-zA-Z0-9]*\s[^>]*?\S=)((['"])[^>]*scriptScope[^>]*>)/;
+			var regexAttr = /([\s'";:\(])scriptScope(.*)/;
+			str = "";
+			while (tag = regex.exec(s)) {
+				tmp = ((tag[3] == "'") ? "\"" : "'");
+				fix = "";
+				str += s.substring(0, tag.index) + tag[1];
+				while (attr = regexAttr.exec(tag[2])) {
+					tag[2] = tag[2].substring(0, attr.index) + attr[1] + "dojo.widget.byId(" + tmp + this.widgetId + tmp + ").scriptScope" + attr[2];
+				}
+				str += tag[2];
+				s = s.substr(tag.index + tag[0].length);
+			}
+			s = str + s;
+		}
+	}
+	return {"xml":s, "styles":styles, "titles":titles, "requires":requires, "scripts":scripts, "url":url};
+}, _setContent:function (cont) {
+	this.destroyChildren();
+	for (var i = 0; i < this._styleNodes.length; i++) {
+		if (this._styleNodes[i] && this._styleNodes[i].parentNode) {
+			this._styleNodes[i].parentNode.removeChild(this._styleNodes[i]);
+		}
+	}
+	this._styleNodes = [];
+	try {
+		var node = this.containerNode || this.domNode;
+		while (node.firstChild) {
+			dojo.html.destroyNode(node.firstChild);
+		}
+		if (typeof cont != "string") {
+			node.appendChild(cont);
+		} else {
+			node.innerHTML = cont;
+		}
+	}
+	catch (e) {
+		e.text = "Couldn't load content:" + e.description;
+		this._handleDefaults(e, "onContentError");
+	}
+}, setContent:function (data) {
+	this.abort();
+	if (this._callOnUnload) {
+		this.onUnload();
+	}
+	this._callOnUnload = true;
+	if (!data || dojo.html.isNode(data)) {
+		this._setContent(data);
+		this.onResized();
+		this.onLoad();
+	} else {
+		if (typeof data.xml != "string") {
+			this.href = "";
+			data = this.splitAndFixPaths(data);
+		}
+		this._setContent(data.xml);
+		for (var i = 0; i < data.styles.length; i++) {
+			if (data.styles[i].path) {
+				this._styleNodes.push(dojo.html.insertCssFile(data.styles[i].path, dojo.doc(), false, true));
+			} else {
+				this._styleNodes.push(dojo.html.insertCssText(data.styles[i]));
+			}
+		}
+		if (this.parseContent) {
+			for (var i = 0; i < data.requires.length; i++) {
+				try {
+					eval(data.requires[i]);
+				}
+				catch (e) {
+					e.text = "ContentPane: error in package loading calls, " + (e.description || e);
+					this._handleDefaults(e, "onContentError", "debug");
+				}
+			}
+		}
+		var _self = this;
+		function asyncParse() {
+			if (_self.executeScripts) {
+				_self._executeScripts(data.scripts);
+			}
+			if (_self.parseContent) {
+				var node = _self.containerNode || _self.domNode;
+				var parser = new dojo.xml.Parse();
+				var frag = parser.parseElement(node, null, true);
+				dojo.widget.getParser().createSubComponents(frag, _self);
+			}
+			_self.onResized();
+			_self.onLoad();
+		}
+		if (dojo.hostenv.isXDomain && data.requires.length) {
+			dojo.addOnLoad(asyncParse);
+		} else {
+			asyncParse();
+		}
+	}
+}, setHandler:function (handler) {
+	var fcn = dojo.lang.isFunction(handler) ? handler : window[handler];
+	if (!dojo.lang.isFunction(fcn)) {
+		this._handleDefaults("Unable to set handler, '" + handler + "' not a function.", "onExecError", true);
+		return;
+	}
+	this.handler = function () {
+		return fcn.apply(this, arguments);
+	};
+}, _runHandler:function () {
+	var ret = true;
+	if (dojo.lang.isFunction(this.handler)) {
+		this.handler(this, this.domNode);
+		ret = false;
+	}
+	this.onLoad();
+	return ret;
+}, _executeScripts:function (scripts) {
+	var self = this;
+	var tmp = "", code = "";
+	for (var i = 0; i < scripts.length; i++) {
+		if (scripts[i].path) {
+			dojo.io.bind(this._cacheSetting({"url":scripts[i].path, "load":function (type, scriptStr) {
+				dojo.lang.hitch(self, tmp = ";" + scriptStr);
+			}, "error":function (type, error) {
+				error.text = type + " downloading remote script";
+				self._handleDefaults.call(self, error, "onExecError", "debug");
+			}, "mimetype":"text/plain", "sync":true}, this.cacheContent));
+			code += tmp;
+		} else {
+			code += scripts[i];
+		}
+	}
+	try {
+		if (this.scriptSeparation) {
+			delete this.scriptScope;
+			this.scriptScope = new (new Function("_container_", code + "; return this;"))(self);
+		} else {
+			var djg = dojo.global();
+			if (djg.execScript) {
+				djg.execScript(code);
+			} else {
+				var djd = dojo.doc();
+				var sc = djd.createElement("script");
+				sc.appendChild(djd.createTextNode(code));
+				(this.containerNode || this.domNode).appendChild(sc);
+			}
+		}
+	}
+	catch (e) {
+		e.text = "Error running scripts from content:\n" + e.description;
+		this._handleDefaults(e, "onExecError", "debug");
+	}
+}});
+

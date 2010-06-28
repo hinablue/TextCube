@@ -1,3 +1,96 @@
-(function(i){var j={"\u0008":"\\b","\t":"\\t","\n":"\\n","\u000c":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},h={array:function(a){var b=["["],d,c,e,f=a.length,g;for(e=0;e<f;e+=1){g=a[e];if(c=h[typeof g]){g=c(g);if(typeof g=="string"){if(d)b[b.length]=",";b[b.length]=g;d=true}}}b[b.length]="]";return b.join("")},"boolean":function(a){return String(a)},"null":function(){return"null"},number:function(a){return isFinite(a)?String(a):"null"},object:function(a){if(a){if(a instanceof Array)return h.array(a);
-var b=["{"],d,c,e,f;for(e in a){f=a[e];if(c=h[typeof f]){f=c(f);if(typeof f=="string"){if(d)b[b.length]=",";b.push(h.string(e),":",f);d=true}}}b[b.length]="}";return b.join("")}return"null"},string:function(a){if(/["\\\x00-\x1f]/.test(a))a=a.replace(/([\x00-\x1f\\"])/g,function(b,d){var c=j[d];if(c)return c;c=d.charCodeAt();return"\\u00"+Math.floor(c/16).toString(16)+(c%16).toString(16)});return'"'+a+'"'}};i.toJSON=function(a){var b=isNaN(a)?h[typeof a]:h.number;if(b)return b(a)};i.parseJSON=function(a,
-b){if(b===undefined)b=i.parseJSON.safe;if(!(b&&!/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(a)))return eval("("+a+")")};i.parseJSON.safe=false})(jQuery);
+(function ($) {
+    var m = {
+            '\b': '\\b',
+            '\t': '\\t',
+            '\n': '\\n',
+            '\f': '\\f',
+            '\r': '\\r',
+            '"' : '\\"',
+            '\\': '\\\\'
+        },
+        s = {
+            'array': function (x) {
+                var a = ['['], b, f, i, l = x.length, v;
+                for (i = 0; i < l; i += 1) {
+                    v = x[i];
+                    f = s[typeof v];
+                    if (f) {
+                        v = f(v);
+                        if (typeof v == 'string') {
+                            if (b) {
+                                a[a.length] = ',';
+                            }
+                            a[a.length] = v;
+                            b = true;
+                        }
+                    }
+                }
+                a[a.length] = ']';
+                return a.join('');
+            },
+            'boolean': function (x) {
+                return String(x);
+            },
+            'null': function (x) {
+                return "null";
+            },
+            'number': function (x) {
+                return isFinite(x) ? String(x) : 'null';
+            },
+            'object': function (x) {
+                if (x) {
+                    if (x instanceof Array) {
+                        return s.array(x);
+                    }
+                    var a = ['{'], b, f, i, v;
+                    for (i in x) {
+                        v = x[i];
+                        f = s[typeof v];
+                        if (f) {
+                            v = f(v);
+                            if (typeof v == 'string') {
+                                if (b) {
+                                    a[a.length] = ',';
+                                }
+                                a.push(s.string(i), ':', v);
+                                b = true;
+                            }
+                        }
+                    }
+                    a[a.length] = '}';
+                    return a.join('');
+                }
+                return 'null';
+            },
+            'string': function (x) {
+                if (/["\\\x00-\x1f]/.test(x)) {
+                    x = x.replace(/([\x00-\x1f\\"])/g, function(a, b) {
+                        var c = m[b];
+                        if (c) {
+                            return c;
+                        }
+                        c = b.charCodeAt();
+                        return '\\u00' +
+                            Math.floor(c / 16).toString(16) +
+                            (c % 16).toString(16);
+                    });
+                }
+                return '"' + x + '"';
+            }
+        };
+
+	$.toJSON = function(v) {
+		var f = isNaN(v) ? s[typeof v] : s['number'];
+		if (f) return f(v);
+	};
+	
+	$.parseJSON = function(v, safe) {
+		if (safe === undefined) safe = $.parseJSON.safe;
+		if (safe && !/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(v))
+			return undefined;
+		return eval('('+v+')');
+	};
+	
+	$.parseJSON.safe = false;
+
+})(jQuery);

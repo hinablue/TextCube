@@ -1,6 +1,165 @@
-dojo.provide("dojo.xml.Parse");dojo.require("dojo.dom");
-dojo.xml.Parse=function(){function i(b){try{return b.tagName.toLowerCase()}catch(a){return""}}function j(b){var a=i(b);if(!a)return"";if(dojo.widget&&dojo.widget.tags[a])return a;if(a.indexOf(":")>=0)return a;if(a.substr(0,5)=="dojo:")return a;if(dojo.render.html.capable&&dojo.render.html.ie&&b.scopeName!="HTML")return b.scopeName.toLowerCase()+":"+a;if(a.substr(0,4)=="dojo")return"dojo:"+a.substring(4);if(a=b.getAttribute("dojoType")||b.getAttribute("dojotype")){if(a.indexOf(":")<0)a="dojo:"+a;return a.toLowerCase()}if(a=
-b.getAttributeNS&&b.getAttributeNS(dojo.dom.dojoml,"type"))return"dojo:"+a.toLowerCase();try{a=b.getAttribute("dojo:type")}catch(f){}if(a)return"dojo:"+a.toLowerCase();if(dj_global.djConfig&&!djConfig.ignoreClassNames)if((b=b.className||b.getAttribute("class"))&&b.indexOf&&b.indexOf("dojo-")!=-1){b=b.split(" ");a=0;for(var h=b.length;a<h;a++)if(b[a].slice(0,5)=="dojo-")return"dojo:"+b[a].substr(5).toLowerCase()}return""}var k=dojo.render.html.capable&&dojo.render.html.ie;this.parseElement=function(b,
-a,f,h){a=i(b);if(k&&a.indexOf("/")==0)return null;try{var d=b.getAttribute("parseWidgets");if(d&&d.toLowerCase()=="false")return{}}catch(l){}var e=true;if(f){var c=j(b);a=c||a;e=Boolean(c)}c={};c[a]=[];var g=a.indexOf(":");if(g>0){g=a.substring(0,g);c.ns=g;if(dojo.ns&&!dojo.ns.allow(g))e=false}if(e){e=this.parseAttributes(b);for(d in e){if(!c[a][d]||typeof c[a][d]!="array")c[a][d]=[];c[a][d].push(e[d])}c[a].nodeRef=b;c.tagName=a;c.index=h||0}for(d=h=0;d<b.childNodes.length;d++){e=b.childNodes.item(d);
-switch(e.nodeType){case dojo.dom.ELEMENT_NODE:g=j(e)||i(e);c[g]||(c[g]=[]);c[g].push(this.parseElement(e,true,f,h));if(e.childNodes.length==1&&e.childNodes.item(0).nodeType==dojo.dom.TEXT_NODE)c[g][c[g].length-1].value=e.childNodes.item(0).nodeValue;h++;break;case dojo.dom.TEXT_NODE:b.childNodes.length==1&&c[a].push({value:b.childNodes.item(0).nodeValue});break;default:break}}return c};this.parseAttributes=function(b){var a={};b=b.attributes;for(var f,h=0;f=b[h++];){if(k){if(!f)continue;if(typeof f==
-"object"&&typeof f.nodeValue=="undefined"||f.nodeValue==null||f.nodeValue=="")continue}var d=f.nodeName.split(":");d=d.length==2?d[1]:f.nodeName;a[d]={value:f.nodeValue}}return a}};
+/*
+	Copyright (c) 2004-2006, The Dojo Foundation
+	All Rights Reserved.
+
+	Licensed under the Academic Free License version 2.1 or above OR the
+	modified BSD license. For more information on Dojo licensing, see:
+
+		http://dojotoolkit.org/community/licensing.shtml
+*/
+
+
+
+dojo.provide("dojo.xml.Parse");
+dojo.require("dojo.dom");
+dojo.xml.Parse = function () {
+	var isIE = ((dojo.render.html.capable) && (dojo.render.html.ie));
+	function getTagName(node) {
+		try {
+			return node.tagName.toLowerCase();
+		}
+		catch (e) {
+			return "";
+		}
+	}
+	function getDojoTagName(node) {
+		var tagName = getTagName(node);
+		if (!tagName) {
+			return "";
+		}
+		if ((dojo.widget) && (dojo.widget.tags[tagName])) {
+			return tagName;
+		}
+		var p = tagName.indexOf(":");
+		if (p >= 0) {
+			return tagName;
+		}
+		if (tagName.substr(0, 5) == "dojo:") {
+			return tagName;
+		}
+		if (dojo.render.html.capable && dojo.render.html.ie && node.scopeName != "HTML") {
+			return node.scopeName.toLowerCase() + ":" + tagName;
+		}
+		if (tagName.substr(0, 4) == "dojo") {
+			return "dojo:" + tagName.substring(4);
+		}
+		var djt = node.getAttribute("dojoType") || node.getAttribute("dojotype");
+		if (djt) {
+			if (djt.indexOf(":") < 0) {
+				djt = "dojo:" + djt;
+			}
+			return djt.toLowerCase();
+		}
+		djt = node.getAttributeNS && node.getAttributeNS(dojo.dom.dojoml, "type");
+		if (djt) {
+			return "dojo:" + djt.toLowerCase();
+		}
+		try {
+			djt = node.getAttribute("dojo:type");
+		}
+		catch (e) {
+		}
+		if (djt) {
+			return "dojo:" + djt.toLowerCase();
+		}
+		if ((dj_global["djConfig"]) && (!djConfig["ignoreClassNames"])) {
+			var classes = node.className || node.getAttribute("class");
+			if ((classes) && (classes.indexOf) && (classes.indexOf("dojo-") != -1)) {
+				var aclasses = classes.split(" ");
+				for (var x = 0, c = aclasses.length; x < c; x++) {
+					if (aclasses[x].slice(0, 5) == "dojo-") {
+						return "dojo:" + aclasses[x].substr(5).toLowerCase();
+					}
+				}
+			}
+		}
+		return "";
+	}
+	this.parseElement = function (node, hasParentNodeSet, optimizeForDojoML, thisIdx) {
+		var tagName = getTagName(node);
+		if (isIE && tagName.indexOf("/") == 0) {
+			return null;
+		}
+		try {
+			var attr = node.getAttribute("parseWidgets");
+			if (attr && attr.toLowerCase() == "false") {
+				return {};
+			}
+		}
+		catch (e) {
+		}
+		var process = true;
+		if (optimizeForDojoML) {
+			var dojoTagName = getDojoTagName(node);
+			tagName = dojoTagName || tagName;
+			process = Boolean(dojoTagName);
+		}
+		var parsedNodeSet = {};
+		parsedNodeSet[tagName] = [];
+		var pos = tagName.indexOf(":");
+		if (pos > 0) {
+			var ns = tagName.substring(0, pos);
+			parsedNodeSet["ns"] = ns;
+			if ((dojo.ns) && (!dojo.ns.allow(ns))) {
+				process = false;
+			}
+		}
+		if (process) {
+			var attributeSet = this.parseAttributes(node);
+			for (var attr in attributeSet) {
+				if ((!parsedNodeSet[tagName][attr]) || (typeof parsedNodeSet[tagName][attr] != "array")) {
+					parsedNodeSet[tagName][attr] = [];
+				}
+				parsedNodeSet[tagName][attr].push(attributeSet[attr]);
+			}
+			parsedNodeSet[tagName].nodeRef = node;
+			parsedNodeSet.tagName = tagName;
+			parsedNodeSet.index = thisIdx || 0;
+		}
+		var count = 0;
+		for (var i = 0; i < node.childNodes.length; i++) {
+			var tcn = node.childNodes.item(i);
+			switch (tcn.nodeType) {
+			  case dojo.dom.ELEMENT_NODE:
+				var ctn = getDojoTagName(tcn) || getTagName(tcn);
+				if (!parsedNodeSet[ctn]) {
+					parsedNodeSet[ctn] = [];
+				}
+				parsedNodeSet[ctn].push(this.parseElement(tcn, true, optimizeForDojoML, count));
+				if ((tcn.childNodes.length == 1) && (tcn.childNodes.item(0).nodeType == dojo.dom.TEXT_NODE)) {
+					parsedNodeSet[ctn][parsedNodeSet[ctn].length - 1].value = tcn.childNodes.item(0).nodeValue;
+				}
+				count++;
+				break;
+			  case dojo.dom.TEXT_NODE:
+				if (node.childNodes.length == 1) {
+					parsedNodeSet[tagName].push({value:node.childNodes.item(0).nodeValue});
+				}
+				break;
+			  default:
+				break;
+			}
+		}
+		return parsedNodeSet;
+	};
+	this.parseAttributes = function (node) {
+		var parsedAttributeSet = {};
+		var atts = node.attributes;
+		var attnode, i = 0;
+		while ((attnode = atts[i++])) {
+			if (isIE) {
+				if (!attnode) {
+					continue;
+				}
+				if ((typeof attnode == "object") && (typeof attnode.nodeValue == "undefined") || (attnode.nodeValue == null) || (attnode.nodeValue == "")) {
+					continue;
+				}
+			}
+			var nn = attnode.nodeName.split(":");
+			nn = (nn.length == 2) ? nn[1] : attnode.nodeName;
+			parsedAttributeSet[nn] = {value:attnode.nodeValue};
+		}
+		return parsedAttributeSet;
+	};
+};
+

@@ -1,152 +1,3701 @@
-(function(d){function a(g,i,j,l){function n(o){o=d[g][i][o]||[];return typeof o=="string"?o.split(/,?\s+/):o}var m=n("getter");if(l.length==1&&typeof l[0]=="string")m=m.concat(n("getterSetter"));return d.inArray(j,m)!=-1}var b=d.fn.remove,c=d.browser.mozilla&&parseFloat(d.browser.version)<1.9;d.ui={version:"1.6rc5",plugin:{add:function(g,i,j){g=d.ui[g].prototype;for(var l in j){g.plugins[l]=g.plugins[l]||[];g.plugins[l].push([i,j[l]])}},call:function(g,i,j){if(i=g.plugins[i])for(var l=0;l<i.length;l++)g.options[i[l][0]]&&
-i[l][1].apply(g.element,j)}},contains:function(g,i){return document.compareDocumentPosition?g.compareDocumentPosition(i)&16:g!==i&&g.contains(i)},cssCache:{},css:function(g){if(d.ui.cssCache[g])return d.ui.cssCache[g];var i=d('<div class="ui-gen"></div>').addClass(g).css({position:"absolute",top:"-5000px",left:"-5000px",display:"block"}).appendTo("body");d.ui.cssCache[g]=!!(!/auto|default/.test(i.css("cursor"))||/^[1-9]/.test(i.css("height"))||/^[1-9]/.test(i.css("width"))||!/none/.test(i.css("backgroundImage"))||
-!/transparent|rgba\(0, 0, 0, 0\)/.test(i.css("backgroundColor")));try{d("body").get(0).removeChild(i.get(0))}catch(j){}return d.ui.cssCache[g]},hasScroll:function(g,i){if(d(g).css("overflow")=="hidden")return false;var j=i&&i=="left"?"scrollLeft":"scrollTop",l=false;if(g[j]>0)return true;g[j]=1;l=g[j]>0;g[j]=0;return l},isOverAxis:function(g,i,j){return g>i&&g<i+j},isOver:function(g,i,j,l,n,m){return d.ui.isOverAxis(g,j,n)&&d.ui.isOverAxis(i,l,m)},keyCode:{BACKSPACE:8,CAPS_LOCK:20,COMMA:188,CONTROL:17,
-DELETE:46,DOWN:40,END:35,ENTER:13,ESCAPE:27,HOME:36,INSERT:45,LEFT:37,NUMPAD_ADD:107,NUMPAD_DECIMAL:110,NUMPAD_DIVIDE:111,NUMPAD_ENTER:108,NUMPAD_MULTIPLY:106,NUMPAD_SUBTRACT:109,PAGE_DOWN:34,PAGE_UP:33,PERIOD:190,RIGHT:39,SHIFT:16,SPACE:32,TAB:9,UP:38}};if(c){var e=d.attr,f=d.fn.removeAttr,h=/^aria-/,k=/^wairole:/;d.attr=function(g,i,j){var l=j!==undefined;return i=="role"?l?e.call(this,g,i,"wairole:"+j):(e.apply(this,arguments)||"").replace(k,""):h.test(i)?l?g.setAttributeNS("http://www.w3.org/2005/07/aaa",
-i.replace(h,"aaa:"),j):e.call(this,g,i.replace(h,"aaa:")):e.apply(this,arguments)};d.fn.removeAttr=function(g){return h.test(g)?this.each(function(){this.removeAttributeNS("http://www.w3.org/2005/07/aaa",g.replace(h,""))}):f.call(this,g)}}d.fn.extend({remove:function(){d("*",this).add(this).each(function(){d(this).triggerHandler("remove")});return b.apply(this,arguments)},enableSelection:function(){return this.attr("unselectable","off").css("MozUserSelect","").unbind("selectstart.ui")},disableSelection:function(){return this.attr("unselectable",
-"on").css("MozUserSelect","none").bind("selectstart.ui",function(){return false})},scrollParent:function(){var g;g=d.browser.msie&&/(static|relative)/.test(this.css("position"))||/absolute/.test(this.css("position"))?this.parents().filter(function(){return/(relative|absolute|fixed)/.test(d.curCSS(this,"position",1))&&/(auto|scroll)/.test(d.curCSS(this,"overflow",1)+d.curCSS(this,"overflow-y",1)+d.curCSS(this,"overflow-x",1))}).eq(0):this.parents().filter(function(){return/(auto|scroll)/.test(d.curCSS(this,
-"overflow",1)+d.curCSS(this,"overflow-y",1)+d.curCSS(this,"overflow-x",1))}).eq(0);return/fixed/.test(this.css("position"))||!g.length?d(document):g}});d.extend(d.expr[":"],{data:function(g,i,j){return!!d.data(g,j[3])},tabbable:function(g){var i=g.nodeName.toLowerCase();return g.tabIndex>=0&&("a"==i&&g.href||/input|select|textarea|button/.test(i)&&"hidden"!=g.type&&!g.disabled)&&!(d(g).is(":hidden")||d(g).parents(":hidden").length)}});d.widget=function(g,i){var j=g.split(".")[0];g=g.split(".")[1];
-d.fn[g]=function(l){var n=typeof l=="string",m=Array.prototype.slice.call(arguments,1);if(n&&l.substring(0,1)=="_")return this;if(n&&a(j,g,l,m)){var o=d.data(this[0],g);return o?o[l].apply(o,m):undefined}return this.each(function(){var p=d.data(this,g);!p&&!n&&d.data(this,g,new d[j][g](this,l));p&&n&&d.isFunction(p[l])&&p[l].apply(p,m)})};d[j]=d[j]||{};d[j][g]=function(l,n){var m=this;this.namespace=j;this.widgetName=g;this.widgetEventPrefix=d[j][g].eventPrefix||g;this.widgetBaseClass=j+"-"+g;this.options=
-d.extend({},d.widget.defaults,d[j][g].defaults,d.metadata&&d.metadata.get(l)[g],n);this.element=d(l).bind("setData."+g,function(o,p,q){if(o.target==l)return m._setData(p,q)}).bind("getData."+g,function(o,p){if(o.target==l)return m._getData(p)}).bind("remove",function(){return m.destroy()});this._init()};d[j][g].prototype=d.extend({},d.widget.prototype,i);d[j][g].getterSetter="option"};d.widget.prototype={_init:function(){},destroy:function(){this.element.removeData(this.widgetName).removeClass(this.widgetBaseClass+
-"-disabled "+this.namespace+"-state-disabled").removeAttr("aria-disabled")},option:function(g,i){var j=g,l=this;if(typeof g=="string"){if(i===undefined)return this._getData(g);j={};j[g]=i}d.each(j,function(n,m){l._setData(n,m)})},_getData:function(g){return this.options[g]},_setData:function(g,i){this.options[g]=i;if(g=="disabled")this.element[i?"addClass":"removeClass"](this.widgetBaseClass+"-disabled "+this.namespace+"-state-disabled").attr("aria-disabled",i)},enable:function(){this._setData("disabled",
-false)},disable:function(){this._setData("disabled",true)},_trigger:function(g,i,j){var l=this.options[g];g=g==this.widgetEventPrefix?g:this.widgetEventPrefix+g;i=d.Event(i);i.type=g;this.element.trigger(i,j);return!(d.isFunction(l)&&l.call(this.element[0],i,j)===false||i.isDefaultPrevented())}};d.widget.defaults={disabled:false};d.ui.mouse={_mouseInit:function(){var g=this;this.element.bind("mousedown."+this.widgetName,function(i){return g._mouseDown(i)}).bind("click."+this.widgetName,function(){if(g._preventClickEvent)return g._preventClickEvent=
-false});if(d.browser.msie){this._mouseUnselectable=this.element.attr("unselectable");this.element.attr("unselectable","on")}this.started=false},_mouseDestroy:function(){this.element.unbind("."+this.widgetName);d.browser.msie&&this.element.attr("unselectable",this._mouseUnselectable)},_mouseDown:function(g){this._mouseStarted&&this._mouseUp(g);this._mouseDownEvent=g;var i=this,j=g.which==1,l=typeof this.options.cancel=="string"?d(g.target).parents().add(g.target).filter(this.options.cancel).length:
-false;if(!j||l||!this._mouseCapture(g))return true;this.mouseDelayMet=!this.options.delay;if(!this.mouseDelayMet)this._mouseDelayTimer=setTimeout(function(){i.mouseDelayMet=true},this.options.delay);if(this._mouseDistanceMet(g)&&this._mouseDelayMet(g)){this._mouseStarted=this._mouseStart(g)!==false;if(!this._mouseStarted){g.preventDefault();return true}}this._mouseMoveDelegate=function(n){return i._mouseMove(n)};this._mouseUpDelegate=function(n){return i._mouseUp(n)};d(document).bind("mousemove."+
-this.widgetName,this._mouseMoveDelegate).bind("mouseup."+this.widgetName,this._mouseUpDelegate);d.browser.safari||g.preventDefault();return true},_mouseMove:function(g){if(d.browser.msie&&!g.button)return this._mouseUp(g);if(this._mouseStarted){this._mouseDrag(g);return g.preventDefault()}if(this._mouseDistanceMet(g)&&this._mouseDelayMet(g))(this._mouseStarted=this._mouseStart(this._mouseDownEvent,g)!==false)?this._mouseDrag(g):this._mouseUp(g);return!this._mouseStarted},_mouseUp:function(g){d(document).unbind("mousemove."+
-this.widgetName,this._mouseMoveDelegate).unbind("mouseup."+this.widgetName,this._mouseUpDelegate);if(this._mouseStarted){this._mouseStarted=false;this._preventClickEvent=true;this._mouseStop(g)}return false},_mouseDistanceMet:function(g){return Math.max(Math.abs(this._mouseDownEvent.pageX-g.pageX),Math.abs(this._mouseDownEvent.pageY-g.pageY))>=this.options.distance},_mouseDelayMet:function(){return this.mouseDelayMet},_mouseStart:function(){},_mouseDrag:function(){},_mouseStop:function(){},_mouseCapture:function(){return true}};
-d.ui.mouse.defaults={cancel:null,distance:1,delay:0}})(jQuery);
-(function(d){d.widget("ui.draggable",d.extend({},d.ui.mouse,{_init:function(){if(this.options.helper=="original"&&!/^(?:r|a|f)/.test(this.element.css("position")))this.element[0].style.position="relative";this.options.cssNamespace&&this.element.addClass(this.options.cssNamespace+"-draggable");this.options.disabled&&this.element.addClass(this.options.cssNamespace+"-draggable-disabled");this._mouseInit()},destroy:function(){if(this.element.data("draggable")){this.element.removeData("draggable").unbind(".draggable").removeClass(this.options.cssNamespace+"-draggable "+
-this.options.cssNamespace+"-draggable-dragging "+this.options.cssNamespace+"-draggable-disabled");this._mouseDestroy()}},_mouseCapture:function(a){var b=this.options;if(this.helper||b.disabled||d(a.target).is("."+this.options.cssNamespace+"-resizable-handle"))return false;this.handle=this._getHandle(a);if(!this.handle)return false;return true},_mouseStart:function(a){var b=this.options;this.helper=this._createHelper(a);this._cacheHelperProportions();if(d.ui.ddmanager)d.ui.ddmanager.current=this;this._cacheMargins();
-this.cssPosition=this.helper.css("position");this.scrollParent=this.helper.scrollParent();this.offset=this.element.offset();this.offset={top:this.offset.top-this.margins.top,left:this.offset.left-this.margins.left};d.extend(this.offset,{click:{left:a.pageX-this.offset.left,top:a.pageY-this.offset.top},parent:this._getParentOffset(),relative:this._getRelativeOffset()});this.originalPosition=this._generatePosition(a);this.originalPageX=a.pageX;this.originalPageY=a.pageY;b.cursorAt&&this._adjustOffsetFromHelper(b.cursorAt);
-b.containment&&this._setContainment();this._trigger("start",a);this._cacheHelperProportions();d.ui.ddmanager&&!b.dropBehaviour&&d.ui.ddmanager.prepareOffsets(this,a);this.helper.addClass(b.cssNamespace+"-draggable-dragging");this._mouseDrag(a,true);return true},_mouseDrag:function(a,b){this.position=this._generatePosition(a);this.positionAbs=this._convertPositionTo("absolute");if(!b){var c=this._uiHash();this._trigger("drag",a,c);this.position=c.position}if(!this.options.axis||this.options.axis!=
-"y")this.helper[0].style.left=this.position.left+"px";if(!this.options.axis||this.options.axis!="x")this.helper[0].style.top=this.position.top+"px";d.ui.ddmanager&&d.ui.ddmanager.drag(this,a);return false},_mouseStop:function(a){var b=false;if(d.ui.ddmanager&&!this.options.dropBehaviour)b=d.ui.ddmanager.drop(this,a);if(this.dropped){b=this.dropped;this.dropped=false}if(this.options.revert=="invalid"&&!b||this.options.revert=="valid"&&b||this.options.revert===true||d.isFunction(this.options.revert)&&
-this.options.revert.call(this.element,b)){var c=this;d(this.helper).animate(this.originalPosition,parseInt(this.options.revertDuration,10),function(){c._trigger("stop",a);c._clear()})}else{this._trigger("stop",a);this._clear()}return false},_getHandle:function(a){var b=!this.options.handle||!d(this.options.handle,this.element).length?true:false;d(this.options.handle,this.element).find("*").andSelf().each(function(){if(this==a.target)b=true});return b},_createHelper:function(a){var b=this.options;
-a=d.isFunction(b.helper)?d(b.helper.apply(this.element[0],[a])):b.helper=="clone"?this.element.clone():this.element;a.parents("body").length||a.appendTo(b.appendTo=="parent"?this.element[0].parentNode:b.appendTo);a[0]!=this.element[0]&&!/(fixed|absolute)/.test(a.css("position"))&&a.css("position","absolute");return a},_adjustOffsetFromHelper:function(a){if(a.left!=undefined)this.offset.click.left=a.left+this.margins.left;if(a.right!=undefined)this.offset.click.left=this.helperProportions.width-a.right+
-this.margins.left;if(a.top!=undefined)this.offset.click.top=a.top+this.margins.top;if(a.bottom!=undefined)this.offset.click.top=this.helperProportions.height-a.bottom+this.margins.top},_getParentOffset:function(){this.offsetParent=this.helper.offsetParent();var a=this.offsetParent.offset();if(this.cssPosition=="absolute"&&this.scrollParent[0]!=document&&d.ui.contains(this.scrollParent[0],this.offsetParent[0])){a.left+=this.scrollParent.scrollLeft();a.top+=this.scrollParent.scrollTop()}if(this.offsetParent[0]==
-document.body&&d.browser.mozilla||this.offsetParent[0].tagName&&this.offsetParent[0].tagName.toLowerCase()=="html"&&d.browser.msie)a={top:0,left:0};return{top:a.top+(parseInt(this.offsetParent.css("borderTopWidth"),10)||0),left:a.left+(parseInt(this.offsetParent.css("borderLeftWidth"),10)||0)}},_getRelativeOffset:function(){if(this.cssPosition=="relative"){var a=this.element.position();return{top:a.top-(parseInt(this.helper.css("top"),10)||0)+this.scrollParent.scrollTop(),left:a.left-(parseInt(this.helper.css("left"),
-10)||0)+this.scrollParent.scrollLeft()}}else return{top:0,left:0}},_cacheMargins:function(){this.margins={left:parseInt(this.element.css("marginLeft"),10)||0,top:parseInt(this.element.css("marginTop"),10)||0}},_cacheHelperProportions:function(){this.helperProportions={width:this.helper.outerWidth(),height:this.helper.outerHeight()}},_setContainment:function(){var a=this.options;if(a.containment=="parent")a.containment=this.helper[0].parentNode;if(a.containment=="document"||a.containment=="window")this.containment=
-[0-this.offset.relative.left-this.offset.parent.left,0-this.offset.relative.top-this.offset.parent.top,d(a.containment=="document"?document:window).width()-this.helperProportions.width-this.margins.left,(d(a.containment=="document"?document:window).height()||document.body.parentNode.scrollHeight)-this.helperProportions.height-this.margins.top];if(!/^(document|window|parent)$/.test(a.containment)){var b=d(a.containment)[0];a=d(a.containment).offset();var c=d(b).css("overflow")!="hidden";this.containment=
-[a.left+(parseInt(d(b).css("borderLeftWidth"),10)||0)-this.margins.left,a.top+(parseInt(d(b).css("borderTopWidth"),10)||0)-this.margins.top,a.left+(c?Math.max(b.scrollWidth,b.offsetWidth):b.offsetWidth)-(parseInt(d(b).css("borderLeftWidth"),10)||0)-this.helperProportions.width-this.margins.left,a.top+(c?Math.max(b.scrollHeight,b.offsetHeight):b.offsetHeight)-(parseInt(d(b).css("borderTopWidth"),10)||0)-this.helperProportions.height-this.margins.top]}},_convertPositionTo:function(a,b){if(!b)b=this.position;
-var c=a=="absolute"?1:-1,e=this.cssPosition=="absolute"&&!(this.scrollParent[0]!=document&&d.ui.contains(this.scrollParent[0],this.offsetParent[0]))?this.offsetParent:this.scrollParent,f=/(html|body)/i.test(e[0].tagName);return{top:b.top+this.offset.relative.top*c+this.offset.parent.top*c-(this.cssPosition=="fixed"?-this.scrollParent.scrollTop():f?0:e.scrollTop())*c,left:b.left+this.offset.relative.left*c+this.offset.parent.left*c-(this.cssPosition=="fixed"?-this.scrollParent.scrollLeft():f?0:e.scrollLeft())*
-c}},_generatePosition:function(a){var b=this.options,c=this.cssPosition=="absolute"&&!(this.scrollParent[0]!=document&&d.ui.contains(this.scrollParent[0],this.offsetParent[0]))?this.offsetParent:this.scrollParent,e=/(html|body)/i.test(c[0].tagName);if(this.cssPosition=="relative"&&!(this.scrollParent[0]!=document&&this.scrollParent[0]!=this.offsetParent[0]))this.offset.relative=this._getRelativeOffset();var f=a.pageX,h=a.pageY;if(this.originalPosition){if(this.containment){if(a.pageX-this.offset.click.left<
-this.containment[0])f=this.containment[0]+this.offset.click.left;if(a.pageY-this.offset.click.top<this.containment[1])h=this.containment[1]+this.offset.click.top;if(a.pageX-this.offset.click.left>this.containment[2])f=this.containment[2]+this.offset.click.left;if(a.pageY-this.offset.click.top>this.containment[3])h=this.containment[3]+this.offset.click.top}if(b.grid){h=this.originalPageY+Math.round((h-this.originalPageY)/b.grid[1])*b.grid[1];h=this.containment?!(h-this.offset.click.top<this.containment[1]||
-h-this.offset.click.top>this.containment[3])?h:!(h-this.offset.click.top<this.containment[1])?h-b.grid[1]:h+b.grid[1]:h;f=this.originalPageX+Math.round((f-this.originalPageX)/b.grid[0])*b.grid[0];f=this.containment?!(f-this.offset.click.left<this.containment[0]||f-this.offset.click.left>this.containment[2])?f:!(f-this.offset.click.left<this.containment[0])?f-b.grid[0]:f+b.grid[0]:f}}return{top:h-this.offset.click.top-this.offset.relative.top-this.offset.parent.top+(this.cssPosition=="fixed"?-this.scrollParent.scrollTop():
-e?0:c.scrollTop()),left:f-this.offset.click.left-this.offset.relative.left-this.offset.parent.left+(this.cssPosition=="fixed"?-this.scrollParent.scrollLeft():e?0:c.scrollLeft())}},_clear:function(){this.helper.removeClass(this.options.cssNamespace+"-draggable-dragging");this.helper[0]!=this.element[0]&&!this.cancelHelperRemoval&&this.helper.remove();this.helper=null;this.cancelHelperRemoval=false},_trigger:function(a,b,c){c=c||this._uiHash();d.ui.plugin.call(this,a,[b,c]);if(a=="drag")this.positionAbs=
-this._convertPositionTo("absolute");return d.widget.prototype._trigger.call(this,a,b,c)},plugins:{},_uiHash:function(){return{helper:this.helper,position:this.position,absolutePosition:this.positionAbs,options:this.options}}}));d.extend(d.ui.draggable,{version:"1.6rc5",eventPrefix:"drag",defaults:{appendTo:"parent",axis:false,cancel:":input,option",connectToSortable:false,containment:false,cssNamespace:"ui",cursor:"default",cursorAt:null,delay:0,distance:1,grid:false,handle:false,helper:"original",
-iframeFix:false,opacity:null,refreshPositions:false,revert:false,revertDuration:500,scope:"default",scroll:true,scrollSensitivity:20,scrollSpeed:20,snap:false,snapMode:"both",snapTolerance:20,stack:false,zIndex:null}});d.ui.plugin.add("draggable","connectToSortable",{start:function(a,b){var c=d(this).data("draggable");c.sortables=[];d(b.options.connectToSortable).each(function(){d(this+"").each(function(){if(d.data(this,"sortable")){var e=d.data(this,"sortable");c.sortables.push({instance:e,shouldRevert:e.options.revert});
-e._refreshItems();e._trigger("activate",a,c)}})})},stop:function(a){var b=d(this).data("draggable");d.each(b.sortables,function(){if(this.instance.isOver){this.instance.isOver=0;b.cancelHelperRemoval=true;this.instance.cancelHelperRemoval=false;if(this.shouldRevert)this.instance.options.revert=true;this.instance._mouseStop(a);this.instance.element.triggerHandler("sortreceive",[a,d.extend(this.instance._uiHash(),{sender:b.element})],this.instance.options.receive);this.instance.options.helper=this.instance.options._helper;
-b.options.helper=="original"&&this.instance.currentItem.css({top:"auto",left:"auto"})}else{this.instance.cancelHelperRemoval=false;this.instance._trigger("deactivate",a,b)}})},drag:function(a,b){var c=d(this).data("draggable"),e=this,f=function(h){return d.ui.isOver(this.positionAbs.top+this.offset.click.top,this.positionAbs.left+this.offset.click.left,h.top,h.left,h.height,h.width)};d.each(c.sortables,function(){if(f.call(c,this.instance.containerCache)){if(!this.instance.isOver){this.instance.isOver=
-1;this.instance.currentItem=d(e).clone().appendTo(this.instance.element).data("sortable-item",true);this.instance.options._helper=this.instance.options.helper;this.instance.options.helper=function(){return b.helper[0]};a.target=this.instance.currentItem[0];this.instance._mouseCapture(a,true);this.instance._mouseStart(a,true,true);this.instance.offset.click.top=c.offset.click.top;this.instance.offset.click.left=c.offset.click.left;this.instance.offset.parent.left-=c.offset.parent.left-this.instance.offset.parent.left;
-this.instance.offset.parent.top-=c.offset.parent.top-this.instance.offset.parent.top;c._trigger("toSortable",a);c.dropped=this.instance.element;this.instance.fromOutside=true}this.instance.currentItem&&this.instance._mouseDrag(a)}else if(this.instance.isOver){this.instance.isOver=0;this.instance.cancelHelperRemoval=true;this.instance.options.revert=false;this.instance._mouseStop(a,true);this.instance.options.helper=this.instance.options._helper;this.instance.currentItem.remove();this.instance.placeholder&&
-this.instance.placeholder.remove();c._trigger("fromSortable",a);c.dropped=false}})}});d.ui.plugin.add("draggable","cursor",{start:function(a,b){var c=d("body");if(c.css("cursor"))b.options._cursor=c.css("cursor");c.css("cursor",b.options.cursor)},stop:function(a,b){b.options._cursor&&d("body").css("cursor",b.options._cursor)}});d.ui.plugin.add("draggable","iframeFix",{start:function(a,b){d(b.options.iframeFix===true?"iframe":b.options.iframeFix).each(function(){d('<div class="ui-draggable-iframeFix" style="background: #fff;"></div>').css({width:this.offsetWidth+
-"px",height:this.offsetHeight+"px",position:"absolute",opacity:"0.001",zIndex:1E3}).css(d(this).offset()).appendTo("body")})},stop:function(){d("div.ui-draggable-iframeFix").each(function(){this.parentNode.removeChild(this)})}});d.ui.plugin.add("draggable","opacity",{start:function(a,b){var c=d(b.helper);if(c.css("opacity"))b.options._opacity=c.css("opacity");c.css("opacity",b.options.opacity)},stop:function(a,b){b.options._opacity&&d(b.helper).css("opacity",b.options._opacity)}});d.ui.plugin.add("draggable",
-"scroll",{start:function(){var a=d(this).data("draggable");if(a.scrollParent[0]!=document&&a.scrollParent[0].tagName!="HTML")a.overflowOffset=a.scrollParent.offset()},drag:function(a,b){var c=b.options,e=false,f=d(this).data("draggable");if(f.scrollParent[0]!=document&&f.scrollParent[0].tagName!="HTML"){if(f.overflowOffset.top+f.scrollParent[0].offsetHeight-a.pageY<c.scrollSensitivity)f.scrollParent[0].scrollTop=e=f.scrollParent[0].scrollTop+c.scrollSpeed;else if(a.pageY-f.overflowOffset.top<c.scrollSensitivity)f.scrollParent[0].scrollTop=
-e=f.scrollParent[0].scrollTop-c.scrollSpeed;if(f.overflowOffset.left+f.scrollParent[0].offsetWidth-a.pageX<c.scrollSensitivity)f.scrollParent[0].scrollLeft=e=f.scrollParent[0].scrollLeft+c.scrollSpeed;else if(a.pageX-f.overflowOffset.left<c.scrollSensitivity)f.scrollParent[0].scrollLeft=e=f.scrollParent[0].scrollLeft-c.scrollSpeed}else{if(a.pageY-d(document).scrollTop()<c.scrollSensitivity)e=d(document).scrollTop(d(document).scrollTop()-c.scrollSpeed);else if(d(window).height()-(a.pageY-d(document).scrollTop())<
-c.scrollSensitivity)e=d(document).scrollTop(d(document).scrollTop()+c.scrollSpeed);if(a.pageX-d(document).scrollLeft()<c.scrollSensitivity)e=d(document).scrollLeft(d(document).scrollLeft()-c.scrollSpeed);else if(d(window).width()-(a.pageX-d(document).scrollLeft())<c.scrollSensitivity)e=d(document).scrollLeft(d(document).scrollLeft()+c.scrollSpeed)}e!==false&&d.ui.ddmanager&&!c.dropBehaviour&&d.ui.ddmanager.prepareOffsets(f,a)}});d.ui.plugin.add("draggable","snap",{start:function(a,b){var c=d(this).data("draggable");
-c.snapElements=[];d(b.options.snap.constructor!=String?b.options.snap.items||":data(draggable)":b.options.snap).each(function(){var e=d(this),f=e.offset();this!=c.element[0]&&c.snapElements.push({item:this,width:e.outerWidth(),height:e.outerHeight(),top:f.top,left:f.left})})},drag:function(a,b){for(var c=d(this).data("draggable"),e=b.options.snapTolerance,f=b.absolutePosition.left,h=f+c.helperProportions.width,k=b.absolutePosition.top,g=k+c.helperProportions.height,i=c.snapElements.length-1;i>=0;i--){var j=
-c.snapElements[i].left,l=j+c.snapElements[i].width,n=c.snapElements[i].top,m=n+c.snapElements[i].height;if(j-e<f&&f<l+e&&n-e<k&&k<m+e||j-e<f&&f<l+e&&n-e<g&&g<m+e||j-e<h&&h<l+e&&n-e<k&&k<m+e||j-e<h&&h<l+e&&n-e<g&&g<m+e){if(b.options.snapMode!="inner"){var o=Math.abs(n-g)<=e,p=Math.abs(m-k)<=e,q=Math.abs(j-h)<=e,r=Math.abs(l-f)<=e;if(o)b.position.top=c._convertPositionTo("relative",{top:n-c.helperProportions.height,left:0}).top;if(p)b.position.top=c._convertPositionTo("relative",{top:m,left:0}).top;
-if(q)b.position.left=c._convertPositionTo("relative",{top:0,left:j-c.helperProportions.width}).left;if(r)b.position.left=c._convertPositionTo("relative",{top:0,left:l}).left}var s=o||p||q||r;if(b.options.snapMode!="outer"){o=Math.abs(n-k)<=e;p=Math.abs(m-g)<=e;q=Math.abs(j-f)<=e;r=Math.abs(l-h)<=e;if(o)b.position.top=c._convertPositionTo("relative",{top:n,left:0}).top;if(p)b.position.top=c._convertPositionTo("relative",{top:m-c.helperProportions.height,left:0}).top;if(q)b.position.left=c._convertPositionTo("relative",
-{top:0,left:j}).left;if(r)b.position.left=c._convertPositionTo("relative",{top:0,left:l-c.helperProportions.width}).left}if(!c.snapElements[i].snapping&&(o||p||q||r||s))c.options.snap.snap&&c.options.snap.snap.call(c.element,a,d.extend(c._uiHash(),{snapItem:c.snapElements[i].item}));c.snapElements[i].snapping=o||p||q||r||s}else{c.snapElements[i].snapping&&c.options.snap.release&&c.options.snap.release.call(c.element,a,d.extend(c._uiHash(),{snapItem:c.snapElements[i].item}));c.snapElements[i].snapping=
-false}}}});d.ui.plugin.add("draggable","stack",{start:function(a,b){var c=d.makeArray(d(b.options.stack.group)).sort(function(e,f){return(parseInt(d(e).css("zIndex"),10)||b.options.stack.min)-(parseInt(d(f).css("zIndex"),10)||b.options.stack.min)});d(c).each(function(e){this.style.zIndex=b.options.stack.min+e});this[0].style.zIndex=b.options.stack.min+c.length}});d.ui.plugin.add("draggable","zIndex",{start:function(a,b){var c=d(b.helper);if(c.css("zIndex"))b.options._zIndex=c.css("zIndex");c.css("zIndex",
-b.options.zIndex)},stop:function(a,b){b.options._zIndex&&d(b.helper).css("zIndex",b.options._zIndex)}})})(jQuery);
-(function(d){d.widget("ui.droppable",{_init:function(){var a=this.options.accept;this.isover=0;this.isout=1;this.options.accept=this.options.accept&&d.isFunction(this.options.accept)?this.options.accept:function(b){return b.is(a)};this.proportions={width:this.element[0].offsetWidth,height:this.element[0].offsetHeight};d.ui.ddmanager.droppables[this.options.scope]=d.ui.ddmanager.droppables[this.options.scope]||[];d.ui.ddmanager.droppables[this.options.scope].push(this);this.options.cssNamespace&&this.element.addClass(this.options.cssNamespace+
-"-droppable")},destroy:function(){for(var a=d.ui.ddmanager.droppables[this.options.scope],b=0;b<a.length;b++)a[b]==this&&a.splice(b,1);this.element.removeClass(this.options.cssNamespace+"-droppable "+this.options.cssNamespace+"-droppable-disabled").removeData("droppable").unbind(".droppable")},_setData:function(a,b){if(a=="accept")this.options.accept=b&&d.isFunction(b)?b:function(c){return c.is(accept)};else d.widget.prototype._setData.apply(this,arguments)},_activate:function(a){var b=d.ui.ddmanager.current;
-d.ui.plugin.call(this,"activate",[a,this.ui(b)]);b&&this._trigger("activate",a,this.ui(b))},_deactivate:function(a){var b=d.ui.ddmanager.current;d.ui.plugin.call(this,"deactivate",[a,this.ui(b)]);b&&this._trigger("deactivate",a,this.ui(b))},_over:function(a){var b=d.ui.ddmanager.current;if(!(!b||(b.currentItem||b.element)[0]==this.element[0]))if(this.options.accept.call(this.element,b.currentItem||b.element)){d.ui.plugin.call(this,"over",[a,this.ui(b)]);this._trigger("over",a,this.ui(b))}},_out:function(a){var b=
-d.ui.ddmanager.current;if(!(!b||(b.currentItem||b.element)[0]==this.element[0]))if(this.options.accept.call(this.element,b.currentItem||b.element)){d.ui.plugin.call(this,"out",[a,this.ui(b)]);this._trigger("out",a,this.ui(b))}},_drop:function(a,b){var c=b||d.ui.ddmanager.current;if(!c||(c.currentItem||c.element)[0]==this.element[0])return false;var e=false;this.element.find(":data(droppable)").not("."+c.options.cssNamespace+"-draggable-dragging").each(function(){var f=d.data(this,"droppable");if(f.options.greedy&&
-d.ui.intersect(c,d.extend(f,{offset:f.element.offset()}),f.options.tolerance)){e=true;return false}});if(e)return false;if(this.options.accept.call(this.element,c.currentItem||c.element)){d.ui.plugin.call(this,"drop",[a,this.ui(c)]);this._trigger("drop",a,this.ui(c));return this.element}return false},plugins:{},ui:function(a){return{draggable:a.currentItem||a.element,helper:a.helper,position:a.position,absolutePosition:a.positionAbs,options:this.options,element:this.element}}});d.extend(d.ui.droppable,
-{version:"1.6rc5",eventPrefix:"drop",defaults:{accept:"*",activeClass:null,cssNamespace:"ui",greedy:false,hoverClass:null,scope:"default",tolerance:"intersect"}});d.ui.intersect=function(a,b,c){if(!b.offset)return false;var e=(a.positionAbs||a.position.absolute).left,f=e+a.helperProportions.width,h=(a.positionAbs||a.position.absolute).top,k=h+a.helperProportions.height,g=b.offset.left,i=g+b.proportions.width,j=b.offset.top,l=j+b.proportions.height;switch(c){case "fit":return g<e&&f<i&&j<h&&k<l;case "intersect":return g<
-e+a.helperProportions.width/2&&f-a.helperProportions.width/2<i&&j<h+a.helperProportions.height/2&&k-a.helperProportions.height/2<l;case "pointer":return d.ui.isOver((a.positionAbs||a.position.absolute).top+(a.clickOffset||a.offset.click).top,(a.positionAbs||a.position.absolute).left+(a.clickOffset||a.offset.click).left,j,g,b.proportions.height,b.proportions.width);case "touch":return(h>=j&&h<=l||k>=j&&k<=l||h<j&&k>l)&&(e>=g&&e<=i||f>=g&&f<=i||e<g&&f>i);default:return false}};d.ui.ddmanager={current:null,
-droppables:{"default":[]},prepareOffsets:function(a,b){var c=d.ui.ddmanager.droppables[a.options.scope],e=b?b.type:null,f=(a.currentItem||a.element).find(":data(droppable)").andSelf(),h=0;a:for(;h<c.length;h++)if(!(c[h].options.disabled||a&&!c[h].options.accept.call(c[h].element,a.currentItem||a.element))){for(var k=0;k<f.length;k++)if(f[k]==c[h].element[0]){c[h].proportions.height=0;continue a}c[h].visible=c[h].element.css("display")!="none";if(c[h].visible){c[h].offset=c[h].element.offset();c[h].proportions=
-{width:c[h].element[0].offsetWidth,height:c[h].element[0].offsetHeight};if(e=="dragstart"||e=="sortactivate")c[h]._activate.call(c[h],b)}}},drop:function(a,b){var c=false;d.each(d.ui.ddmanager.droppables[a.options.scope],function(){if(this.options){if(!this.options.disabled&&this.visible&&d.ui.intersect(a,this,this.options.tolerance))c=this._drop.call(this,b);if(!this.options.disabled&&this.visible&&this.options.accept.call(this.element,a.currentItem||a.element)){this.isout=1;this.isover=0;this._deactivate.call(this,
-b)}}});return c},drag:function(a,b){a.options.refreshPositions&&d.ui.ddmanager.prepareOffsets(a,b);d.each(d.ui.ddmanager.droppables[a.options.scope],function(){if(!(this.options.disabled||this.greedyChild||!this.visible)){var c=d.ui.intersect(a,this,this.options.tolerance);if(c=!c&&this.isover==1?"isout":c&&this.isover==0?"isover":null){var e;if(this.options.greedy){var f=this.element.parents(":data(droppable):eq(0)");if(f.length){e=d.data(f[0],"droppable");e.greedyChild=c=="isover"?1:0}}if(e&&c==
-"isover"){e.isover=0;e.isout=1;e._out.call(e,b)}this[c]=1;this[c=="isout"?"isover":"isout"]=0;this[c=="isover"?"_over":"_out"].call(this,b);if(e&&c=="isout"){e.isout=0;e.isover=1;e._over.call(e,b)}}}})}};d.ui.plugin.add("droppable","activeClass",{activate:function(a,b){d(this).addClass(b.options.activeClass)},deactivate:function(a,b){d(this).removeClass(b.options.activeClass)},drop:function(a,b){d(this).removeClass(b.options.activeClass)}});d.ui.plugin.add("droppable","hoverClass",{over:function(a,
-b){d(this).addClass(b.options.hoverClass)},out:function(a,b){d(this).removeClass(b.options.hoverClass)},drop:function(a,b){d(this).removeClass(b.options.hoverClass)}})})(jQuery);
-(function(d){d.widget("ui.resizable",d.extend({},d.ui.mouse,{_init:function(){var a=this,b=this.options,c=this.element.css("position");this.originalElement=this.element;this.element.addClass("ui-resizable").css({position:/static/.test(c)?"relative":c});d.extend(b,{_aspectRatio:!!b.aspectRatio,helper:b.helper||b.ghost||b.animate?b.helper||"ui-resizable-helper":null,knobHandles:b.knobHandles===true?"ui-resizable-knob-handle":b.knobHandles});b.defaultTheme={"ui-resizable":{display:"block"},"ui-resizable-handle":{position:"absolute",
-background:"#F2F2F2",fontSize:"0.1px"},"ui-resizable-n":{cursor:"n-resize",height:"4px",left:"0px",right:"0px",borderTop:"1px solid #DEDEDE"},"ui-resizable-s":{cursor:"s-resize",height:"4px",left:"0px",right:"0px",borderBottom:"1px solid #DEDEDE"},"ui-resizable-e":{cursor:"e-resize",width:"4px",top:"0px",bottom:"0px",borderRight:"1px solid #DEDEDE"},"ui-resizable-w":{cursor:"w-resize",width:"4px",top:"0px",bottom:"0px",borderLeft:"1px solid #DEDEDE"},"ui-resizable-se":{cursor:"se-resize",width:"4px",
-height:"4px",borderRight:"1px solid #DEDEDE",borderBottom:"1px solid #DEDEDE"},"ui-resizable-sw":{cursor:"sw-resize",width:"4px",height:"4px",borderBottom:"1px solid #DEDEDE",borderLeft:"1px solid #DEDEDE"},"ui-resizable-ne":{cursor:"ne-resize",width:"4px",height:"4px",borderRight:"1px solid #DEDEDE",borderTop:"1px solid #DEDEDE"},"ui-resizable-nw":{cursor:"nw-resize",width:"4px",height:"4px",borderLeft:"1px solid #DEDEDE",borderTop:"1px solid #DEDEDE"}};b.knobTheme={"ui-resizable-handle":{background:"#F2F2F2",
-border:"1px solid #808080",height:"8px",width:"8px"},"ui-resizable-n":{cursor:"n-resize",top:"0px",left:"45%"},"ui-resizable-s":{cursor:"s-resize",bottom:"0px",left:"45%"},"ui-resizable-e":{cursor:"e-resize",right:"0px",top:"45%"},"ui-resizable-w":{cursor:"w-resize",left:"0px",top:"45%"},"ui-resizable-se":{cursor:"se-resize",right:"0px",bottom:"0px"},"ui-resizable-sw":{cursor:"sw-resize",left:"0px",bottom:"0px"},"ui-resizable-nw":{cursor:"nw-resize",left:"0px",top:"0px"},"ui-resizable-ne":{cursor:"ne-resize",
-right:"0px",top:"0px"}};b._nodeName=this.element[0].nodeName;if(b._nodeName.match(/canvas|textarea|input|select|button|img/i)){c=this.element;/relative/.test(c.css("position"))&&d.browser.opera&&c.css({position:"relative",top:"auto",left:"auto"});c.wrap(d('<div class="ui-wrapper"\tstyle="overflow: hidden;"></div>').css({position:c.css("position"),width:c.outerWidth(),height:c.outerHeight(),top:c.css("top"),left:c.css("left")}));c=this.element;this.element=this.element.parent();this.element.data("resizable",
-this);this.element.css({marginLeft:c.css("marginLeft"),marginTop:c.css("marginTop"),marginRight:c.css("marginRight"),marginBottom:c.css("marginBottom")});c.css({marginLeft:0,marginTop:0,marginRight:0,marginBottom:0});d.browser.safari&&b.preventDefault&&c.css("resize","none");b.proportionallyResize=c.css({position:"static",zoom:1,display:"block"});this.element.css({margin:c.css("margin")});this._proportionallyResize()}if(!b.handles)b.handles=!d(".ui-resizable-handle",this.element).length?"e,s,se":
-{n:".ui-resizable-n",e:".ui-resizable-e",s:".ui-resizable-s",w:".ui-resizable-w",se:".ui-resizable-se",sw:".ui-resizable-sw",ne:".ui-resizable-ne",nw:".ui-resizable-nw"};if(b.handles.constructor==String){b.zIndex=b.zIndex||1E3;if(b.handles=="all")b.handles="n,e,s,w,se,sw,ne,nw";c=b.handles.split(",");b.handles={};for(var e={handle:"position: absolute; display: none; overflow:hidden;",n:"top: 0pt; width:100%;",e:"right: 0pt; height:100%;",s:"bottom: 0pt; width:100%;",w:"left: 0pt; height:100%;",se:"bottom: 0pt; right: 0px;",
-sw:"bottom: 0pt; left: 0px;",ne:"top: 0pt; right: 0px;",nw:"top: 0pt; left: 0px;"},f=0;f<c.length;f++){var h=d.trim(c[f]),k=b.defaultTheme,g="ui-resizable-"+h,i=!d.ui.css(g)&&!b.knobHandles,j=d.ui.css("ui-resizable-knob-handle");k=d.extend(k[g],k["ui-resizable-handle"]);j=d.extend(b.knobTheme[g],!j?b.knobTheme["ui-resizable-handle"]:{});var l=/sw|se|ne|nw/.test(h)?{zIndex:++b.zIndex}:{};g=d(['<div class="ui-resizable-handle ',g,'" style="',i?e[h]:"",e.handle,'"></div>'].join("")).css(l);"se"==h&&
-g.addClass("ui-icon ui-icon-gripsmall-diagonal-se");b.handles[h]=".ui-resizable-"+h;this.element.append(g.css(i?k:{}).css(b.knobHandles?j:{}).addClass(b.knobHandles?"ui-resizable-knob-handle":"").addClass(b.knobHandles))}if(b.knobHandles)this.element.addClass("ui-resizable-knob").css(!d.ui.css("ui-resizable-knob")?{}:{})}this._renderAxis=function(n){n=n||this.element;for(var m in b.handles){if(b.handles[m].constructor==String)b.handles[m]=d(b.handles[m],this.element).show();b.transparent&&b.handles[m].css({opacity:0});
-if(this.element.is(".ui-wrapper")&&b._nodeName.match(/textarea|input|select|button/i)){var o=d(b.handles[m],this.element),p=0;p=/sw|ne|nw|se|n|s/.test(m)?o.outerHeight():o.outerWidth();o=["padding",/ne|nw|n/.test(m)?"Top":/se|sw|s/.test(m)?"Bottom":/^e$/.test(m)?"Right":"Left"].join("");b.transparent||n.css(o,p);this._proportionallyResize()}d(b.handles[m])}};this._renderAxis(this.element);b._handles=d(".ui-resizable-handle",a.element);b.disableSelection&&b._handles.disableSelection();b._handles.mouseover(function(){if(!b.resizing){if(this.className)var n=
-this.className.match(/ui-resizable-(se|sw|ne|nw|n|e|s|w)/i);a.axis=b.axis=n&&n[1]?n[1]:"se"}});if(b.autoHide){b._handles.hide();d(a.element).addClass("ui-resizable-autohide").hover(function(){d(this).removeClass("ui-resizable-autohide");b._handles.show()},function(){if(!b.resizing){d(this).addClass("ui-resizable-autohide");b._handles.hide()}})}this._mouseInit()},destroy:function(){var a=this.element,b=a.children(".ui-resizable").get(0);this._mouseDestroy();var c=function(e){d(e).removeClass("ui-resizable ui-resizable-disabled").removeData("resizable").unbind(".resizable").find(".ui-resizable-handle").remove()};
-c(a);if(a.is(".ui-wrapper")&&b){a.parent().append(d(b).css({position:a.css("position"),width:a.outerWidth(),height:a.outerHeight(),top:a.css("top"),left:a.css("left")})).end().remove();c(b)}},_mouseCapture:function(a){if(this.options.disabled)return false;var b=false;for(var c in this.options.handles)if(d(this.options.handles[c])[0]==a.target)b=true;if(!b)return false;return true},_mouseStart:function(a){var b=this.options,c=this.element.position(),e=this.element,f=function(g){return parseInt(g,10)||
-0},h=d.browser.msie&&d.browser.version<7;b.resizing=true;b.documentScroll={top:d(document).scrollTop(),left:d(document).scrollLeft()};if(e.is(".ui-draggable")||/absolute/.test(e.css("position"))){var k=d.browser.msie&&!b.containment&&/absolute/.test(e.css("position"))&&!/relative/.test(e.parent().css("position"));e.css({position:"absolute",top:c.top+(k?b.documentScroll.top:0),left:c.left+(k?b.documentScroll.left:0)})}d.browser.opera&&/relative/.test(e.css("position"))&&e.css({position:"relative",
-top:"auto",left:"auto"});this._renderProxy();c=f(this.helper.css("left"));f=f(this.helper.css("top"));if(b.containment){c+=d(b.containment).scrollLeft()||0;f+=d(b.containment).scrollTop()||0}this.offset=this.helper.offset();this.position={left:c,top:f};this.size=b.helper||h?{width:e.outerWidth(),height:e.outerHeight()}:{width:e.width(),height:e.height()};this.originalSize=b.helper||h?{width:e.outerWidth(),height:e.outerHeight()}:{width:e.width(),height:e.height()};this.originalPosition={left:c,top:f};
-this.sizeDiff={width:e.outerWidth()-e.width(),height:e.outerHeight()-e.height()};this.originalMousePosition={left:a.pageX,top:a.pageY};b.aspectRatio=typeof b.aspectRatio=="number"?b.aspectRatio:this.originalSize.width/this.originalSize.height||1;if(b.preserveCursor){b=d(".ui-resizable-"+this.axis).css("cursor");d("body").css("cursor",b=="auto"?this.axis+"-resize":b)}this._propagate("start",a);return true},_mouseDrag:function(a){var b=this.helper,c=this.options,e=this.originalMousePosition,f=this._change[this.axis];
-if(!f)return false;e=f.apply(this,[a,a.pageX-e.left||0,a.pageY-e.top||0]);if(c._aspectRatio||a.shiftKey)e=this._updateRatio(e,a);e=this._respectSize(e,a);this._propagate("resize",a);b.css({top:this.position.top+"px",left:this.position.left+"px",width:this.size.width+"px",height:this.size.height+"px"});!c.helper&&c.proportionallyResize&&this._proportionallyResize();this._updateCache(e);this._trigger("resize",a,this.ui());return false},_mouseStop:function(a){this.options.resizing=false;var b=this.options;
-if(b.helper){var c=b.proportionallyResize,e=c&&/textarea/i.test(c.get(0).nodeName);c=e&&d.ui.hasScroll(c.get(0),"left")?0:this.sizeDiff.height;e={width:this.size.width-(e?0:this.sizeDiff.width),height:this.size.height-c};c=parseInt(this.element.css("left"),10)+(this.position.left-this.originalPosition.left)||null;var f=parseInt(this.element.css("top"),10)+(this.position.top-this.originalPosition.top)||null;b.animate||this.element.css(d.extend(e,{top:f,left:c}));b.helper&&!b.animate&&this._proportionallyResize()}b.preserveCursor&&
-d("body").css("cursor","auto");this._propagate("stop",a);b.helper&&this.helper.remove();return false},_updateCache:function(a){this.offset=this.helper.offset();if(a.left)this.position.left=a.left;if(a.top)this.position.top=a.top;if(a.height)this.size.height=a.height;if(a.width)this.size.width=a.width},_updateRatio:function(a){var b=this.options,c=this.position,e=this.size,f=this.axis;if(a.height)a.width=e.height*b.aspectRatio;else if(a.width)a.height=e.width/b.aspectRatio;if(f=="sw"){a.left=c.left+
-(e.width-a.width);a.top=null}if(f=="nw"){a.top=c.top+(e.height-a.height);a.left=c.left+(e.width-a.width)}return a},_respectSize:function(a){var b=this.options,c=this.axis,e=a.width&&b.maxWidth&&b.maxWidth<a.width,f=a.height&&b.maxHeight&&b.maxHeight<a.height,h=a.width&&b.minWidth&&b.minWidth>a.width,k=a.height&&b.minHeight&&b.minHeight>a.height;if(h)a.width=b.minWidth;if(k)a.height=b.minHeight;if(e)a.width=b.maxWidth;if(f)a.height=b.maxHeight;var g=this.originalPosition.left+this.originalSize.width,
-i=this.position.top+this.size.height,j=/sw|nw|w/.test(c);c=/nw|ne|n/.test(c);if(h&&j)a.left=g-b.minWidth;if(e&&j)a.left=g-b.maxWidth;if(k&&c)a.top=i-b.minHeight;if(f&&c)a.top=i-b.maxHeight;if((b=!a.width&&!a.height)&&!a.left&&a.top)a.top=null;else if(b&&!a.top&&a.left)a.left=null;return a},_proportionallyResize:function(){var a=this.options;if(a.proportionallyResize){var b=a.proportionallyResize,c=this.helper||this.element;if(!a.borderDif){var e=[b.css("borderTopWidth"),b.css("borderRightWidth"),
-b.css("borderBottomWidth"),b.css("borderLeftWidth")],f=[b.css("paddingTop"),b.css("paddingRight"),b.css("paddingBottom"),b.css("paddingLeft")];a.borderDif=d.map(e,function(h,k){var g=parseInt(h,10)||0,i=parseInt(f[k],10)||0;return g+i})}d.browser.msie&&(d(c).is(":hidden")||d(c).parents(":hidden").length)||b.css({height:c.height()-a.borderDif[0]-a.borderDif[2]||0,width:c.width()-a.borderDif[1]-a.borderDif[3]||0})}},_renderProxy:function(){var a=this.element,b=this.options;this.elementOffset=a.offset();
-if(b.helper){this.helper=this.helper||d('<div style="overflow:hidden;"></div>');var c=d.browser.msie&&d.browser.version<7,e=c?1:0;c=c?2:-1;this.helper.addClass(b.helper).css({width:a.outerWidth()+c,height:a.outerHeight()+c,position:"absolute",left:this.elementOffset.left-e+"px",top:this.elementOffset.top-e+"px",zIndex:++b.zIndex});this.helper.appendTo("body");b.disableSelection&&this.helper.disableSelection()}else this.helper=a},_change:{e:function(a,b){return{width:this.originalSize.width+b}},w:function(a,
-b){return{left:this.originalPosition.left+b,width:this.originalSize.width-b}},n:function(a,b,c){return{top:this.originalPosition.top+c,height:this.originalSize.height-c}},s:function(a,b,c){return{height:this.originalSize.height+c}},se:function(a,b,c){return d.extend(this._change.s.apply(this,arguments),this._change.e.apply(this,[a,b,c]))},sw:function(a,b,c){return d.extend(this._change.s.apply(this,arguments),this._change.w.apply(this,[a,b,c]))},ne:function(a,b,c){return d.extend(this._change.n.apply(this,
-arguments),this._change.e.apply(this,[a,b,c]))},nw:function(a,b,c){return d.extend(this._change.n.apply(this,arguments),this._change.w.apply(this,[a,b,c]))}},_propagate:function(a,b){d.ui.plugin.call(this,a,[b,this.ui()]);a!="resize"&&this._trigger(a,b,this.ui())},plugins:{},ui:function(){return{originalElement:this.originalElement,element:this.element,helper:this.helper,position:this.position,size:this.size,options:this.options,originalSize:this.originalSize,originalPosition:this.originalPosition}}}));
-d.extend(d.ui.resizable,{version:"1.6rc5",eventPrefix:"resize",defaults:{alsoResize:false,animate:false,animateDuration:"slow",animateEasing:"swing",aspectRatio:false,autoHide:false,cancel:":input,option",containment:false,delay:0,disableSelection:true,distance:1,ghost:false,grid:false,knobHandles:false,maxHeight:null,maxWidth:null,minHeight:10,minWidth:10,preserveCursor:true,preventDefault:true,proportionallyResize:false,transparent:false}});d.ui.plugin.add("resizable","alsoResize",{start:function(a,
-b){var c=b.options;d(this).data("resizable");var e=function(f){d(f).each(function(){d(this).data("resizable-alsoresize",{width:parseInt(d(this).width(),10),height:parseInt(d(this).height(),10),left:parseInt(d(this).css("left"),10),top:parseInt(d(this).css("top"),10)})})};if(typeof c.alsoResize=="object"&&!c.alsoResize.parentNode)if(c.alsoResize.length){c.alsoResize=c.alsoResize[0];e(c.alsoResize)}else d.each(c.alsoResize,function(f){e(f)});else e(c.alsoResize)},resize:function(a,b){var c=b.options,
-e=d(this).data("resizable"),f=e.originalSize,h=e.originalPosition,k={height:e.size.height-f.height||0,width:e.size.width-f.width||0,top:e.position.top-h.top||0,left:e.position.left-h.left||0},g=function(i,j){d(i).each(function(){var l=d(this),n=d(this).data("resizable-alsoresize"),m={};d.each((j&&j.length?j:["width","height","top","left"])||["width","height","top","left"],function(o,p){var q=(n[p]||0)+(k[p]||0);if(q&&q>=0)m[p]=q||null});if(/relative/.test(l.css("position"))&&d.browser.opera){e._revertToRelativePosition=
-true;l.css({position:"absolute",top:"auto",left:"auto"})}l.css(m)})};typeof c.alsoResize=="object"&&!c.alsoResize.nodeType?d.each(c.alsoResize,function(i,j){g(i,j)}):g(c.alsoResize)},stop:function(){var a=d(this).data("resizable");if(a._revertToRelativePosition&&d.browser.opera){a._revertToRelativePosition=false;el.css({position:"relative"})}d(this).removeData("resizable-alsoresize-start")}});d.ui.plugin.add("resizable","animate",{stop:function(a,b){var c=b.options,e=d(this).data("resizable"),f=c.proportionallyResize,
-h=f&&/textarea/i.test(f.get(0).nodeName),k=h&&d.ui.hasScroll(f.get(0),"left")?0:e.sizeDiff.height;h={width:e.size.width-(h?0:e.sizeDiff.width),height:e.size.height-k};k=parseInt(e.element.css("left"),10)+(e.position.left-e.originalPosition.left)||null;var g=parseInt(e.element.css("top"),10)+(e.position.top-e.originalPosition.top)||null;e.element.animate(d.extend(h,g&&k?{top:g,left:k}:{}),{duration:c.animateDuration,easing:c.animateEasing,step:function(){var i={width:parseInt(e.element.css("width"),
-10),height:parseInt(e.element.css("height"),10),top:parseInt(e.element.css("top"),10),left:parseInt(e.element.css("left"),10)};f&&f.css({width:i.width,height:i.height});e._updateCache(i);e._propagate("resize",a)}})}});d.ui.plugin.add("resizable","containment",{start:function(a,b){var c=b.options,e=d(this).data("resizable"),f=e.element;c=c.containment;if(f=c instanceof d?c.get(0):/parent/.test(c)?f.parent().get(0):c){e.containerElement=d(f);if(/document/.test(c)||c==document){e.containerOffset={left:0,
-top:0};e.containerPosition={left:0,top:0};e.parentData={element:d(document),left:0,top:0,width:d(document).width(),height:d(document).height()||document.body.parentNode.scrollHeight}}else{e.containerOffset=d(f).offset();e.containerPosition=d(f).position();e.containerSize={height:d(f).innerHeight(),width:d(f).innerWidth()};c=e.containerOffset;var h=e.containerSize.height,k=e.containerSize.width;k=d.ui.hasScroll(f,"left")?f.scrollWidth:k;h=d.ui.hasScroll(f)?f.scrollHeight:h;e.parentData={element:f,
-left:c.left,top:c.top,width:k,height:h}}}},resize:function(a,b){var c=b.options,e=d(this).data("resizable"),f=e.containerOffset,h=e.position,k=c._aspectRatio||a.shiftKey,g={top:0,left:0},i=e.containerElement;if(i[0]!=document&&/static/.test(i.css("position")))g=e.containerPosition;if(h.left<(c.helper?f.left:0)){e.size.width+=c.helper?e.position.left-f.left:e.position.left-g.left;if(k)e.size.height=e.size.width/c.aspectRatio;e.position.left=c.helper?f.left:0}if(h.top<(c.helper?f.top:0)){e.size.height+=
-c.helper?e.position.top-f.top:e.position.top;if(k)e.size.width=e.size.height*c.aspectRatio;e.position.top=c.helper?f.top:0}h=Math.abs((c.helper?e.offset.left-g.left:e.offset.left-g.left)+e.sizeDiff.width);f=Math.abs((c.helper?e.offset.top-g.top:e.offset.top-f.top)+e.sizeDiff.height);if(h+e.size.width>=e.parentData.width){e.size.width=e.parentData.width-h;if(k)e.size.height=e.size.width/c.aspectRatio}if(f+e.size.height>=e.parentData.height){e.size.height=e.parentData.height-f;if(k)e.size.width=e.size.height*
-c.aspectRatio}},stop:function(a,b){var c=b.options,e=d(this).data("resizable"),f=e.containerOffset,h=e.containerPosition,k=e.containerElement,g=d(e.helper),i=g.offset(),j=g.outerWidth()-e.sizeDiff.width;e=g.outerHeight()-e.sizeDiff.height;c.helper&&!c.animate&&/relative/.test(k.css("position"))&&d(this).css({left:i.left-h.left-f.left,width:j,height:e});c.helper&&!c.animate&&/static/.test(k.css("position"))&&d(this).css({left:i.left-h.left-f.left,width:j,height:e})}});d.ui.plugin.add("resizable","ghost",
-{start:function(a,b){var c=b.options,e=d(this).data("resizable"),f=c.proportionallyResize,h=e.size;e.ghost=f?f.clone():e.element.clone();e.ghost.css({opacity:0.25,display:"block",position:"relative",height:h.height,width:h.width,margin:0,left:0,top:0}).addClass("ui-resizable-ghost").addClass(typeof c.ghost=="string"?c.ghost:"");e.ghost.appendTo(e.helper)},resize:function(){var a=d(this).data("resizable");a.ghost&&a.ghost.css({position:"relative",height:a.size.height,width:a.size.width})},stop:function(){var a=
-d(this).data("resizable");a.ghost&&a.helper&&a.helper.get(0).removeChild(a.ghost.get(0))}});d.ui.plugin.add("resizable","grid",{resize:function(a,b){var c=b.options,e=d(this).data("resizable"),f=e.size,h=e.originalSize,k=e.originalPosition,g=e.axis;c.grid=typeof c.grid=="number"?[c.grid,c.grid]:c.grid;var i=Math.round((f.width-h.width)/(c.grid[0]||1))*(c.grid[0]||1);c=Math.round((f.height-h.height)/(c.grid[1]||1))*(c.grid[1]||1);if(/^(se|s|e)$/.test(g)){e.size.width=h.width+i;e.size.height=h.height+
-c}else if(/^(ne)$/.test(g)){e.size.width=h.width+i;e.size.height=h.height+c;e.position.top=k.top-c}else{if(/^(sw)$/.test(g)){e.size.width=h.width+i;e.size.height=h.height+c}else{e.size.width=h.width+i;e.size.height=h.height+c;e.position.top=k.top-c}e.position.left=k.left-i}}})})(jQuery);
-(function(d){d.widget("ui.selectable",d.extend({},d.ui.mouse,{_init:function(){var a=this;this.element.addClass("ui-selectable");this.dragged=false;var b;this.refresh=function(){b=d(a.options.filter,a.element[0]);b.each(function(){var c=d(this),e=c.offset();d.data(this,"selectable-item",{element:this,$element:c,left:e.left,top:e.top,right:e.left+c.outerWidth(),bottom:e.top+c.outerHeight(),startselected:false,selected:c.hasClass("ui-selected"),selecting:c.hasClass("ui-selecting"),unselecting:c.hasClass("ui-unselecting")})})};
-this.refresh();this.selectees=b.addClass("ui-selectee");this._mouseInit();this.helper=d(document.createElement("div")).css({border:"1px dotted black"}).addClass("ui-selectable-helper")},destroy:function(){this.element.removeClass("ui-selectable ui-selectable-disabled").removeData("selectable").unbind(".selectable");this._mouseDestroy()},_mouseStart:function(a){var b=this;this.opos=[a.pageX,a.pageY];if(!this.options.disabled){var c=this.options;this.selectees=d(c.filter,this.element[0]);this._trigger("start",
-a);d("body").append(this.helper);this.helper.css({"z-index":100,position:"absolute",left:a.clientX,top:a.clientY,width:0,height:0});c.autoRefresh&&this.refresh();this.selectees.filter(".ui-selected").each(function(){var e=d.data(this,"selectable-item");e.startselected=true;if(!a.metaKey){e.$element.removeClass("ui-selected");e.selected=false;e.$element.addClass("ui-unselecting");e.unselecting=true;b._trigger("unselecting",a,{unselecting:e.element})}});d(a.target).parents().andSelf().each(function(){var e=
-d.data(this,"selectable-item");if(e){e.$element.removeClass("ui-unselecting").addClass("ui-selecting");e.unselecting=false;e.selecting=true;e.selected=true;b._trigger("selecting",a,{selecting:e.element});return false}})}},_mouseDrag:function(a){var b=this;this.dragged=true;if(!this.options.disabled){var c=this.options,e=this.opos[0],f=this.opos[1],h=a.pageX,k=a.pageY;if(e>h){var g=h;h=e;e=g}if(f>k){g=k;k=f;f=g}this.helper.css({left:e,top:f,width:h-e,height:k-f});this.selectees.each(function(){var i=
-d.data(this,"selectable-item");if(!(!i||i.element==b.element[0])){var j=false;if(c.tolerance=="touch")j=!(i.left>h||i.right<e||i.top>k||i.bottom<f);else if(c.tolerance=="fit")j=i.left>e&&i.right<h&&i.top>f&&i.bottom<k;if(j){if(i.selected){i.$element.removeClass("ui-selected");i.selected=false}if(i.unselecting){i.$element.removeClass("ui-unselecting");i.unselecting=false}if(!i.selecting){i.$element.addClass("ui-selecting");i.selecting=true;b._trigger("selecting",a,{selecting:i.element})}}else{if(i.selecting)if(a.metaKey&&
-i.startselected){i.$element.removeClass("ui-selecting");i.selecting=false;i.$element.addClass("ui-selected");i.selected=true}else{i.$element.removeClass("ui-selecting");i.selecting=false;if(i.startselected){i.$element.addClass("ui-unselecting");i.unselecting=true}b._trigger("unselecting",a,{unselecting:i.element})}if(i.selected)if(!a.metaKey&&!i.startselected){i.$element.removeClass("ui-selected");i.selected=false;i.$element.addClass("ui-unselecting");i.unselecting=true;b._trigger("unselecting",a,
-{unselecting:i.element})}}}});return false}},_mouseStop:function(a){var b=this;this.dragged=false;d(".ui-unselecting",this.element[0]).each(function(){var c=d.data(this,"selectable-item");c.$element.removeClass("ui-unselecting");c.unselecting=false;c.startselected=false;b._trigger("unselected",a,{unselected:c.element})});d(".ui-selecting",this.element[0]).each(function(){var c=d.data(this,"selectable-item");c.$element.removeClass("ui-selecting").addClass("ui-selected");c.selecting=false;c.selected=
-true;c.startselected=true;b._trigger("selected",a,{selected:c.element})});this._trigger("stop",a);this.helper.remove();return false}}));d.extend(d.ui.selectable,{version:"1.6rc5",defaults:{appendTo:"body",autoRefresh:true,cancel:":input,option",delay:0,distance:0,filter:"*",tolerance:"touch"}})})(jQuery);
-(function(d){d.widget("ui.sortable",d.extend({},d.ui.mouse,{_init:function(){this.containerCache={};this.options.cssNamespace&&this.element.addClass(this.options.cssNamespace+"-sortable");this.refresh();this.floating=this.items.length?/left|right/.test(this.items[0].item.css("float")):false;this.offset=this.element.offset();this._mouseInit()},destroy:function(){this.element.removeClass(this.options.cssNamespace+"-sortable "+this.options.cssNamespace+"-sortable-disabled").removeData("sortable").unbind(".sortable");
-this._mouseDestroy();for(var a=this.items.length-1;a>=0;a--)this.items[a].item.removeData("sortable-item")},_mouseCapture:function(a,b){if(this.reverting)return false;if(this.options.disabled||this.options.type=="static")return false;this._refreshItems(a);var c=null,e=this;d(a.target).parents().each(function(){if(d.data(this,"sortable-item")==e){c=d(this);return false}});if(d.data(a.target,"sortable-item")==e)c=d(a.target);if(!c)return false;if(this.options.handle&&!b){var f=false;d(this.options.handle,
-c).find("*").andSelf().each(function(){if(this==a.target)f=true});if(!f)return false}this.currentItem=c;this._removeCurrentsFromItems();return true},_mouseStart:function(a,b,c){b=this.options;this.currentContainer=this;this.refreshPositions();this.helper=this._createHelper(a);this._cacheHelperProportions();this._cacheMargins();this.scrollParent=this.helper.scrollParent();this.offset=this.currentItem.offset();this.offset={top:this.offset.top-this.margins.top,left:this.offset.left-this.margins.left};
-this.helper.css("position","absolute");this.cssPosition=this.helper.css("position");d.extend(this.offset,{click:{left:a.pageX-this.offset.left,top:a.pageY-this.offset.top},parent:this._getParentOffset(),relative:this._getRelativeOffset()});this.originalPosition=this._generatePosition(a);this.originalPageX=a.pageX;this.originalPageY=a.pageY;b.cursorAt&&this._adjustOffsetFromHelper(b.cursorAt);this.domPosition={prev:this.currentItem.prev()[0],parent:this.currentItem.parent()[0]};this.helper[0]!=this.currentItem[0]&&
-this.currentItem.hide();this._createPlaceholder();b.containment&&this._setContainment();this._trigger("start",a);this._preserveHelperProportions||this._cacheHelperProportions();if(!c)for(c=this.containers.length-1;c>=0;c--)this.containers[c]._trigger("activate",a,this);if(d.ui.ddmanager)d.ui.ddmanager.current=this;d.ui.ddmanager&&!b.dropBehaviour&&d.ui.ddmanager.prepareOffsets(this,a);this.dragging=true;this.helper.addClass(b.cssNamespace+"-sortable-helper");this._mouseDrag(a);return true},_mouseDrag:function(a){this.position=
-this._generatePosition(a);this.positionAbs=this._convertPositionTo("absolute");if(!this.lastPositionAbs)this.lastPositionAbs=this.positionAbs;d.ui.plugin.call(this,"sort",[a,this._uiHash()]);this.positionAbs=this._convertPositionTo("absolute");if(!this.options.axis||this.options.axis!="y")this.helper[0].style.left=this.position.left+"px";if(!this.options.axis||this.options.axis!="x")this.helper[0].style.top=this.position.top+"px";for(var b=this.items.length-1;b>=0;b--){var c=this.items[b],e=c.item[0],
-f=this._intersectsWithPointer(c);if(f)if(e!=this.currentItem[0]&&this.placeholder[f==1?"next":"prev"]()[0]!=e&&!d.ui.contains(this.placeholder[0],e)&&(this.options.type=="semi-dynamic"?!d.ui.contains(this.element[0],e):true)){this.direction=f==1?"down":"up";if(this.options.tolerance=="pointer"||this._intersectsWithSides(c))this.options.sortIndicator.call(this,a,c);else break;this._trigger("change",a);break}}this._contactContainers(a);d.ui.ddmanager&&d.ui.ddmanager.drag(this,a);this._trigger("sort",
-a);this.lastPositionAbs=this.positionAbs;return false},_mouseStop:function(a,b){if(a){d.ui.ddmanager&&!this.options.dropBehaviour&&d.ui.ddmanager.drop(this,a);if(this.options.revert){var c=this,e=c.placeholder.offset();c.reverting=true;d(this.helper).animate({left:e.left-this.offset.parent.left-c.margins.left+(this.offsetParent[0]==document.body?0:this.offsetParent[0].scrollLeft),top:e.top-this.offset.parent.top-c.margins.top+(this.offsetParent[0]==document.body?0:this.offsetParent[0].scrollTop)},
-parseInt(this.options.revert,10)||500,function(){c._clear(a)})}else this._clear(a,b);return false}},cancel:function(){if(this.dragging){this._mouseUp();this.options.helper=="original"?this.currentItem.css(this._storedCSS).removeClass(this.options.cssNamespace+"-sortable-helper"):this.currentItem.show();for(var a=this.containers.length-1;a>=0;a--){this.containers[a]._trigger("deactivate",null,this);if(this.containers[a].containerCache.over){this.containers[a]._trigger("out",null,this);this.containers[a].containerCache.over=
-0}}}this.placeholder[0].parentNode&&this.placeholder[0].parentNode.removeChild(this.placeholder[0]);this.options.helper!="original"&&this.helper&&this.helper[0].parentNode&&this.helper.remove();d.extend(this,{helper:null,dragging:false,reverting:false,_noFinalSort:null});this.domPosition.prev?d(this.domPosition.prev).after(this.currentItem):d(this.domPosition.parent).prepend(this.currentItem);return true},serialize:function(a){var b=this._getItemsAsjQuery(a&&a.connected),c=[];a=a||{};d(b).each(function(){var e=
-(d(a.item||this).attr(a.attribute||"id")||"").match(a.expression||/(.+)[-=_](.+)/);if(e)c.push((a.key||e[1]+"[]")+"="+(a.key&&a.expression?e[1]:e[2]))});return c.join("&")},toArray:function(a){var b=this._getItemsAsjQuery(a&&a.connected),c=[];a=a||{};b.each(function(){c.push(d(a.item||this).attr(a.attribute||"id")||"")});return c},_intersectsWith:function(a){var b=this.positionAbs.left,c=b+this.helperProportions.width,e=this.positionAbs.top,f=e+this.helperProportions.height,h=a.left,k=h+a.width,g=
-a.top,i=g+a.height,j=this.offset.click.top,l=this.offset.click.left;return this.options.tolerance=="pointer"||this.options.forcePointerForContainers||this.options.tolerance!="pointer"&&this.helperProportions[this.floating?"width":"height"]>a[this.floating?"width":"height"]?e+j>g&&e+j<i&&b+l>h&&b+l<k:h<b+this.helperProportions.width/2&&c-this.helperProportions.width/2<k&&g<e+this.helperProportions.height/2&&f-this.helperProportions.height/2<i},_intersectsWithPointer:function(a){var b=d.ui.isOverAxis(this.positionAbs.top+
-this.offset.click.top,a.top,a.height);a=d.ui.isOverAxis(this.positionAbs.left+this.offset.click.left,a.left,a.width);b=b&&a;a=this._getDragVerticalDirection();var c=this._getDragHorizontalDirection();if(!b)return false;return this.floating?c&&c=="right"||a=="down"?2:1:a&&(a=="down"?2:1)},_intersectsWithSides:function(a){var b=d.ui.isOverAxis(this.positionAbs.top+this.offset.click.top,a.top+a.height/2,a.height);a=d.ui.isOverAxis(this.positionAbs.left+this.offset.click.left,a.left+a.width/2,a.width);
-var c=this._getDragVerticalDirection(),e=this._getDragHorizontalDirection();return this.floating&&e?e=="right"&&a||e=="left"&&!a:c&&(c=="down"&&b||c=="up"&&!b)},_getDragVerticalDirection:function(){var a=this.positionAbs.top-this.lastPositionAbs.top;return a!=0&&(a>0?"down":"up")},_getDragHorizontalDirection:function(){var a=this.positionAbs.left-this.lastPositionAbs.left;return a!=0&&(a>0?"right":"left")},refresh:function(a){this._refreshItems(a);this.refreshPositions()},_getItemsAsjQuery:function(a){var b=
-[],c=[];if(this.options.connectWith&&a)for(a=this.options.connectWith.length-1;a>=0;a--)for(var e=d(this.options.connectWith[a]),f=e.length-1;f>=0;f--){var h=d.data(e[f],"sortable");if(h&&h!=this&&!h.options.disabled)c.push([d.isFunction(h.options.items)?h.options.items.call(h.element):d(h.options.items,h.element).not("."+h.options.cssNamespace+"-sortable-helper"),h])}c.push([d.isFunction(this.options.items)?this.options.items.call(this.element,null,{options:this.options,item:this.currentItem}):d(this.options.items,
-this.element).not("."+this.options.cssNamespace+"-sortable-helper"),this]);for(a=c.length-1;a>=0;a--)c[a][0].each(function(){b.push(this)});return d(b)},_removeCurrentsFromItems:function(){for(var a=this.currentItem.find(":data(sortable-item)"),b=0;b<this.items.length;b++)for(var c=0;c<a.length;c++)a[c]==this.items[b].item[0]&&this.items.splice(b,1)},_refreshItems:function(a){this.items=[];this.containers=[this];var b=this.items,c=[[d.isFunction(this.options.items)?this.options.items.call(this.element[0],
-a,{item:this.currentItem}):d(this.options.items,this.element),this]];if(this.options.connectWith)for(var e=this.options.connectWith.length-1;e>=0;e--)for(var f=d(this.options.connectWith[e]),h=f.length-1;h>=0;h--){var k=d.data(f[h],"sortable");if(k&&k!=this&&!k.options.disabled){c.push([d.isFunction(k.options.items)?k.options.items.call(k.element[0],a,{item:this.currentItem}):d(k.options.items,k.element),k]);this.containers.push(k)}}for(e=c.length-1;e>=0;e--){a=c[e][1];f=c[e][0];h=0;for(k=f.length;h<
-k;h++){var g=d(f[h]);g.data("sortable-item",a);b.push({item:g,instance:a,width:0,height:0,left:0,top:0})}}},refreshPositions:function(a){if(this.offsetParent&&this.helper)this.offset.parent=this._getParentOffset();for(var b=this.items.length-1;b>=0;b--){var c=this.items[b];if(!(c.instance!=this.currentContainer&&this.currentContainer&&c.item[0]!=this.currentItem[0])){var e=this.options.toleranceElement?d(this.options.toleranceElement,c.item):c.item;if(!a)if(this.options.accurateIntersection){c.width=
-e.outerWidth();c.height=e.outerHeight()}else{c.width=e[0].offsetWidth;c.height=e[0].offsetHeight}e=e.offset();c.left=e.left;c.top=e.top}}if(this.options.custom&&this.options.custom.refreshContainers)this.options.custom.refreshContainers.call(this);else for(b=this.containers.length-1;b>=0;b--){e=this.containers[b].element.offset();this.containers[b].containerCache.left=e.left;this.containers[b].containerCache.top=e.top;this.containers[b].containerCache.width=this.containers[b].element.outerWidth();
-this.containers[b].containerCache.height=this.containers[b].element.outerHeight()}},_createPlaceholder:function(a){var b=a||this,c=b.options;if(!c.placeholder||c.placeholder.constructor==String){var e=c.placeholder;c.placeholder={element:function(){var f=d(document.createElement(b.currentItem[0].nodeName)).addClass(e||b.currentItem[0].className+" "+b.options.cssNamespace+"-sortable-placeholder").removeClass(b.options.cssNamespace+"-sortable-helper")[0];if(!e)f.style.visibility="hidden";return f},
-update:function(f,h){if(!(e&&!c.forcePlaceholderSize)){h.height()||h.height(b.currentItem.innerHeight()-parseInt(b.currentItem.css("paddingTop")||0,10)-parseInt(b.currentItem.css("paddingBottom")||0,10));h.width()||h.width(b.currentItem.innerWidth()-parseInt(b.currentItem.css("paddingLeft")||0,10)-parseInt(b.currentItem.css("paddingRight")||0,10))}}}}b.placeholder=d(c.placeholder.element.call(b.element,b.currentItem));b.currentItem.after(b.placeholder);c.placeholder.update(b,b.placeholder)},_contactContainers:function(a){for(var b=
-this.containers.length-1;b>=0;b--)if(this._intersectsWith(this.containers[b].containerCache)){if(!this.containers[b].containerCache.over){if(this.currentContainer!=this.containers[b]){for(var c=1E4,e=null,f=this.positionAbs[this.containers[b].floating?"left":"top"],h=this.items.length-1;h>=0;h--)if(d.ui.contains(this.containers[b].element[0],this.items[h].item[0])){var k=this.items[h][this.containers[b].floating?"left":"top"];if(Math.abs(k-f)<c){c=Math.abs(k-f);e=this.items[h]}}if(!e&&!this.options.dropOnEmpty)continue;
-this.currentContainer=this.containers[b];e?this.options.sortIndicator.call(this,a,e,null,true):this.options.sortIndicator.call(this,a,null,this.containers[b].element,true);this._trigger("change",a);this.containers[b]._trigger("change",a,this);this.options.placeholder.update(this.currentContainer,this.placeholder)}this.containers[b]._trigger("over",a,this);this.containers[b].containerCache.over=1}}else if(this.containers[b].containerCache.over){this.containers[b]._trigger("out",a,this);this.containers[b].containerCache.over=
-0}},_createHelper:function(a){var b=this.options;a=d.isFunction(b.helper)?d(b.helper.apply(this.element[0],[a,this.currentItem])):b.helper=="clone"?this.currentItem.clone():this.currentItem;a.parents("body").length||d(b.appendTo!="parent"?b.appendTo:this.currentItem[0].parentNode)[0].appendChild(a[0]);if(a[0]==this.currentItem[0])this._storedCSS={width:this.currentItem[0].style.width,height:this.currentItem[0].style.height,position:this.currentItem.css("position"),top:this.currentItem.css("top"),
-left:this.currentItem.css("left")};if(a[0].style.width==""||b.forceHelperSize)a.width(this.currentItem.width());if(a[0].style.height==""||b.forceHelperSize)a.height(this.currentItem.height());return a},_adjustOffsetFromHelper:function(a){if(a.left!=undefined)this.offset.click.left=a.left+this.margins.left;if(a.right!=undefined)this.offset.click.left=this.helperProportions.width-a.right+this.margins.left;if(a.top!=undefined)this.offset.click.top=a.top+this.margins.top;if(a.bottom!=undefined)this.offset.click.top=
-this.helperProportions.height-a.bottom+this.margins.top},_getParentOffset:function(){this.offsetParent=this.helper.offsetParent();var a=this.offsetParent.offset();if(this.cssPosition=="absolute"&&this.scrollParent[0]!=document&&d.ui.contains(this.scrollParent[0],this.offsetParent[0])){a.left+=this.scrollParent.scrollLeft();a.top+=this.scrollParent.scrollTop()}if(this.offsetParent[0]==document.body&&d.browser.mozilla||this.offsetParent[0].tagName&&this.offsetParent[0].tagName.toLowerCase()=="html"&&
-d.browser.msie)a={top:0,left:0};return{top:a.top+(parseInt(this.offsetParent.css("borderTopWidth"),10)||0),left:a.left+(parseInt(this.offsetParent.css("borderLeftWidth"),10)||0)}},_getRelativeOffset:function(){if(this.cssPosition=="relative"){var a=this.currentItem.position();return{top:a.top-(parseInt(this.helper.css("top"),10)||0)+this.scrollParent.scrollTop(),left:a.left-(parseInt(this.helper.css("left"),10)||0)+this.scrollParent.scrollLeft()}}else return{top:0,left:0}},_cacheMargins:function(){this.margins=
-{left:parseInt(this.currentItem.css("marginLeft"),10)||0,top:parseInt(this.currentItem.css("marginTop"),10)||0}},_cacheHelperProportions:function(){this.helperProportions={width:this.helper.outerWidth(),height:this.helper.outerHeight()}},_setContainment:function(){var a=this.options;if(a.containment=="parent")a.containment=this.helper[0].parentNode;if(a.containment=="document"||a.containment=="window")this.containment=[0-this.offset.relative.left-this.offset.parent.left,0-this.offset.relative.top-
-this.offset.parent.top,d(a.containment=="document"?document:window).width()-this.helperProportions.width-this.margins.left,(d(a.containment=="document"?document:window).height()||document.body.parentNode.scrollHeight)-this.helperProportions.height-this.margins.top];if(!/^(document|window|parent)$/.test(a.containment)){var b=d(a.containment)[0];a=d(a.containment).offset();var c=d(b).css("overflow")!="hidden";this.containment=[a.left+(parseInt(d(b).css("borderLeftWidth"),10)||0)-this.margins.left,a.top+
-(parseInt(d(b).css("borderTopWidth"),10)||0)-this.margins.top,a.left+(c?Math.max(b.scrollWidth,b.offsetWidth):b.offsetWidth)-(parseInt(d(b).css("borderLeftWidth"),10)||0)-this.helperProportions.width-this.margins.left,a.top+(c?Math.max(b.scrollHeight,b.offsetHeight):b.offsetHeight)-(parseInt(d(b).css("borderTopWidth"),10)||0)-this.helperProportions.height-this.margins.top]}},_convertPositionTo:function(a,b){if(!b)b=this.position;var c=a=="absolute"?1:-1,e=this.cssPosition=="absolute"&&!(this.scrollParent[0]!=
-document&&d.ui.contains(this.scrollParent[0],this.offsetParent[0]))?this.offsetParent:this.scrollParent,f=/(html|body)/i.test(e[0].tagName);return{top:b.top+this.offset.relative.top*c+this.offset.parent.top*c-(this.cssPosition=="fixed"?-this.scrollParent.scrollTop():f?0:e.scrollTop())*c,left:b.left+this.offset.relative.left*c+this.offset.parent.left*c-(this.cssPosition=="fixed"?-this.scrollParent.scrollLeft():f?0:e.scrollLeft())*c}},_generatePosition:function(a){var b=this.options,c=this.cssPosition==
-"absolute"&&!(this.scrollParent[0]!=document&&d.ui.contains(this.scrollParent[0],this.offsetParent[0]))?this.offsetParent:this.scrollParent,e=/(html|body)/i.test(c[0].tagName);if(this.cssPosition=="relative"&&!(this.scrollParent[0]!=document&&this.scrollParent[0]!=this.offsetParent[0]))this.offset.relative=this._getRelativeOffset();var f=a.pageX,h=a.pageY;if(this.originalPosition){if(this.containment){if(a.pageX-this.offset.click.left<this.containment[0])f=this.containment[0]+this.offset.click.left;
-if(a.pageY-this.offset.click.top<this.containment[1])h=this.containment[1]+this.offset.click.top;if(a.pageX-this.offset.click.left>this.containment[2])f=this.containment[2]+this.offset.click.left;if(a.pageY-this.offset.click.top>this.containment[3])h=this.containment[3]+this.offset.click.top}if(b.grid){h=this.originalPageY+Math.round((h-this.originalPageY)/b.grid[1])*b.grid[1];h=this.containment?!(h-this.offset.click.top<this.containment[1]||h-this.offset.click.top>this.containment[3])?h:!(h-this.offset.click.top<
-this.containment[1])?h-b.grid[1]:h+b.grid[1]:h;f=this.originalPageX+Math.round((f-this.originalPageX)/b.grid[0])*b.grid[0];f=this.containment?!(f-this.offset.click.left<this.containment[0]||f-this.offset.click.left>this.containment[2])?f:!(f-this.offset.click.left<this.containment[0])?f-b.grid[0]:f+b.grid[0]:f}}return{top:h-this.offset.click.top-this.offset.relative.top-this.offset.parent.top+(this.cssPosition=="fixed"?-this.scrollParent.scrollTop():e?0:c.scrollTop()),left:f-this.offset.click.left-
-this.offset.relative.left-this.offset.parent.left+(this.cssPosition=="fixed"?-this.scrollParent.scrollLeft():e?0:c.scrollLeft())}},_rearrange:function(a,b,c,e){c?c[0].appendChild(this.placeholder[0]):b.item[0].parentNode.insertBefore(this.placeholder[0],this.direction=="down"?b.item[0]:b.item[0].nextSibling);this.counter=this.counter?++this.counter:1;var f=this,h=this.counter;window.setTimeout(function(){h==f.counter&&f.refreshPositions(!e)},0)},_clear:function(a,b){this.reverting=false;this._noFinalSort||
-this.placeholder.before(this.currentItem);this._noFinalSort=null;if(this.helper[0]==this.currentItem[0]){for(var c in this._storedCSS)if(this._storedCSS[c]=="auto"||this._storedCSS[c]=="static")this._storedCSS[c]="";this.currentItem.css(this._storedCSS).removeClass(this.options.cssNamespace+"-sortable-helper")}else this.currentItem.show();this.fromOutside&&this._trigger("receive",a,this,b);if(this.fromOutside||this.domPosition.prev!=this.currentItem.prev().not("."+this.options.cssNamespace+"-sortable-helper")[0]||
-this.domPosition.parent!=this.currentItem.parent()[0])this._trigger("update",a,null,b);if(!d.ui.contains(this.element[0],this.currentItem[0])){this._trigger("remove",a,null,b);for(c=this.containers.length-1;c>=0;c--)if(d.ui.contains(this.containers[c].element[0],this.currentItem[0])){this.containers[c]._trigger("receive",a,this,b);this.containers[c]._trigger("update",a,this,b)}}for(c=this.containers.length-1;c>=0;c--){this.containers[c]._trigger("deactivate",a,this,b);if(this.containers[c].containerCache.over){this.containers[c]._trigger("out",
-a,this);this.containers[c].containerCache.over=0}}this.dragging=false;if(this.cancelHelperRemoval){this._trigger("beforeStop",a,null,b);this._trigger("stop",a,null,b);return false}this._trigger("beforeStop",a,null,b);this.placeholder[0].parentNode.removeChild(this.placeholder[0]);this.helper[0]!=this.currentItem[0]&&this.helper.remove();this.helper=null;this._trigger("stop",a,null,b);this.fromOutside=false;return true},_trigger:function(a,b,c,e){d.ui.plugin.call(this,a,[b,this._uiHash(c)]);e||d.widget.prototype._trigger.call(this,
-a,b,this._uiHash(c))===false&&this.cancel()},plugins:{},_uiHash:function(a){var b=a||this;return{helper:b.helper,placeholder:b.placeholder||d([]),position:b.position,absolutePosition:b.positionAbs,item:b.currentItem,sender:a?a.element:null}}}));d.extend(d.ui.sortable,{getter:"serialize toArray",version:"1.6rc5",defaults:{accurateIntersection:true,appendTo:"parent",cancel:":input,option",cssNamespace:"ui",delay:0,distance:1,dropOnEmpty:true,forcePlaceholderSize:false,forceHelperSize:false,helper:"original",
-items:"> *",scope:"default",scroll:true,scrollSensitivity:20,scrollSpeed:20,sortIndicator:d.ui.sortable.prototype._rearrange,tolerance:"default",zIndex:1E3}});d.ui.plugin.add("sortable","cursor",{start:function(){var a=d("body"),b=d(this).data("sortable");if(a.css("cursor"))b.options._cursor=a.css("cursor");a.css("cursor",b.options.cursor)},beforeStop:function(){var a=d(this).data("sortable");a.options._cursor&&d("body").css("cursor",a.options._cursor)}});d.ui.plugin.add("sortable","opacity",{start:function(a,
-b){var c=b.helper,e=d(this).data("sortable");if(c.css("opacity"))e.options._opacity=c.css("opacity");c.css("opacity",e.options.opacity)},beforeStop:function(a,b){var c=d(this).data("sortable");c.options._opacity&&d(b.helper).css("opacity",c.options._opacity)}});d.ui.plugin.add("sortable","scroll",{start:function(){var a=d(this).data("sortable");if(a.scrollParent[0]!=document&&a.scrollParent[0].tagName!="HTML")a.overflowOffset=a.scrollParent.offset()},sort:function(a){var b=d(this).data("sortable"),
-c=b.options,e=false;if(b.scrollParent[0]!=document&&b.scrollParent[0].tagName!="HTML"){if(b.overflowOffset.top+b.scrollParent[0].offsetHeight-a.pageY<c.scrollSensitivity)b.scrollParent[0].scrollTop=e=b.scrollParent[0].scrollTop+c.scrollSpeed;else if(a.pageY-b.overflowOffset.top<c.scrollSensitivity)b.scrollParent[0].scrollTop=e=b.scrollParent[0].scrollTop-c.scrollSpeed;if(b.overflowOffset.left+b.scrollParent[0].offsetWidth-a.pageX<c.scrollSensitivity)b.scrollParent[0].scrollLeft=e=b.scrollParent[0].scrollLeft+
-c.scrollSpeed;else if(a.pageX-b.overflowOffset.left<c.scrollSensitivity)b.scrollParent[0].scrollLeft=e=b.scrollParent[0].scrollLeft-c.scrollSpeed}else{if(a.pageY-d(document).scrollTop()<c.scrollSensitivity)e=d(document).scrollTop(d(document).scrollTop()-c.scrollSpeed);else if(d(window).height()-(a.pageY-d(document).scrollTop())<c.scrollSensitivity)e=d(document).scrollTop(d(document).scrollTop()+c.scrollSpeed);if(a.pageX-d(document).scrollLeft()<c.scrollSensitivity)e=d(document).scrollLeft(d(document).scrollLeft()-
-c.scrollSpeed);else if(d(window).width()-(a.pageX-d(document).scrollLeft())<c.scrollSensitivity)e=d(document).scrollLeft(d(document).scrollLeft()+c.scrollSpeed)}e!==false&&d.ui.ddmanager&&!c.dropBehaviour&&d.ui.ddmanager.prepareOffsets(b,a)}});d.ui.plugin.add("sortable","zIndex",{start:function(a,b){var c=b.helper,e=d(this).data("sortable");if(c.css("zIndex"))e.options._zIndex=c.css("zIndex");c.css("zIndex",e.options.zIndex)},beforeStop:function(a,b){var c=d(this).data("sortable");if(c.options._zIndex)d(b.helper).css("zIndex",
-c.options._zIndex=="auto"?"":c.options._zIndex)}})})(jQuery);
+/*
+ * jQuery UI 1.6rc5
+ *
+ * Copyright (c) 2009 AUTHORS.txt (http://ui.jquery.com/about)
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ *
+ * http://docs.jquery.com/UI
+ */
+;(function($) {
+
+var _remove = $.fn.remove,
+	isFF2 = $.browser.mozilla && (parseFloat($.browser.version) < 1.9);
+
+//Helper functions and ui object
+$.ui = {
+	version: "1.6rc5",
+
+	// $.ui.plugin is deprecated.  Use the proxy pattern instead.
+	plugin: {
+		add: function(module, option, set) {
+			var proto = $.ui[module].prototype;
+			for(var i in set) {
+				proto.plugins[i] = proto.plugins[i] || [];
+				proto.plugins[i].push([option, set[i]]);
+			}
+		},
+		call: function(instance, name, args) {
+			var set = instance.plugins[name];
+			if(!set) { return; }
+
+			for (var i = 0; i < set.length; i++) {
+				if (instance.options[set[i][0]]) {
+					set[i][1].apply(instance.element, args);
+				}
+			}
+		}
+	},
+
+	contains: function(a, b) {
+		return document.compareDocumentPosition
+			? a.compareDocumentPosition(b) & 16
+			: a !== b && a.contains(b);
+	},
+
+	cssCache: {},
+	css: function(name) {
+		if ($.ui.cssCache[name]) { return $.ui.cssCache[name]; }
+		var tmp = $('<div class="ui-gen"></div>').addClass(name).css({position:'absolute', top:'-5000px', left:'-5000px', display:'block'}).appendTo('body');
+
+		//if (!$.browser.safari)
+			//tmp.appendTo('body');
+
+		//Opera and Safari set width and height to 0px instead of auto
+		//Safari returns rgba(0,0,0,0) when bgcolor is not set
+		$.ui.cssCache[name] = !!(
+			(!(/auto|default/).test(tmp.css('cursor')) || (/^[1-9]/).test(tmp.css('height')) || (/^[1-9]/).test(tmp.css('width')) ||
+			!(/none/).test(tmp.css('backgroundImage')) || !(/transparent|rgba\(0, 0, 0, 0\)/).test(tmp.css('backgroundColor')))
+		);
+		try { $('body').get(0).removeChild(tmp.get(0));	} catch(e){}
+		return $.ui.cssCache[name];
+	},
+
+	hasScroll: function(el, a) {
+
+		//If overflow is hidden, the element might have extra content, but the user wants to hide it
+		if ($(el).css('overflow') == 'hidden') { return false; }
+
+		var scroll = (a && a == 'left') ? 'scrollLeft' : 'scrollTop',
+			has = false;
+
+		if (el[scroll] > 0) { return true; }
+
+		// TODO: determine which cases actually cause this to happen
+		// if the element doesn't have the scroll set, see if it's possible to
+		// set the scroll
+		el[scroll] = 1;
+		has = (el[scroll] > 0);
+		el[scroll] = 0;
+		return has;
+	},
+
+	isOverAxis: function(x, reference, size) {
+		//Determines when x coordinate is over "b" element axis
+		return (x > reference) && (x < (reference + size));
+	},
+
+	isOver: function(y, x, top, left, height, width) {
+		//Determines when x, y coordinates is over "b" element
+		return $.ui.isOverAxis(y, top, height) && $.ui.isOverAxis(x, left, width);
+	},
+
+	keyCode: {
+		BACKSPACE: 8,
+		CAPS_LOCK: 20,
+		COMMA: 188,
+		CONTROL: 17,
+		DELETE: 46,
+		DOWN: 40,
+		END: 35,
+		ENTER: 13,
+		ESCAPE: 27,
+		HOME: 36,
+		INSERT: 45,
+		LEFT: 37,
+		NUMPAD_ADD: 107,
+		NUMPAD_DECIMAL: 110,
+		NUMPAD_DIVIDE: 111,
+		NUMPAD_ENTER: 108,
+		NUMPAD_MULTIPLY: 106,
+		NUMPAD_SUBTRACT: 109,
+		PAGE_DOWN: 34,
+		PAGE_UP: 33,
+		PERIOD: 190,
+		RIGHT: 39,
+		SHIFT: 16,
+		SPACE: 32,
+		TAB: 9,
+		UP: 38
+	}
+};
+
+// WAI-ARIA normalization
+if (isFF2) {
+	var attr = $.attr,
+		removeAttr = $.fn.removeAttr,
+		ariaNS = "http://www.w3.org/2005/07/aaa",
+		ariaState = /^aria-/,
+		ariaRole = /^wairole:/;
+
+	$.attr = function(elem, name, value) {
+		var set = value !== undefined;
+
+		return (name == 'role'
+			? (set
+				? attr.call(this, elem, name, "wairole:" + value)
+				: (attr.apply(this, arguments) || "").replace(ariaRole, ""))
+			: (ariaState.test(name)
+				? (set
+					? elem.setAttributeNS(ariaNS,
+						name.replace(ariaState, "aaa:"), value)
+					: attr.call(this, elem, name.replace(ariaState, "aaa:")))
+				: attr.apply(this, arguments)));
+	};
+
+	$.fn.removeAttr = function(name) {
+		return (ariaState.test(name)
+			? this.each(function() {
+				this.removeAttributeNS(ariaNS, name.replace(ariaState, ""));
+			}) : removeAttr.call(this, name));
+	};
+}
+
+//jQuery plugins
+$.fn.extend({
+	remove: function() {
+		// Safari has a native remove event which actually removes DOM elements,
+		// so we have to use triggerHandler instead of trigger (#3037).
+		$("*", this).add(this).each(function() {
+			$(this).triggerHandler("remove");
+		});
+		return _remove.apply(this, arguments );
+	},
+
+	enableSelection: function() {
+		return this
+			.attr('unselectable', 'off')
+			.css('MozUserSelect', '')
+			.unbind('selectstart.ui');
+	},
+
+	disableSelection: function() {
+		return this
+			.attr('unselectable', 'on')
+			.css('MozUserSelect', 'none')
+			.bind('selectstart.ui', function() { return false; });
+	},
+
+	scrollParent: function() {
+		var scrollParent;
+		if(($.browser.msie && (/(static|relative)/).test(this.css('position'))) || (/absolute/).test(this.css('position'))) {
+			scrollParent = this.parents().filter(function() {
+				return (/(relative|absolute|fixed)/).test($.curCSS(this,'position',1)) && (/(auto|scroll)/).test($.curCSS(this,'overflow',1)+$.curCSS(this,'overflow-y',1)+$.curCSS(this,'overflow-x',1));
+			}).eq(0);
+		} else {
+			scrollParent = this.parents().filter(function() {
+				return (/(auto|scroll)/).test($.curCSS(this,'overflow',1)+$.curCSS(this,'overflow-y',1)+$.curCSS(this,'overflow-x',1));
+			}).eq(0);
+		}
+
+		return (/fixed/).test(this.css('position')) || !scrollParent.length ? $(document) : scrollParent;
+	}
+});
+
+
+//Additional selectors
+$.extend($.expr[':'], {
+	data: function(elem, i, match) {
+		return !!$.data(elem, match[3]);
+	},
+
+	// TODO: add support for object, area
+	tabbable: function(elem) {
+		var nodeName = elem.nodeName.toLowerCase();
+		function isVisible(element) {
+			return !($(element).is(':hidden') || $(element).parents(':hidden').length);
+		}
+
+		return (
+			// in tab order
+			elem.tabIndex >= 0 &&
+
+			( // filter node types that participate in the tab order
+
+				// anchor tag
+				('a' == nodeName && elem.href) ||
+
+				// enabled form element
+				(/input|select|textarea|button/.test(nodeName) &&
+					'hidden' != elem.type && !elem.disabled)
+			) &&
+
+			// visible on page
+			isVisible(elem)
+		);
+	}
+});
+
+
+// $.widget is a factory to create jQuery plugins
+// taking some boilerplate code out of the plugin code
+function getter(namespace, plugin, method, args) {
+	function getMethods(type) {
+		var methods = $[namespace][plugin][type] || [];
+		return (typeof methods == 'string' ? methods.split(/,?\s+/) : methods);
+	}
+
+	var methods = getMethods('getter');
+	if (args.length == 1 && typeof args[0] == 'string') {
+		methods = methods.concat(getMethods('getterSetter'));
+	}
+	return ($.inArray(method, methods) != -1);
+}
+
+$.widget = function(name, prototype) {
+	var namespace = name.split(".")[0];
+	name = name.split(".")[1];
+
+	// create plugin method
+	$.fn[name] = function(options) {
+		var isMethodCall = (typeof options == 'string'),
+			args = Array.prototype.slice.call(arguments, 1);
+
+		// prevent calls to internal methods
+		if (isMethodCall && options.substring(0, 1) == '_') {
+			return this;
+		}
+
+		// handle getter methods
+		if (isMethodCall && getter(namespace, name, options, args)) {
+			var instance = $.data(this[0], name);
+			return (instance ? instance[options].apply(instance, args)
+				: undefined);
+		}
+
+		// handle initialization and non-getter methods
+		return this.each(function() {
+			var instance = $.data(this, name);
+
+			// constructor
+			(!instance && !isMethodCall &&
+				$.data(this, name, new $[namespace][name](this, options)));
+
+			// method call
+			(instance && isMethodCall && $.isFunction(instance[options]) &&
+				instance[options].apply(instance, args));
+		});
+	};
+
+	// create widget constructor
+	$[namespace] = $[namespace] || {};
+	$[namespace][name] = function(element, options) {
+		var self = this;
+
+		this.namespace = namespace;
+		this.widgetName = name;
+		this.widgetEventPrefix = $[namespace][name].eventPrefix || name;
+		this.widgetBaseClass = namespace + '-' + name;
+
+		this.options = $.extend({},
+			$.widget.defaults,
+			$[namespace][name].defaults,
+			$.metadata && $.metadata.get(element)[name],
+			options);
+
+		this.element = $(element)
+			.bind('setData.' + name, function(event, key, value) {
+				if (event.target == element) {
+					return self._setData(key, value);
+				}
+			})
+			.bind('getData.' + name, function(event, key) {
+				if (event.target == element) {
+					return self._getData(key);
+				}
+			})
+			.bind('remove', function() {
+				return self.destroy();
+			});
+
+		this._init();
+	};
+
+	// add widget prototype
+	$[namespace][name].prototype = $.extend({}, $.widget.prototype, prototype);
+
+	// TODO: merge getter and getterSetter properties from widget prototype
+	// and plugin prototype
+	$[namespace][name].getterSetter = 'option';
+};
+
+$.widget.prototype = {
+	_init: function() {},
+	destroy: function() {
+		this.element.removeData(this.widgetName)
+			.removeClass(this.widgetBaseClass + '-disabled' + ' ' + this.namespace + '-state-disabled')
+			.removeAttr('aria-disabled');
+	},
+
+	option: function(key, value) {
+		var options = key,
+			self = this;
+
+		if (typeof key == "string") {
+			if (value === undefined) {
+				return this._getData(key);
+			}
+			options = {};
+			options[key] = value;
+		}
+
+		$.each(options, function(key, value) {
+			self._setData(key, value);
+		});
+	},
+	_getData: function(key) {
+		return this.options[key];
+	},
+	_setData: function(key, value) {
+		this.options[key] = value;
+
+		if (key == 'disabled') {
+			this.element
+				[value ? 'addClass' : 'removeClass'](
+					this.widgetBaseClass + '-disabled' + ' ' +
+					this.namespace + '-state-disabled')
+				.attr("aria-disabled", value);
+		}
+	},
+
+	enable: function() {
+		this._setData('disabled', false);
+	},
+	disable: function() {
+		this._setData('disabled', true);
+	},
+
+	_trigger: function(type, event, data) {
+		var callback = this.options[type],
+			eventName = (type == this.widgetEventPrefix
+				? type : this.widgetEventPrefix + type);
+
+		event = $.Event(event);
+		event.type = eventName;
+
+		this.element.trigger(event, data);
+
+		return !($.isFunction(callback) && callback.call(this.element[0], event, data) === false
+			|| event.isDefaultPrevented());
+	}
+};
+
+$.widget.defaults = {
+	disabled: false
+};
+
+
+/** Mouse Interaction Plugin **/
+
+$.ui.mouse = {
+	_mouseInit: function() {
+		var self = this;
+
+		this.element
+			.bind('mousedown.'+this.widgetName, function(event) {
+				return self._mouseDown(event);
+			})
+			.bind('click.'+this.widgetName, function(event) {
+				if(self._preventClickEvent) {
+					self._preventClickEvent = false;
+					return false;
+				}
+			});
+
+		// Prevent text selection in IE
+		if ($.browser.msie) {
+			this._mouseUnselectable = this.element.attr('unselectable');
+			this.element.attr('unselectable', 'on');
+		}
+
+		this.started = false;
+	},
+
+	// TODO: make sure destroying one instance of mouse doesn't mess with
+	// other instances of mouse
+	_mouseDestroy: function() {
+		this.element.unbind('.'+this.widgetName);
+
+		// Restore text selection in IE
+		($.browser.msie
+			&& this.element.attr('unselectable', this._mouseUnselectable));
+	},
+
+	_mouseDown: function(event) {
+		// we may have missed mouseup (out of window)
+		(this._mouseStarted && this._mouseUp(event));
+
+		this._mouseDownEvent = event;
+
+		var self = this,
+			btnIsLeft = (event.which == 1),
+			elIsCancel = (typeof this.options.cancel == "string" ? $(event.target).parents().add(event.target).filter(this.options.cancel).length : false);
+		if (!btnIsLeft || elIsCancel || !this._mouseCapture(event)) {
+			return true;
+		}
+
+		this.mouseDelayMet = !this.options.delay;
+		if (!this.mouseDelayMet) {
+			this._mouseDelayTimer = setTimeout(function() {
+				self.mouseDelayMet = true;
+			}, this.options.delay);
+		}
+
+		if (this._mouseDistanceMet(event) && this._mouseDelayMet(event)) {
+			this._mouseStarted = (this._mouseStart(event) !== false);
+			if (!this._mouseStarted) {
+				event.preventDefault();
+				return true;
+			}
+		}
+
+		// these delegates are required to keep context
+		this._mouseMoveDelegate = function(event) {
+			return self._mouseMove(event);
+		};
+		this._mouseUpDelegate = function(event) {
+			return self._mouseUp(event);
+		};
+		$(document)
+			.bind('mousemove.'+this.widgetName, this._mouseMoveDelegate)
+			.bind('mouseup.'+this.widgetName, this._mouseUpDelegate);
+
+		// preventDefault() is used to prevent the selection of text here -
+		// however, in Safari, this causes select boxes not to be selectable
+		// anymore, so this fix is needed
+		($.browser.safari || event.preventDefault());
+		
+		return true;
+	},
+
+	_mouseMove: function(event) {
+		// IE mouseup check - mouseup happened when mouse was out of window
+		if ($.browser.msie && !event.button) {
+			return this._mouseUp(event);
+		}
+
+		if (this._mouseStarted) {
+			this._mouseDrag(event);
+			return event.preventDefault();
+		}
+
+		if (this._mouseDistanceMet(event) && this._mouseDelayMet(event)) {
+			this._mouseStarted =
+				(this._mouseStart(this._mouseDownEvent, event) !== false);
+			(this._mouseStarted ? this._mouseDrag(event) : this._mouseUp(event));
+		}
+
+		return !this._mouseStarted;
+	},
+
+	_mouseUp: function(event) {
+		$(document)
+			.unbind('mousemove.'+this.widgetName, this._mouseMoveDelegate)
+			.unbind('mouseup.'+this.widgetName, this._mouseUpDelegate);
+
+		if (this._mouseStarted) {
+			this._mouseStarted = false;
+			this._preventClickEvent = true;
+			this._mouseStop(event);
+		}
+
+		return false;
+	},
+
+	_mouseDistanceMet: function(event) {
+		return (Math.max(
+				Math.abs(this._mouseDownEvent.pageX - event.pageX),
+				Math.abs(this._mouseDownEvent.pageY - event.pageY)
+			) >= this.options.distance
+		);
+	},
+
+	_mouseDelayMet: function(event) {
+		return this.mouseDelayMet;
+	},
+
+	// These are placeholder methods, to be overriden by extending plugin
+	_mouseStart: function(event) {},
+	_mouseDrag: function(event) {},
+	_mouseStop: function(event) {},
+	_mouseCapture: function(event) { return true; }
+};
+
+$.ui.mouse.defaults = {
+	cancel: null,
+	distance: 1,
+	delay: 0
+};
+
+})(jQuery);
+/*
+ * jQuery UI Draggable 1.6rc5
+ *
+ * Copyright (c) 2009 AUTHORS.txt (http://ui.jquery.com/about)
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ *
+ * http://docs.jquery.com/UI/Draggables
+ *
+ * Depends:
+ *	ui.core.js
+ */
+(function($) {
+
+$.widget("ui.draggable", $.extend({}, $.ui.mouse, {
+
+	_init: function() {
+
+		if (this.options.helper == 'original' && !(/^(?:r|a|f)/).test(this.element.css("position")))
+			this.element[0].style.position = 'relative';
+
+		(this.options.cssNamespace && this.element.addClass(this.options.cssNamespace+"-draggable"));
+		(this.options.disabled && this.element.addClass(this.options.cssNamespace+'-draggable-disabled'));
+
+		this._mouseInit();
+
+	},
+
+	destroy: function() {
+		if(!this.element.data('draggable')) return;
+		this.element.removeData("draggable").unbind(".draggable").removeClass(this.options.cssNamespace+'-draggable '+this.options.cssNamespace+'-draggable-dragging '+this.options.cssNamespace+'-draggable-disabled');
+		this._mouseDestroy();
+	},
+
+	_mouseCapture: function(event) {
+
+		var o = this.options;
+
+		if (this.helper || o.disabled || $(event.target).is('.'+this.options.cssNamespace+'-resizable-handle'))
+			return false;
+
+		//Quit if we're not on a valid handle
+		this.handle = this._getHandle(event);
+		if (!this.handle)
+			return false;
+
+		return true;
+
+	},
+
+	_mouseStart: function(event) {
+
+		var o = this.options;
+
+		//Create and append the visible helper
+		this.helper = this._createHelper(event);
+
+		//Cache the helper size
+		this._cacheHelperProportions();
+
+		//If ddmanager is used for droppables, set the global draggable
+		if($.ui.ddmanager)
+			$.ui.ddmanager.current = this;
+
+		/*
+		 * - Position generation -
+		 * This block generates everything position related - it's the core of draggables.
+		 */
+
+		//Cache the margins of the original element
+		this._cacheMargins();
+
+		//Store the helper's css position
+		this.cssPosition = this.helper.css("position");
+		this.scrollParent = this.helper.scrollParent();
+
+		//The element's absolute position on the page minus margins
+		this.offset = this.element.offset();
+		this.offset = {
+			top: this.offset.top - this.margins.top,
+			left: this.offset.left - this.margins.left
+		};
+
+		$.extend(this.offset, {
+			click: { //Where the click happened, relative to the element
+				left: event.pageX - this.offset.left,
+				top: event.pageY - this.offset.top
+			},
+			parent: this._getParentOffset(),
+			relative: this._getRelativeOffset() //This is a relative to absolute position minus the actual position calculation - only used for relative positioned helper
+		});
+
+		//Generate the original position
+		this.originalPosition = this._generatePosition(event);
+		this.originalPageX = event.pageX;
+		this.originalPageY = event.pageY;
+
+		//Adjust the mouse offset relative to the helper if 'cursorAt' is supplied
+		if(o.cursorAt)
+			this._adjustOffsetFromHelper(o.cursorAt);
+
+		//Set a containment if given in the options
+		if(o.containment)
+			this._setContainment();
+
+		//Call plugins and callbacks
+		this._trigger("start", event);
+
+		//Recache the helper size
+		this._cacheHelperProportions();
+
+		//Prepare the droppable offsets
+		if ($.ui.ddmanager && !o.dropBehaviour)
+			$.ui.ddmanager.prepareOffsets(this, event);
+
+		this.helper.addClass(o.cssNamespace+"-draggable-dragging");
+		this._mouseDrag(event, true); //Execute the drag once - this causes the helper not to be visible before getting its correct position
+		return true;
+	},
+
+	_mouseDrag: function(event, noPropagation) {
+
+		//Compute the helpers position
+		this.position = this._generatePosition(event);
+		this.positionAbs = this._convertPositionTo("absolute");
+
+		//Call plugins and callbacks and use the resulting position if something is returned
+		if (!noPropagation) {
+			var ui = this._uiHash();
+			this._trigger('drag', event, ui);
+			this.position = ui.position;
+		}
+
+		if(!this.options.axis || this.options.axis != "y") this.helper[0].style.left = this.position.left+'px';
+		if(!this.options.axis || this.options.axis != "x") this.helper[0].style.top = this.position.top+'px';
+		if($.ui.ddmanager) $.ui.ddmanager.drag(this, event);
+
+		return false;
+	},
+
+	_mouseStop: function(event) {
+
+		//If we are using droppables, inform the manager about the drop
+		var dropped = false;
+		if ($.ui.ddmanager && !this.options.dropBehaviour)
+			dropped = $.ui.ddmanager.drop(this, event);
+		
+		//if a drop comes from outside (a sortable)
+		if(this.dropped) {
+			dropped = this.dropped;
+			this.dropped = false;
+		}
+
+		if((this.options.revert == "invalid" && !dropped) || (this.options.revert == "valid" && dropped) || this.options.revert === true || ($.isFunction(this.options.revert) && this.options.revert.call(this.element, dropped))) {
+			var self = this;
+			$(this.helper).animate(this.originalPosition, parseInt(this.options.revertDuration, 10), function() {
+				self._trigger("stop", event);
+				self._clear();
+			});
+		} else {
+			this._trigger("stop", event);
+			this._clear();
+		}
+
+		return false;
+	},
+
+	_getHandle: function(event) {
+
+		var handle = !this.options.handle || !$(this.options.handle, this.element).length ? true : false;
+		$(this.options.handle, this.element)
+			.find("*")
+			.andSelf()
+			.each(function() {
+				if(this == event.target) handle = true;
+			});
+
+		return handle;
+
+	},
+
+	_createHelper: function(event) {
+
+		var o = this.options;
+		var helper = $.isFunction(o.helper) ? $(o.helper.apply(this.element[0], [event])) : (o.helper == 'clone' ? this.element.clone() : this.element);
+
+		if(!helper.parents('body').length)
+			helper.appendTo((o.appendTo == 'parent' ? this.element[0].parentNode : o.appendTo));
+
+		if(helper[0] != this.element[0] && !(/(fixed|absolute)/).test(helper.css("position")))
+			helper.css("position", "absolute");
+
+		return helper;
+
+	},
+
+	_adjustOffsetFromHelper: function(obj) {
+		if(obj.left != undefined) this.offset.click.left = obj.left + this.margins.left;
+		if(obj.right != undefined) this.offset.click.left = this.helperProportions.width - obj.right + this.margins.left;
+		if(obj.top != undefined) this.offset.click.top = obj.top + this.margins.top;
+		if(obj.bottom != undefined) this.offset.click.top = this.helperProportions.height - obj.bottom + this.margins.top;
+	},
+
+	_getParentOffset: function() {
+
+		//Get the offsetParent and cache its position
+		this.offsetParent = this.helper.offsetParent();
+		var po = this.offsetParent.offset();
+		
+		// This is a special case where we need to modify a offset calculated on start, since the following happened:
+		// 1. The position of the helper is absolute, so it's position is calculated based on the next positioned parent
+		// 2. The actual offset parent is a child of the scroll parent, and the scroll parent isn't the document, which means that
+		//    the scroll is included in the initial calculation of the offset of the parent, and never recalculated upon drag
+		if(this.cssPosition == 'absolute' && this.scrollParent[0] != document && $.ui.contains(this.scrollParent[0], this.offsetParent[0])) {
+			po.left += this.scrollParent.scrollLeft();
+			po.top += this.scrollParent.scrollTop();
+		}
+
+		if((this.offsetParent[0] == document.body && $.browser.mozilla)	//Ugly FF3 fix
+		|| (this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() == 'html' && $.browser.msie)) //Ugly IE fix
+			po = { top: 0, left: 0 };
+
+		return {
+			top: po.top + (parseInt(this.offsetParent.css("borderTopWidth"),10) || 0),
+			left: po.left + (parseInt(this.offsetParent.css("borderLeftWidth"),10) || 0)
+		};
+
+	},
+
+	_getRelativeOffset: function() {
+
+		if(this.cssPosition == "relative") {
+			var p = this.element.position();
+			return {
+				top: p.top - (parseInt(this.helper.css("top"),10) || 0) + this.scrollParent.scrollTop(),
+				left: p.left - (parseInt(this.helper.css("left"),10) || 0) + this.scrollParent.scrollLeft()
+			};
+		} else {
+			return { top: 0, left: 0 };
+		}
+
+	},
+
+	_cacheMargins: function() {
+		this.margins = {
+			left: (parseInt(this.element.css("marginLeft"),10) || 0),
+			top: (parseInt(this.element.css("marginTop"),10) || 0)
+		};
+	},
+
+	_cacheHelperProportions: function() {
+		this.helperProportions = {
+			width: this.helper.outerWidth(),
+			height: this.helper.outerHeight()
+		};
+	},
+
+	_setContainment: function() {
+
+		var o = this.options;
+		if(o.containment == 'parent') o.containment = this.helper[0].parentNode;
+		if(o.containment == 'document' || o.containment == 'window') this.containment = [
+			0 - this.offset.relative.left - this.offset.parent.left,
+			0 - this.offset.relative.top - this.offset.parent.top,
+			$(o.containment == 'document' ? document : window).width() - this.helperProportions.width - this.margins.left,
+			($(o.containment == 'document' ? document : window).height() || document.body.parentNode.scrollHeight) - this.helperProportions.height - this.margins.top
+		];
+
+		if(!(/^(document|window|parent)$/).test(o.containment)) {
+			var ce = $(o.containment)[0];
+			var co = $(o.containment).offset();
+			var over = ($(ce).css("overflow") != 'hidden');
+
+			this.containment = [
+				co.left + (parseInt($(ce).css("borderLeftWidth"),10) || 0) - this.margins.left,
+				co.top + (parseInt($(ce).css("borderTopWidth"),10) || 0) - this.margins.top,
+				co.left+(over ? Math.max(ce.scrollWidth,ce.offsetWidth) : ce.offsetWidth) - (parseInt($(ce).css("borderLeftWidth"),10) || 0) - this.helperProportions.width - this.margins.left,
+				co.top+(over ? Math.max(ce.scrollHeight,ce.offsetHeight) : ce.offsetHeight) - (parseInt($(ce).css("borderTopWidth"),10) || 0) - this.helperProportions.height - this.margins.top
+			];
+		}
+
+	},
+
+	_convertPositionTo: function(d, pos) {
+
+		if(!pos) pos = this.position;
+		var mod = d == "absolute" ? 1 : -1;
+		var o = this.options, scroll = this.cssPosition == 'absolute' && !(this.scrollParent[0] != document && $.ui.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent, scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
+
+		return {
+			top: (
+				pos.top																	// The absolute mouse position
+				+ this.offset.relative.top * mod										// Only for relative positioned nodes: Relative offset from element to offset parent
+				+ this.offset.parent.top * mod											// The offsetParent's offset without borders (offset + border)
+				- ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollTop() : ( scrollIsRootNode ? 0 : scroll.scrollTop() ) ) * mod
+			),
+			left: (
+				pos.left																// The absolute mouse position
+				+ this.offset.relative.left * mod										// Only for relative positioned nodes: Relative offset from element to offset parent
+				+ this.offset.parent.left * mod											// The offsetParent's offset without borders (offset + border)
+				- ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollLeft() : scrollIsRootNode ? 0 : scroll.scrollLeft() ) * mod
+			)
+		};
+		
+	},
+
+	_generatePosition: function(event) {
+
+		var o = this.options, scroll = this.cssPosition == 'absolute' && !(this.scrollParent[0] != document && $.ui.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent, scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
+
+		// This is another very weird special case that only happens for relative elements:
+		// 1. If the css position is relative
+		// 2. and the scroll parent is the document or similar to the offset parent
+		// we have to refresh the relative offset during the scroll so there are no jumps
+		if(this.cssPosition == 'relative' && !(this.scrollParent[0] != document && this.scrollParent[0] != this.offsetParent[0])) {
+			this.offset.relative = this._getRelativeOffset();
+		}
+		
+		var pageX = event.pageX;
+		var pageY = event.pageY;
+
+		/*
+		 * - Position constraining -
+		 * Constrain the position to a mix of grid, containment.
+		 */
+		 
+		if(this.originalPosition) { //If we are not dragging yet, we won't check for options
+
+			if(this.containment) {
+				if(event.pageX - this.offset.click.left < this.containment[0]) pageX = this.containment[0] + this.offset.click.left;
+				if(event.pageY - this.offset.click.top < this.containment[1]) pageY = this.containment[1] + this.offset.click.top;
+				if(event.pageX - this.offset.click.left > this.containment[2]) pageX = this.containment[2] + this.offset.click.left;
+				if(event.pageY - this.offset.click.top > this.containment[3]) pageY = this.containment[3] + this.offset.click.top;
+			}
+			
+			if(o.grid) {
+				var top = this.originalPageY + Math.round((pageY - this.originalPageY) / o.grid[1]) * o.grid[1];
+				pageY = this.containment ? (!(top - this.offset.click.top < this.containment[1] || top - this.offset.click.top > this.containment[3]) ? top : (!(top - this.offset.click.top < this.containment[1]) ? top - o.grid[1] : top + o.grid[1])) : top;
+
+				var left = this.originalPageX + Math.round((pageX - this.originalPageX) / o.grid[0]) * o.grid[0];
+				pageX = this.containment ? (!(left - this.offset.click.left < this.containment[0] || left - this.offset.click.left > this.containment[2]) ? left : (!(left - this.offset.click.left < this.containment[0]) ? left - o.grid[0] : left + o.grid[0])) : left;
+			}
+
+		}
+
+		return {
+			top: (
+				pageY																// The absolute mouse position
+				- this.offset.click.top													// Click offset (relative to the element)
+				- this.offset.relative.top												// Only for relative positioned nodes: Relative offset from element to offset parent
+				- this.offset.parent.top												// The offsetParent's offset without borders (offset + border)
+				+ ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollTop() : ( scrollIsRootNode ? 0 : scroll.scrollTop() ) )
+			),
+			left: (
+				pageX																// The absolute mouse position
+				- this.offset.click.left												// Click offset (relative to the element)
+				- this.offset.relative.left												// Only for relative positioned nodes: Relative offset from element to offset parent
+				- this.offset.parent.left												// The offsetParent's offset without borders (offset + border)
+				+ ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollLeft() : scrollIsRootNode ? 0 : scroll.scrollLeft() )
+			)
+		};
+
+	},
+
+	_clear: function() {
+		this.helper.removeClass(this.options.cssNamespace+"-draggable-dragging");
+		if(this.helper[0] != this.element[0] && !this.cancelHelperRemoval) this.helper.remove();
+		//if($.ui.ddmanager) $.ui.ddmanager.current = null;
+		this.helper = null;
+		this.cancelHelperRemoval = false;
+	},
+
+	// From now on bulk stuff - mainly helpers
+
+	_trigger: function(type, event, ui) {
+		ui = ui || this._uiHash();
+		$.ui.plugin.call(this, type, [event, ui]);
+		if(type == "drag") this.positionAbs = this._convertPositionTo("absolute"); //The absolute position has to be recalculated after plugins
+		return $.widget.prototype._trigger.call(this, type, event, ui);
+	},
+
+	plugins: {},
+
+	_uiHash: function(event) {
+		return {
+			helper: this.helper,
+			position: this.position,
+			absolutePosition: this.positionAbs,
+			options: this.options
+		};
+	}
+
+}));
+
+$.extend($.ui.draggable, {
+	version: "1.6rc5",
+	eventPrefix: "drag",
+	defaults: {
+		appendTo: "parent",
+		axis: false,
+		cancel: ":input,option",
+		connectToSortable: false,
+		containment: false,
+		cssNamespace: "ui",
+		cursor: "default",
+		cursorAt: null,
+		delay: 0,
+		distance: 1,
+		grid: false,
+		handle: false,
+		helper: "original",
+		iframeFix: false,
+		opacity: null,
+		refreshPositions: false,
+		revert: false,
+		revertDuration: 500,
+		scope: "default",
+		scroll: true,
+		scrollSensitivity: 20,
+		scrollSpeed: 20,
+		snap: false,
+		snapMode: "both",
+		snapTolerance: 20,
+		stack: false,
+		zIndex: null
+	}
+});
+
+$.ui.plugin.add("draggable", "connectToSortable", {
+	start: function(event, ui) {
+
+		var inst = $(this).data("draggable");
+		inst.sortables = [];
+		$(ui.options.connectToSortable).each(function() {
+			// 'this' points to a string, and should therefore resolved as query, but instead, if the string is assigned to a variable, it loops through the strings properties,
+			// so we have to append '' to make it anonymous again
+			$(this+'').each(function() {
+				if($.data(this, 'sortable')) {
+					var sortable = $.data(this, 'sortable');
+					inst.sortables.push({
+						instance: sortable,
+						shouldRevert: sortable.options.revert
+					});
+					sortable._refreshItems();	//Do a one-time refresh at start to refresh the containerCache
+					sortable._trigger("activate", event, inst);
+				}
+			});
+		});
+
+	},
+	stop: function(event, ui) {
+
+		//If we are still over the sortable, we fake the stop event of the sortable, but also remove helper
+		var inst = $(this).data("draggable");
+
+		$.each(inst.sortables, function() {
+			if(this.instance.isOver) {
+				
+				this.instance.isOver = 0;
+				
+				inst.cancelHelperRemoval = true; //Don't remove the helper in the draggable instance
+				this.instance.cancelHelperRemoval = false; //Remove it in the sortable instance (so sortable plugins like revert still work)
+				
+				//The sortable revert is supported, and we have to set a temporary dropped variable on the draggable to support revert: 'valid/invalid'
+				if(this.shouldRevert) this.instance.options.revert = true;
+				
+				//Trigger the stop of the sortable
+				this.instance._mouseStop(event);
+
+				//Also propagate receive event, since the sortable is actually receiving a element
+				this.instance.element.triggerHandler("sortreceive", [event, $.extend(this.instance._uiHash(), { sender: inst.element })], this.instance.options["receive"]);
+
+				this.instance.options.helper = this.instance.options._helper;
+
+				//If the helper has been the original item, restore properties in the sortable
+				if(inst.options.helper == 'original')
+					this.instance.currentItem.css({ top: 'auto', left: 'auto' });
+
+			} else {
+				this.instance.cancelHelperRemoval = false; //Remove the helper in the sortable instance
+				this.instance._trigger("deactivate", event, inst);
+			}
+
+		});
+
+	},
+	drag: function(event, ui) {
+
+		var inst = $(this).data("draggable"), self = this;
+
+		var checkPos = function(o) {
+			var dyClick = this.offset.click.top, dxClick = this.offset.click.left;
+			var helperTop = this.positionAbs.top, helperLeft = this.positionAbs.left;
+			var itemHeight = o.height, itemWidth = o.width;
+			var itemTop = o.top, itemLeft = o.left;
+
+			return $.ui.isOver(helperTop + dyClick, helperLeft + dxClick, itemTop, itemLeft, itemHeight, itemWidth);
+		};
+
+		$.each(inst.sortables, function(i) {
+
+			if(checkPos.call(inst, this.instance.containerCache)) {
+
+				//If it intersects, we use a little isOver variable and set it once, so our move-in stuff gets fired only once
+				if(!this.instance.isOver) {
+					this.instance.isOver = 1;
+					//Now we fake the start of dragging for the sortable instance,
+					//by cloning the list group item, appending it to the sortable and using it as inst.currentItem
+					//We can then fire the start event of the sortable with our passed browser event, and our own helper (so it doesn't create a new one)
+					this.instance.currentItem = $(self).clone().appendTo(this.instance.element).data("sortable-item", true);
+					this.instance.options._helper = this.instance.options.helper; //Store helper option to later restore it
+					this.instance.options.helper = function() { return ui.helper[0]; };
+
+					event.target = this.instance.currentItem[0];
+					this.instance._mouseCapture(event, true);
+					this.instance._mouseStart(event, true, true);
+
+					//Because the browser event is way off the new appended portlet, we modify a couple of variables to reflect the changes
+					this.instance.offset.click.top = inst.offset.click.top;
+					this.instance.offset.click.left = inst.offset.click.left;
+					this.instance.offset.parent.left -= inst.offset.parent.left - this.instance.offset.parent.left;
+					this.instance.offset.parent.top -= inst.offset.parent.top - this.instance.offset.parent.top;
+
+					inst._trigger("toSortable", event);
+					inst.dropped = this.instance.element; //draggable revert needs that
+					this.instance.fromOutside = true; //Little hack so receive/update callbacks work
+
+				}
+
+				//Provided we did all the previous steps, we can fire the drag event of the sortable on every draggable drag, when it intersects with the sortable
+				if(this.instance.currentItem) this.instance._mouseDrag(event);
+
+			} else {
+
+				//If it doesn't intersect with the sortable, and it intersected before,
+				//we fake the drag stop of the sortable, but make sure it doesn't remove the helper by using cancelHelperRemoval
+				if(this.instance.isOver) {
+					this.instance.isOver = 0;
+					this.instance.cancelHelperRemoval = true;
+					this.instance.options.revert = false; //No revert here
+					this.instance._mouseStop(event, true);
+					this.instance.options.helper = this.instance.options._helper;
+
+					//Now we remove our currentItem, the list group clone again, and the placeholder, and animate the helper back to it's original size
+					this.instance.currentItem.remove();
+					if(this.instance.placeholder) this.instance.placeholder.remove();
+
+					inst._trigger("fromSortable", event);
+					inst.dropped = false; //draggable revert needs that
+				}
+
+			};
+
+		});
+
+	}
+});
+
+$.ui.plugin.add("draggable", "cursor", {
+	start: function(event, ui) {
+		var t = $('body');
+		if (t.css("cursor")) ui.options._cursor = t.css("cursor");
+		t.css("cursor", ui.options.cursor);
+	},
+	stop: function(event, ui) {
+		if (ui.options._cursor) $('body').css("cursor", ui.options._cursor);
+	}
+});
+
+$.ui.plugin.add("draggable", "iframeFix", {
+	start: function(event, ui) {
+		$(ui.options.iframeFix === true ? "iframe" : ui.options.iframeFix).each(function() {
+			$('<div class="ui-draggable-iframeFix" style="background: #fff;"></div>')
+			.css({
+				width: this.offsetWidth+"px", height: this.offsetHeight+"px",
+				position: "absolute", opacity: "0.001", zIndex: 1000
+			})
+			.css($(this).offset())
+			.appendTo("body");
+		});
+	},
+	stop: function(event, ui) {
+		$("div.ui-draggable-iframeFix").each(function() { this.parentNode.removeChild(this); }); //Remove frame helpers
+	}
+});
+
+$.ui.plugin.add("draggable", "opacity", {
+	start: function(event, ui) {
+		var t = $(ui.helper);
+		if(t.css("opacity")) ui.options._opacity = t.css("opacity");
+		t.css('opacity', ui.options.opacity);
+	},
+	stop: function(event, ui) {
+		if(ui.options._opacity) $(ui.helper).css('opacity', ui.options._opacity);
+	}
+});
+
+$.ui.plugin.add("draggable", "scroll", {
+	start: function(event, ui) {
+		var o = ui.options;
+		var i = $(this).data("draggable");
+
+		if(i.scrollParent[0] != document && i.scrollParent[0].tagName != 'HTML') i.overflowOffset = i.scrollParent.offset();
+
+	},
+	drag: function(event, ui) {
+
+		var o = ui.options, scrolled = false;
+		var i = $(this).data("draggable");
+
+		if(i.scrollParent[0] != document && i.scrollParent[0].tagName != 'HTML') {
+
+			if((i.overflowOffset.top + i.scrollParent[0].offsetHeight) - event.pageY < o.scrollSensitivity)
+				i.scrollParent[0].scrollTop = scrolled = i.scrollParent[0].scrollTop + o.scrollSpeed;
+			else if(event.pageY - i.overflowOffset.top < o.scrollSensitivity)
+				i.scrollParent[0].scrollTop = scrolled = i.scrollParent[0].scrollTop - o.scrollSpeed;
+
+			if((i.overflowOffset.left + i.scrollParent[0].offsetWidth) - event.pageX < o.scrollSensitivity)
+				i.scrollParent[0].scrollLeft = scrolled = i.scrollParent[0].scrollLeft + o.scrollSpeed;
+			else if(event.pageX - i.overflowOffset.left < o.scrollSensitivity)
+				i.scrollParent[0].scrollLeft = scrolled = i.scrollParent[0].scrollLeft - o.scrollSpeed;
+
+		} else {
+
+			if(event.pageY - $(document).scrollTop() < o.scrollSensitivity)
+				scrolled = $(document).scrollTop($(document).scrollTop() - o.scrollSpeed);
+			else if($(window).height() - (event.pageY - $(document).scrollTop()) < o.scrollSensitivity)
+				scrolled = $(document).scrollTop($(document).scrollTop() + o.scrollSpeed);
+
+			if(event.pageX - $(document).scrollLeft() < o.scrollSensitivity)
+				scrolled = $(document).scrollLeft($(document).scrollLeft() - o.scrollSpeed);
+			else if($(window).width() - (event.pageX - $(document).scrollLeft()) < o.scrollSensitivity)
+				scrolled = $(document).scrollLeft($(document).scrollLeft() + o.scrollSpeed);
+
+		}
+
+		if(scrolled !== false && $.ui.ddmanager && !o.dropBehaviour)
+			$.ui.ddmanager.prepareOffsets(i, event);
+
+	}
+});
+
+$.ui.plugin.add("draggable", "snap", {
+	start: function(event, ui) {
+
+		var inst = $(this).data("draggable");
+		inst.snapElements = [];
+
+		$(ui.options.snap.constructor != String ? ( ui.options.snap.items || ':data(draggable)' ) : ui.options.snap).each(function() {
+			var $t = $(this); var $o = $t.offset();
+			if(this != inst.element[0]) inst.snapElements.push({
+				item: this,
+				width: $t.outerWidth(), height: $t.outerHeight(),
+				top: $o.top, left: $o.left
+			});
+		});
+
+	},
+	drag: function(event, ui) {
+
+		var inst = $(this).data("draggable");
+		var d = ui.options.snapTolerance;
+
+		var x1 = ui.absolutePosition.left, x2 = x1 + inst.helperProportions.width,
+			y1 = ui.absolutePosition.top, y2 = y1 + inst.helperProportions.height;
+
+		for (var i = inst.snapElements.length - 1; i >= 0; i--){
+
+			var l = inst.snapElements[i].left, r = l + inst.snapElements[i].width,
+				t = inst.snapElements[i].top, b = t + inst.snapElements[i].height;
+
+			//Yes, I know, this is insane ;)
+			if(!((l-d < x1 && x1 < r+d && t-d < y1 && y1 < b+d) || (l-d < x1 && x1 < r+d && t-d < y2 && y2 < b+d) || (l-d < x2 && x2 < r+d && t-d < y1 && y1 < b+d) || (l-d < x2 && x2 < r+d && t-d < y2 && y2 < b+d))) {
+				if(inst.snapElements[i].snapping) (inst.options.snap.release && inst.options.snap.release.call(inst.element, event, $.extend(inst._uiHash(), { snapItem: inst.snapElements[i].item })));
+				inst.snapElements[i].snapping = false;
+				continue;
+			}
+
+			if(ui.options.snapMode != 'inner') {
+				var ts = Math.abs(t - y2) <= d;
+				var bs = Math.abs(b - y1) <= d;
+				var ls = Math.abs(l - x2) <= d;
+				var rs = Math.abs(r - x1) <= d;
+				if(ts) ui.position.top = inst._convertPositionTo("relative", { top: t - inst.helperProportions.height, left: 0 }).top;
+				if(bs) ui.position.top = inst._convertPositionTo("relative", { top: b, left: 0 }).top;
+				if(ls) ui.position.left = inst._convertPositionTo("relative", { top: 0, left: l - inst.helperProportions.width }).left;
+				if(rs) ui.position.left = inst._convertPositionTo("relative", { top: 0, left: r }).left;
+			}
+
+			var first = (ts || bs || ls || rs);
+
+			if(ui.options.snapMode != 'outer') {
+				var ts = Math.abs(t - y1) <= d;
+				var bs = Math.abs(b - y2) <= d;
+				var ls = Math.abs(l - x1) <= d;
+				var rs = Math.abs(r - x2) <= d;
+				if(ts) ui.position.top = inst._convertPositionTo("relative", { top: t, left: 0 }).top;
+				if(bs) ui.position.top = inst._convertPositionTo("relative", { top: b - inst.helperProportions.height, left: 0 }).top;
+				if(ls) ui.position.left = inst._convertPositionTo("relative", { top: 0, left: l }).left;
+				if(rs) ui.position.left = inst._convertPositionTo("relative", { top: 0, left: r - inst.helperProportions.width }).left;
+			}
+
+			if(!inst.snapElements[i].snapping && (ts || bs || ls || rs || first))
+				(inst.options.snap.snap && inst.options.snap.snap.call(inst.element, event, $.extend(inst._uiHash(), { snapItem: inst.snapElements[i].item })));
+			inst.snapElements[i].snapping = (ts || bs || ls || rs || first);
+
+		};
+
+	}
+});
+
+$.ui.plugin.add("draggable", "stack", {
+	start: function(event, ui) {
+		var group = $.makeArray($(ui.options.stack.group)).sort(function(a,b) {
+			return (parseInt($(a).css("zIndex"),10) || ui.options.stack.min) - (parseInt($(b).css("zIndex"),10) || ui.options.stack.min);
+		});
+
+		$(group).each(function(i) {
+			this.style.zIndex = ui.options.stack.min + i;
+		});
+
+		this[0].style.zIndex = ui.options.stack.min + group.length;
+	}
+});
+
+$.ui.plugin.add("draggable", "zIndex", {
+	start: function(event, ui) {
+		var t = $(ui.helper);
+		if(t.css("zIndex")) ui.options._zIndex = t.css("zIndex");
+		t.css('zIndex', ui.options.zIndex);
+	},
+	stop: function(event, ui) {
+		if(ui.options._zIndex) $(ui.helper).css('zIndex', ui.options._zIndex);
+	}
+});
+
+})(jQuery);
+/*
+ * jQuery UI Droppable 1.6rc5
+ *
+ * Copyright (c) 2009 AUTHORS.txt (http://ui.jquery.com/about)
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ *
+ * http://docs.jquery.com/UI/Droppables
+ *
+ * Depends:
+ *	ui.core.js
+ *	ui.draggable.js
+ */
+(function($) {
+
+$.widget("ui.droppable", {
+
+	_init: function() {
+
+		var o = this.options, accept = o.accept;
+		this.isover = 0; this.isout = 1;
+
+		this.options.accept = this.options.accept && $.isFunction(this.options.accept) ? this.options.accept : function(d) {
+			return d.is(accept);
+		};
+
+		//Store the droppable's proportions
+		this.proportions = { width: this.element[0].offsetWidth, height: this.element[0].offsetHeight };
+
+		// Add the reference and positions to the manager
+		$.ui.ddmanager.droppables[this.options.scope] = $.ui.ddmanager.droppables[this.options.scope] || [];
+		$.ui.ddmanager.droppables[this.options.scope].push(this);
+
+		(this.options.cssNamespace && this.element.addClass(this.options.cssNamespace+"-droppable"));
+
+	},
+
+	destroy: function() {
+		var drop = $.ui.ddmanager.droppables[this.options.scope];
+		for ( var i = 0; i < drop.length; i++ )
+			if ( drop[i] == this )
+				drop.splice(i, 1);
+
+		this.element
+			.removeClass(this.options.cssNamespace+"-droppable "+this.options.cssNamespace+"-droppable-disabled")
+			.removeData("droppable")
+			.unbind(".droppable");
+	},
+
+	_setData: function(key, value) {
+
+		if(key == 'accept') {
+			this.options.accept = value && $.isFunction(value) ? value : function(d) {
+				return d.is(accept);
+			};
+		} else {
+			$.widget.prototype._setData.apply(this, arguments);
+		}
+
+	},
+
+	_activate: function(event) {
+
+		var draggable = $.ui.ddmanager.current;
+		$.ui.plugin.call(this, 'activate', [event, this.ui(draggable)]);
+		(draggable && this._trigger('activate', event, this.ui(draggable)));
+
+	},
+
+	_deactivate: function(event) {
+
+		var draggable = $.ui.ddmanager.current;
+		$.ui.plugin.call(this, 'deactivate', [event, this.ui(draggable)]);
+		(draggable && this._trigger('deactivate', event, this.ui(draggable)));
+
+	},
+
+	_over: function(event) {
+
+		var draggable = $.ui.ddmanager.current;
+		if (!draggable || (draggable.currentItem || draggable.element)[0] == this.element[0]) return; // Bail if draggable and droppable are same element
+
+		if (this.options.accept.call(this.element,(draggable.currentItem || draggable.element))) {
+			$.ui.plugin.call(this, 'over', [event, this.ui(draggable)]);
+			this._trigger('over', event, this.ui(draggable));
+		}
+
+	},
+
+	_out: function(event) {
+
+		var draggable = $.ui.ddmanager.current;
+		if (!draggable || (draggable.currentItem || draggable.element)[0] == this.element[0]) return; // Bail if draggable and droppable are same element
+
+		if (this.options.accept.call(this.element,(draggable.currentItem || draggable.element))) {
+			$.ui.plugin.call(this, 'out', [event, this.ui(draggable)]);
+			this._trigger('out', event, this.ui(draggable));
+		}
+
+	},
+
+	_drop: function(event,custom) {
+
+		var draggable = custom || $.ui.ddmanager.current;
+		if (!draggable || (draggable.currentItem || draggable.element)[0] == this.element[0]) return false; // Bail if draggable and droppable are same element
+
+		var childrenIntersection = false;
+		this.element.find(":data(droppable)").not("."+draggable.options.cssNamespace+"-draggable-dragging").each(function() {
+			var inst = $.data(this, 'droppable');
+			if(inst.options.greedy && $.ui.intersect(draggable, $.extend(inst, { offset: inst.element.offset() }), inst.options.tolerance)) {
+				childrenIntersection = true; return false;
+			}
+		});
+		if(childrenIntersection) return false;
+
+		if(this.options.accept.call(this.element,(draggable.currentItem || draggable.element))) {
+			$.ui.plugin.call(this, 'drop', [event, this.ui(draggable)]);
+			this._trigger('drop', event, this.ui(draggable));
+			return this.element;
+		}
+
+		return false;
+
+	},
+
+	plugins: {},
+
+	ui: function(c) {
+		return {
+			draggable: (c.currentItem || c.element),
+			helper: c.helper,
+			position: c.position,
+			absolutePosition: c.positionAbs,
+			options: this.options,
+			element: this.element
+		};
+	}
+
+});
+
+$.extend($.ui.droppable, {
+	version: "1.6rc5",
+	eventPrefix: 'drop',
+	defaults: {
+		accept: '*',
+		activeClass: null,
+		cssNamespace: 'ui',
+		greedy: false,
+		hoverClass: null,
+		scope: 'default',
+		tolerance: 'intersect'
+	}
+});
+
+$.ui.intersect = function(draggable, droppable, toleranceMode) {
+
+	if (!droppable.offset) return false;
+
+	var x1 = (draggable.positionAbs || draggable.position.absolute).left, x2 = x1 + draggable.helperProportions.width,
+		y1 = (draggable.positionAbs || draggable.position.absolute).top, y2 = y1 + draggable.helperProportions.height;
+	var l = droppable.offset.left, r = l + droppable.proportions.width,
+		t = droppable.offset.top, b = t + droppable.proportions.height;
+
+	switch (toleranceMode) {
+		case 'fit':
+			return (l < x1 && x2 < r
+				&& t < y1 && y2 < b);
+			break;
+		case 'intersect':
+			return (l < x1 + (draggable.helperProportions.width / 2) // Right Half
+				&& x2 - (draggable.helperProportions.width / 2) < r // Left Half
+				&& t < y1 + (draggable.helperProportions.height / 2) // Bottom Half
+				&& y2 - (draggable.helperProportions.height / 2) < b ); // Top Half
+			break;
+		case 'pointer':
+			var draggableLeft = ((draggable.positionAbs || draggable.position.absolute).left + (draggable.clickOffset || draggable.offset.click).left),
+				draggableTop = ((draggable.positionAbs || draggable.position.absolute).top + (draggable.clickOffset || draggable.offset.click).top),
+				isOver = $.ui.isOver(draggableTop, draggableLeft, t, l, droppable.proportions.height, droppable.proportions.width);
+			return isOver;
+			break;
+		case 'touch':
+			return (
+					(y1 >= t && y1 <= b) ||	// Top edge touching
+					(y2 >= t && y2 <= b) ||	// Bottom edge touching
+					(y1 < t && y2 > b)		// Surrounded vertically
+				) && (
+					(x1 >= l && x1 <= r) ||	// Left edge touching
+					(x2 >= l && x2 <= r) ||	// Right edge touching
+					(x1 < l && x2 > r)		// Surrounded horizontally
+				);
+			break;
+		default:
+			return false;
+			break;
+		}
+
+};
+
+/*
+	This manager tracks offsets of draggables and droppables
+*/
+$.ui.ddmanager = {
+	current: null,
+	droppables: { 'default': [] },
+	prepareOffsets: function(t, event) {
+
+		var m = $.ui.ddmanager.droppables[t.options.scope];
+		var type = event ? event.type : null; // workaround for #2317
+		var list = (t.currentItem || t.element).find(":data(droppable)").andSelf();
+
+		droppablesLoop: for (var i = 0; i < m.length; i++) {
+
+			if(m[i].options.disabled || (t && !m[i].options.accept.call(m[i].element,(t.currentItem || t.element)))) continue;	//No disabled and non-accepted
+			for (var j=0; j < list.length; j++) { if(list[j] == m[i].element[0]) { m[i].proportions.height = 0; continue droppablesLoop; } }; //Filter out elements in the current dragged item
+			m[i].visible = m[i].element.css("display") != "none"; if(!m[i].visible) continue; 									//If the element is not visible, continue
+
+			m[i].offset = m[i].element.offset();
+			m[i].proportions = { width: m[i].element[0].offsetWidth, height: m[i].element[0].offsetHeight };
+
+			if(type == "dragstart" || type == "sortactivate") m[i]._activate.call(m[i], event); 										//Activate the droppable if used directly from draggables
+
+		}
+
+	},
+	drop: function(draggable, event) {
+
+		var dropped = false;
+		$.each($.ui.ddmanager.droppables[draggable.options.scope], function() {
+
+			if(!this.options) return;
+			if (!this.options.disabled && this.visible && $.ui.intersect(draggable, this, this.options.tolerance))
+				dropped = this._drop.call(this, event);
+
+			if (!this.options.disabled && this.visible && this.options.accept.call(this.element,(draggable.currentItem || draggable.element))) {
+				this.isout = 1; this.isover = 0;
+				this._deactivate.call(this, event);
+			}
+
+		});
+		return dropped;
+
+	},
+	drag: function(draggable, event) {
+
+		//If you have a highly dynamic page, you might try this option. It renders positions every time you move the mouse.
+		if(draggable.options.refreshPositions) $.ui.ddmanager.prepareOffsets(draggable, event);
+
+		//Run through all droppables and check their positions based on specific tolerance options
+
+		$.each($.ui.ddmanager.droppables[draggable.options.scope], function() {
+
+			if(this.options.disabled || this.greedyChild || !this.visible) return;
+			var intersects = $.ui.intersect(draggable, this, this.options.tolerance);
+
+			var c = !intersects && this.isover == 1 ? 'isout' : (intersects && this.isover == 0 ? 'isover' : null);
+			if(!c) return;
+
+			var parentInstance;
+			if (this.options.greedy) {
+				var parent = this.element.parents(':data(droppable):eq(0)');
+				if (parent.length) {
+					parentInstance = $.data(parent[0], 'droppable');
+					parentInstance.greedyChild = (c == 'isover' ? 1 : 0);
+				}
+			}
+
+			// we just moved into a greedy child
+			if (parentInstance && c == 'isover') {
+				parentInstance['isover'] = 0;
+				parentInstance['isout'] = 1;
+				parentInstance._out.call(parentInstance, event);
+			}
+
+			this[c] = 1; this[c == 'isout' ? 'isover' : 'isout'] = 0;
+			this[c == "isover" ? "_over" : "_out"].call(this, event);
+
+			// we just moved out of a greedy child
+			if (parentInstance && c == 'isout') {
+				parentInstance['isout'] = 0;
+				parentInstance['isover'] = 1;
+				parentInstance._over.call(parentInstance, event);
+			}
+		});
+
+	}
+};
+
+/*
+ * Droppable Extensions
+ */
+
+$.ui.plugin.add("droppable", "activeClass", {
+	activate: function(event, ui) {
+		$(this).addClass(ui.options.activeClass);
+	},
+	deactivate: function(event, ui) {
+		$(this).removeClass(ui.options.activeClass);
+	},
+	drop: function(event, ui) {
+		$(this).removeClass(ui.options.activeClass);
+	}
+});
+
+$.ui.plugin.add("droppable", "hoverClass", {
+	over: function(event, ui) {
+		$(this).addClass(ui.options.hoverClass);
+	},
+	out: function(event, ui) {
+		$(this).removeClass(ui.options.hoverClass);
+	},
+	drop: function(event, ui) {
+		$(this).removeClass(ui.options.hoverClass);
+	}
+});
+
+})(jQuery);
+/*
+ * jQuery UI Resizable 1.6rc5
+ *
+ * Copyright (c) 2009 AUTHORS.txt (http://ui.jquery.com/about)
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ *
+ * http://docs.jquery.com/UI/Resizables
+ *
+ * Depends:
+ *	ui.core.js
+ */
+(function($) {
+
+$.widget("ui.resizable", $.extend({}, $.ui.mouse, {
+
+	_init: function() {
+
+		var self = this, o = this.options;
+
+		var elpos = this.element.css('position');
+
+		this.originalElement = this.element;
+
+		// simulate .ui-resizable { position: relative; }
+		this.element.addClass("ui-resizable").css({ position: /static/.test(elpos) ? 'relative' : elpos });
+
+		$.extend(o, {
+			_aspectRatio: !!(o.aspectRatio),
+			helper: o.helper || o.ghost || o.animate ? o.helper || 'ui-resizable-helper' : null,
+			knobHandles: o.knobHandles === true ? 'ui-resizable-knob-handle' : o.knobHandles
+		});
+
+		//Default Theme
+		var aBorder = '1px solid #DEDEDE';
+
+		o.defaultTheme = {
+			'ui-resizable': { display: 'block' },
+			'ui-resizable-handle': { position: 'absolute', background: '#F2F2F2', fontSize: '0.1px' },
+			'ui-resizable-n': { cursor: 'n-resize', height: '4px', left: '0px', right: '0px', borderTop: aBorder },
+			'ui-resizable-s': { cursor: 's-resize', height: '4px', left: '0px', right: '0px', borderBottom: aBorder },
+			'ui-resizable-e': { cursor: 'e-resize', width: '4px', top: '0px', bottom: '0px', borderRight: aBorder },
+			'ui-resizable-w': { cursor: 'w-resize', width: '4px', top: '0px', bottom: '0px', borderLeft: aBorder },
+			'ui-resizable-se': { cursor: 'se-resize', width: '4px', height: '4px', borderRight: aBorder, borderBottom: aBorder },
+			'ui-resizable-sw': { cursor: 'sw-resize', width: '4px', height: '4px', borderBottom: aBorder, borderLeft: aBorder },
+			'ui-resizable-ne': { cursor: 'ne-resize', width: '4px', height: '4px', borderRight: aBorder, borderTop: aBorder },
+			'ui-resizable-nw': { cursor: 'nw-resize', width: '4px', height: '4px', borderLeft: aBorder, borderTop: aBorder }
+		};
+
+		o.knobTheme = {
+			'ui-resizable-handle': { background: '#F2F2F2', border: '1px solid #808080', height: '8px', width: '8px' },
+			'ui-resizable-n': { cursor: 'n-resize', top: '0px', left: '45%' },
+			'ui-resizable-s': { cursor: 's-resize', bottom: '0px', left: '45%' },
+			'ui-resizable-e': { cursor: 'e-resize', right: '0px', top: '45%' },
+			'ui-resizable-w': { cursor: 'w-resize', left: '0px', top: '45%' },
+			'ui-resizable-se': { cursor: 'se-resize', right: '0px', bottom: '0px' },
+			'ui-resizable-sw': { cursor: 'sw-resize', left: '0px', bottom: '0px' },
+			'ui-resizable-nw': { cursor: 'nw-resize', left: '0px', top: '0px' },
+			'ui-resizable-ne': { cursor: 'ne-resize', right: '0px', top: '0px' }
+		};
+
+		o._nodeName = this.element[0].nodeName;
+
+		//Wrap the element if it cannot hold child nodes
+		if(o._nodeName.match(/canvas|textarea|input|select|button|img/i)) {
+			var el = this.element;
+
+			//Opera fixing relative position
+			if (/relative/.test(el.css('position')) && $.browser.opera)
+				el.css({ position: 'relative', top: 'auto', left: 'auto' });
+
+			//Create a wrapper element and set the wrapper to the new current internal element
+			el.wrap(
+				$('<div class="ui-wrapper"	style="overflow: hidden;"></div>').css( {
+					position: el.css('position'),
+					width: el.outerWidth(),
+					height: el.outerHeight(),
+					top: el.css('top'),
+					left: el.css('left')
+				})
+			);
+
+			var oel = this.element; this.element = this.element.parent();
+
+			// store instance on wrapper
+			this.element.data('resizable', this);
+
+			//Move margins to the wrapper
+			this.element.css({ marginLeft: oel.css("marginLeft"), marginTop: oel.css("marginTop"),
+				marginRight: oel.css("marginRight"), marginBottom: oel.css("marginBottom")
+			});
+
+			oel.css({ marginLeft: 0, marginTop: 0, marginRight: 0, marginBottom: 0});
+
+			//Prevent Safari textarea resize
+			if ($.browser.safari && o.preventDefault) oel.css('resize', 'none');
+
+			o.proportionallyResize = oel.css({ position: 'static', zoom: 1, display: 'block' });
+
+			// avoid IE jump
+			this.element.css({ margin: oel.css('margin') });
+
+			// fix handlers offset
+			this._proportionallyResize();
+		}
+
+		if(!o.handles) o.handles = !$('.ui-resizable-handle', this.element).length ? "e,s,se" : { n: '.ui-resizable-n', e: '.ui-resizable-e', s: '.ui-resizable-s', w: '.ui-resizable-w', se: '.ui-resizable-se', sw: '.ui-resizable-sw', ne: '.ui-resizable-ne', nw: '.ui-resizable-nw' };
+		if(o.handles.constructor == String) {
+
+			o.zIndex = o.zIndex || 1000;
+
+			if(o.handles == 'all') o.handles = 'n,e,s,w,se,sw,ne,nw';
+
+			var n = o.handles.split(","); o.handles = {};
+
+			// insertions are applied when don't have theme loaded
+			var insertionsDefault = {
+				handle: 'position: absolute; display: none; overflow:hidden;',
+				n: 'top: 0pt; width:100%;',
+				e: 'right: 0pt; height:100%;',
+				s: 'bottom: 0pt; width:100%;',
+				w: 'left: 0pt; height:100%;',
+				se: 'bottom: 0pt; right: 0px;',
+				sw: 'bottom: 0pt; left: 0px;',
+				ne: 'top: 0pt; right: 0px;',
+				nw: 'top: 0pt; left: 0px;'
+			};
+
+			for(var i = 0; i < n.length; i++) {
+				var handle = $.trim(n[i]), dt = o.defaultTheme, hname = 'ui-resizable-'+handle, loadDefault = !$.ui.css(hname) && !o.knobHandles, userKnobClass = $.ui.css('ui-resizable-knob-handle'),
+							allDefTheme = $.extend(dt[hname], dt['ui-resizable-handle']), allKnobTheme = $.extend(o.knobTheme[hname], !userKnobClass ? o.knobTheme['ui-resizable-handle'] : {});
+
+				// increase zIndex of sw, se, ne, nw axis
+				var applyZIndex = /sw|se|ne|nw/.test(handle) ? { zIndex: ++o.zIndex } : {};
+
+				var defCss = (loadDefault ? insertionsDefault[handle] : ''),
+					axis = $(['<div class="ui-resizable-handle ', hname, '" style="', defCss, insertionsDefault.handle, '"></div>'].join('')).css( applyZIndex );
+
+				if ('se' == handle) {
+					axis.addClass('ui-icon ui-icon-gripsmall-diagonal-se');
+				};
+
+				o.handles[handle] = '.ui-resizable-'+handle;
+
+				this.element.append(
+					//Theme detection, if not loaded, load o.defaultTheme
+					axis.css( loadDefault ? allDefTheme : {} )
+						// Load the knobHandle css, fix width, height, top, left...
+						.css( o.knobHandles ? allKnobTheme : {} ).addClass(o.knobHandles ? 'ui-resizable-knob-handle' : '').addClass(o.knobHandles)
+				);
+			}
+
+			if (o.knobHandles) this.element.addClass('ui-resizable-knob').css( !$.ui.css('ui-resizable-knob') ? { /*border: '1px #fff dashed'*/ } : {} );
+		}
+
+		this._renderAxis = function(target) {
+			target = target || this.element;
+
+			for(var i in o.handles) {
+				if(o.handles[i].constructor == String)
+					o.handles[i] = $(o.handles[i], this.element).show();
+
+				if (o.transparent)
+					o.handles[i].css({opacity:0});
+
+				//Apply pad to wrapper element, needed to fix axis position (textarea, inputs, scrolls)
+				if (this.element.is('.ui-wrapper') &&
+					o._nodeName.match(/textarea|input|select|button/i)) {
+
+					var axis = $(o.handles[i], this.element), padWrapper = 0;
+
+					//Checking the correct pad and border
+					padWrapper = /sw|ne|nw|se|n|s/.test(i) ? axis.outerHeight() : axis.outerWidth();
+
+					//The padding type i have to apply...
+					var padPos = [ 'padding',
+						/ne|nw|n/.test(i) ? 'Top' :
+						/se|sw|s/.test(i) ? 'Bottom' :
+						/^e$/.test(i) ? 'Right' : 'Left' ].join("");
+
+					if (!o.transparent)
+						target.css(padPos, padWrapper);
+
+					this._proportionallyResize();
+				}
+				if(!$(o.handles[i]).length) continue;
+			}
+		};
+
+		this._renderAxis(this.element);
+		o._handles = $('.ui-resizable-handle', self.element);
+
+		if (o.disableSelection)
+			o._handles.disableSelection();
+
+		//Matching axis name
+		o._handles.mouseover(function() {
+			if (!o.resizing) {
+				if (this.className)
+					var axis = this.className.match(/ui-resizable-(se|sw|ne|nw|n|e|s|w)/i);
+				//Axis, default = se
+				self.axis = o.axis = axis && axis[1] ? axis[1] : 'se';
+			}
+		});
+
+		//If we want to auto hide the elements
+		if (o.autoHide) {
+			o._handles.hide();
+			$(self.element).addClass("ui-resizable-autohide").hover(function() {
+				$(this).removeClass("ui-resizable-autohide");
+				o._handles.show();
+			},
+			function(){
+				if (!o.resizing) {
+					$(this).addClass("ui-resizable-autohide");
+					o._handles.hide();
+				}
+			});
+		}
+
+		this._mouseInit();
+	},
+
+	destroy: function() {
+		var el = this.element, wrapped = el.children(".ui-resizable").get(0);
+
+		this._mouseDestroy();
+
+		var _destroy = function(exp) {
+			$(exp).removeClass("ui-resizable ui-resizable-disabled")
+				.removeData("resizable").unbind(".resizable").find('.ui-resizable-handle').remove();
+		};
+
+		_destroy(el);
+
+		if (el.is('.ui-wrapper') && wrapped) {
+			el.parent().append(
+				$(wrapped).css({
+					position: el.css('position'),
+					width: el.outerWidth(),
+					height: el.outerHeight(),
+					top: el.css('top'),
+					left: el.css('left')
+				})
+			).end().remove();
+
+			_destroy(wrapped);
+		}
+	},
+
+	_mouseCapture: function(event) {
+
+		if(this.options.disabled) return false;
+
+		var handle = false;
+		for(var i in this.options.handles) {
+			if($(this.options.handles[i])[0] == event.target) handle = true;
+		}
+		if (!handle) return false;
+
+		return true;
+
+	},
+
+	_mouseStart: function(event) {
+
+		var o = this.options, iniPos = this.element.position(), el = this.element,
+			num = function(v) { return parseInt(v, 10) || 0; }, ie6 = $.browser.msie && $.browser.version < 7;
+		o.resizing = true;
+		o.documentScroll = { top: $(document).scrollTop(), left: $(document).scrollLeft() };
+
+		// bugfix #1749
+		if (el.is('.ui-draggable') || (/absolute/).test(el.css('position'))) {
+
+			// sOffset decides if document scrollOffset will be added to the top/left of the resizable element
+			var sOffset = $.browser.msie && !o.containment && (/absolute/).test(el.css('position')) && !(/relative/).test(el.parent().css('position'));
+			var dscrollt = sOffset ? o.documentScroll.top : 0, dscrolll = sOffset ? o.documentScroll.left : 0;
+
+			el.css({ position: 'absolute', top: (iniPos.top + dscrollt), left: (iniPos.left + dscrolll) });
+		}
+
+		//Opera fixing relative position
+		if ($.browser.opera && (/relative/).test(el.css('position')))
+			el.css({ position: 'relative', top: 'auto', left: 'auto' });
+
+		this._renderProxy();
+
+		var curleft = num(this.helper.css('left')), curtop = num(this.helper.css('top'));
+
+		if (o.containment) {
+			curleft += $(o.containment).scrollLeft()||0;
+			curtop += $(o.containment).scrollTop()||0;
+		}
+
+		//Store needed variables
+		this.offset = this.helper.offset();
+		this.position = { left: curleft, top: curtop };
+		this.size = o.helper || ie6 ? { width: el.outerWidth(), height: el.outerHeight() } : { width: el.width(), height: el.height() };
+		this.originalSize = o.helper || ie6 ? { width: el.outerWidth(), height: el.outerHeight() } : { width: el.width(), height: el.height() };
+		this.originalPosition = { left: curleft, top: curtop };
+		this.sizeDiff = { width: el.outerWidth() - el.width(), height: el.outerHeight() - el.height() };
+		this.originalMousePosition = { left: event.pageX, top: event.pageY };
+
+		//Aspect Ratio
+		o.aspectRatio = (typeof o.aspectRatio == 'number') ? o.aspectRatio : ((this.originalSize.width / this.originalSize.height)||1);
+
+		if (o.preserveCursor) {
+		    var cursor = $('.ui-resizable-' + this.axis).css('cursor');
+		    $('body').css('cursor', cursor == 'auto' ? this.axis + '-resize' : cursor);
+		}
+
+		this._propagate("start", event);
+		return true;
+	},
+
+	_mouseDrag: function(event) {
+
+		//Increase performance, avoid regex
+		var el = this.helper, o = this.options, props = {},
+			self = this, smp = this.originalMousePosition, a = this.axis;
+
+		var dx = (event.pageX-smp.left)||0, dy = (event.pageY-smp.top)||0;
+		var trigger = this._change[a];
+		if (!trigger) return false;
+
+		// Calculate the attrs that will be change
+		var data = trigger.apply(this, [event, dx, dy]), ie6 = $.browser.msie && $.browser.version < 7, csdif = this.sizeDiff;
+
+		if (o._aspectRatio || event.shiftKey)
+			data = this._updateRatio(data, event);
+
+		data = this._respectSize(data, event);
+
+		// plugins callbacks need to be called first
+		this._propagate("resize", event);
+
+		el.css({
+			top: this.position.top + "px", left: this.position.left + "px",
+			width: this.size.width + "px", height: this.size.height + "px"
+		});
+
+		if (!o.helper && o.proportionallyResize)
+			this._proportionallyResize();
+
+		this._updateCache(data);
+
+		// calling the user callback at the end
+		this._trigger('resize', event, this.ui());
+
+		return false;
+	},
+
+	_mouseStop: function(event) {
+
+		this.options.resizing = false;
+		var o = this.options, num = function(v) { return parseInt(v, 10) || 0; }, self = this;
+
+		if(o.helper) {
+			var pr = o.proportionallyResize, ista = pr && (/textarea/i).test(pr.get(0).nodeName),
+						soffseth = ista && $.ui.hasScroll(pr.get(0), 'left') /* TODO - jump height */ ? 0 : self.sizeDiff.height,
+							soffsetw = ista ? 0 : self.sizeDiff.width;
+
+			var s = { width: (self.size.width - soffsetw), height: (self.size.height - soffseth) },
+				left = (parseInt(self.element.css('left'), 10) + (self.position.left - self.originalPosition.left)) || null,
+				top = (parseInt(self.element.css('top'), 10) + (self.position.top - self.originalPosition.top)) || null;
+
+			if (!o.animate)
+				this.element.css($.extend(s, { top: top, left: left }));
+
+			if (o.helper && !o.animate) this._proportionallyResize();
+		}
+
+		if (o.preserveCursor)
+			$('body').css('cursor', 'auto');
+
+		this._propagate("stop", event);
+
+		if (o.helper) this.helper.remove();
+
+		return false;
+	},
+
+	_updateCache: function(data) {
+		var o = this.options;
+		this.offset = this.helper.offset();
+		if (data.left) this.position.left = data.left;
+		if (data.top) this.position.top = data.top;
+		if (data.height) this.size.height = data.height;
+		if (data.width) this.size.width = data.width;
+	},
+
+	_updateRatio: function(data, event) {
+
+		var o = this.options, cpos = this.position, csize = this.size, a = this.axis;
+
+		if (data.height) data.width = (csize.height * o.aspectRatio);
+		else if (data.width) data.height = (csize.width / o.aspectRatio);
+
+		if (a == 'sw') {
+			data.left = cpos.left + (csize.width - data.width);
+			data.top = null;
+		}
+		if (a == 'nw') {
+			data.top = cpos.top + (csize.height - data.height);
+			data.left = cpos.left + (csize.width - data.width);
+		}
+
+		return data;
+	},
+
+	_respectSize: function(data, event) {
+
+		var el = this.helper, o = this.options, pRatio = o._aspectRatio || event.shiftKey, a = this.axis,
+				ismaxw = data.width && o.maxWidth && o.maxWidth < data.width, ismaxh = data.height && o.maxHeight && o.maxHeight < data.height,
+					isminw = data.width && o.minWidth && o.minWidth > data.width, isminh = data.height && o.minHeight && o.minHeight > data.height;
+
+		if (isminw) data.width = o.minWidth;
+		if (isminh) data.height = o.minHeight;
+		if (ismaxw) data.width = o.maxWidth;
+		if (ismaxh) data.height = o.maxHeight;
+
+		var dw = this.originalPosition.left + this.originalSize.width, dh = this.position.top + this.size.height;
+		var cw = /sw|nw|w/.test(a), ch = /nw|ne|n/.test(a);
+
+		if (isminw && cw) data.left = dw - o.minWidth;
+		if (ismaxw && cw) data.left = dw - o.maxWidth;
+		if (isminh && ch)	data.top = dh - o.minHeight;
+		if (ismaxh && ch)	data.top = dh - o.maxHeight;
+
+		// fixing jump error on top/left - bug #2330
+		var isNotwh = !data.width && !data.height;
+		if (isNotwh && !data.left && data.top) data.top = null;
+		else if (isNotwh && !data.top && data.left) data.left = null;
+
+		return data;
+	},
+
+	_proportionallyResize: function() {
+		var o = this.options;
+		if (!o.proportionallyResize) return;
+		var prel = o.proportionallyResize, el = this.helper || this.element;
+
+		if (!o.borderDif) {
+			var b = [prel.css('borderTopWidth'), prel.css('borderRightWidth'), prel.css('borderBottomWidth'), prel.css('borderLeftWidth')],
+				p = [prel.css('paddingTop'), prel.css('paddingRight'), prel.css('paddingBottom'), prel.css('paddingLeft')];
+
+			o.borderDif = $.map(b, function(v, i) {
+				var border = parseInt(v,10)||0, padding = parseInt(p[i],10)||0;
+				return border + padding;
+			});
+		}
+
+		if ($.browser.msie && !isVisible(el))
+			return;
+
+		prel.css({
+			height: (el.height() - o.borderDif[0] - o.borderDif[2]) || 0,
+			width: (el.width() - o.borderDif[1] - o.borderDif[3]) || 0
+		});
+	},
+
+	_renderProxy: function() {
+		var el = this.element, o = this.options;
+		this.elementOffset = el.offset();
+
+		if(o.helper) {
+			this.helper = this.helper || $('<div style="overflow:hidden;"></div>');
+
+			// fix ie6 offset
+			var ie6 = $.browser.msie && $.browser.version < 7, ie6offset = (ie6 ? 1 : 0),
+			pxyoffset = ( ie6 ? 2 : -1 );
+
+			this.helper.addClass(o.helper).css({
+				width: el.outerWidth() + pxyoffset,
+				height: el.outerHeight() + pxyoffset,
+				position: 'absolute',
+				left: this.elementOffset.left - ie6offset +'px',
+				top: this.elementOffset.top - ie6offset +'px',
+				zIndex: ++o.zIndex
+			});
+
+			this.helper.appendTo("body");
+
+			if (o.disableSelection)
+				this.helper.disableSelection();
+
+		} else {
+			this.helper = el;
+		}
+	},
+
+	_change: {
+		e: function(event, dx, dy) {
+			return { width: this.originalSize.width + dx };
+		},
+		w: function(event, dx, dy) {
+			var o = this.options, cs = this.originalSize, sp = this.originalPosition;
+			return { left: sp.left + dx, width: cs.width - dx };
+		},
+		n: function(event, dx, dy) {
+			var o = this.options, cs = this.originalSize, sp = this.originalPosition;
+			return { top: sp.top + dy, height: cs.height - dy };
+		},
+		s: function(event, dx, dy) {
+			return { height: this.originalSize.height + dy };
+		},
+		se: function(event, dx, dy) {
+			return $.extend(this._change.s.apply(this, arguments), this._change.e.apply(this, [event, dx, dy]));
+		},
+		sw: function(event, dx, dy) {
+			return $.extend(this._change.s.apply(this, arguments), this._change.w.apply(this, [event, dx, dy]));
+		},
+		ne: function(event, dx, dy) {
+			return $.extend(this._change.n.apply(this, arguments), this._change.e.apply(this, [event, dx, dy]));
+		},
+		nw: function(event, dx, dy) {
+			return $.extend(this._change.n.apply(this, arguments), this._change.w.apply(this, [event, dx, dy]));
+		}
+	},
+
+	_propagate: function(n, event) {
+		$.ui.plugin.call(this, n, [event, this.ui()]);
+		
+		(n != "resize" && this._trigger(n, event, this.ui()));
+	},
+
+	plugins: {},
+
+	ui: function() {
+		return {
+			originalElement: this.originalElement,
+			element: this.element,
+			helper: this.helper,
+			position: this.position,
+			size: this.size,
+			options: this.options,
+			originalSize: this.originalSize,
+			originalPosition: this.originalPosition
+		};
+	}
+
+}));
+
+$.extend($.ui.resizable, {
+	version: "1.6rc5",
+	eventPrefix: "resize",
+	defaults: {
+		alsoResize: false,
+		animate: false,
+		animateDuration: "slow",
+		animateEasing: "swing",
+		aspectRatio: false,
+		autoHide: false,
+		cancel: ":input,option",
+		containment: false,
+		delay: 0,
+		disableSelection: true,
+		distance: 1,
+		ghost: false,
+		grid: false,
+		knobHandles: false,
+		maxHeight: null,
+		maxWidth: null,
+		minHeight: 10,
+		minWidth: 10,
+		preserveCursor: true,
+		preventDefault: true,
+		proportionallyResize: false,
+		transparent: false
+	}
+});
+
+/*
+ * Resizable Extensions
+ */
+
+$.ui.plugin.add("resizable", "alsoResize", {
+
+	start: function(event, ui) {
+		var o = ui.options, self = $(this).data("resizable"),
+
+		_store = function(exp) {
+			$(exp).each(function() {
+				$(this).data("resizable-alsoresize", {
+					width: parseInt($(this).width(), 10), height: parseInt($(this).height(), 10),
+					left: parseInt($(this).css('left'), 10), top: parseInt($(this).css('top'), 10)
+				});
+			});
+		};
+
+		if (typeof(o.alsoResize) == 'object' && !o.alsoResize.parentNode) {
+			if (o.alsoResize.length) { o.alsoResize = o.alsoResize[0];	_store(o.alsoResize); }
+			else { $.each(o.alsoResize, function(exp, c) { _store(exp); }); }
+		}else{
+			_store(o.alsoResize);
+		}
+	},
+
+	resize: function(event, ui){
+		var o = ui.options, self = $(this).data("resizable"), os = self.originalSize, op = self.originalPosition;
+
+		var delta = {
+			height: (self.size.height - os.height) || 0, width: (self.size.width - os.width) || 0,
+			top: (self.position.top - op.top) || 0, left: (self.position.left - op.left) || 0
+		},
+
+		_alsoResize = function(exp, c) {
+			$(exp).each(function() {
+				var el = $(this), start = $(this).data("resizable-alsoresize"), style = {}, css = c && c.length ? c : ['width', 'height', 'top', 'left'];
+
+				$.each(css || ['width', 'height', 'top', 'left'], function(i, prop) {
+					var sum = (start[prop]||0) + (delta[prop]||0);
+					if (sum && sum >= 0)
+						style[prop] = sum || null;
+				});
+
+				//Opera fixing relative position
+				if (/relative/.test(el.css('position')) && $.browser.opera) {
+					self._revertToRelativePosition = true;
+					el.css({ position: 'absolute', top: 'auto', left: 'auto' });
+				}
+
+				el.css(style);
+			});
+		};
+
+		if (typeof(o.alsoResize) == 'object' && !o.alsoResize.nodeType) {
+			$.each(o.alsoResize, function(exp, c) { _alsoResize(exp, c); });
+		}else{
+			_alsoResize(o.alsoResize);
+		}
+	},
+
+	stop: function(event, ui){
+		var self = $(this).data("resizable");
+
+		//Opera fixing relative position
+		if (self._revertToRelativePosition && $.browser.opera) {
+			self._revertToRelativePosition = false;
+			el.css({ position: 'relative' });
+		}
+
+		$(this).removeData("resizable-alsoresize-start");
+	}
+});
+
+$.ui.plugin.add("resizable", "animate", {
+
+	stop: function(event, ui) {
+		var o = ui.options, self = $(this).data("resizable");
+
+		var pr = o.proportionallyResize, ista = pr && (/textarea/i).test(pr.get(0).nodeName),
+						soffseth = ista && $.ui.hasScroll(pr.get(0), 'left') /* TODO - jump height */ ? 0 : self.sizeDiff.height,
+							soffsetw = ista ? 0 : self.sizeDiff.width;
+
+		var style = { width: (self.size.width - soffsetw), height: (self.size.height - soffseth) },
+					left = (parseInt(self.element.css('left'), 10) + (self.position.left - self.originalPosition.left)) || null,
+						top = (parseInt(self.element.css('top'), 10) + (self.position.top - self.originalPosition.top)) || null;
+
+		self.element.animate(
+			$.extend(style, top && left ? { top: top, left: left } : {}), {
+				duration: o.animateDuration,
+				easing: o.animateEasing,
+				step: function() {
+
+					var data = {
+						width: parseInt(self.element.css('width'), 10),
+						height: parseInt(self.element.css('height'), 10),
+						top: parseInt(self.element.css('top'), 10),
+						left: parseInt(self.element.css('left'), 10)
+					};
+
+					if (pr) pr.css({ width: data.width, height: data.height });
+
+					// propagating resize, and updating values for each animation step
+					self._updateCache(data);
+					self._propagate("resize", event);
+
+				}
+			}
+		);
+	}
+
+});
+
+$.ui.plugin.add("resizable", "containment", {
+
+	start: function(event, ui) {
+		var o = ui.options, self = $(this).data("resizable"), el = self.element;
+		var oc = o.containment,	ce = (oc instanceof $) ? oc.get(0) : (/parent/.test(oc)) ? el.parent().get(0) : oc;
+		if (!ce) return;
+
+		self.containerElement = $(ce);
+
+		if (/document/.test(oc) || oc == document) {
+			self.containerOffset = { left: 0, top: 0 };
+			self.containerPosition = { left: 0, top: 0 };
+
+			self.parentData = {
+				element: $(document), left: 0, top: 0,
+				width: $(document).width(), height: $(document).height() || document.body.parentNode.scrollHeight
+			};
+		}
+
+		// i'm a node, so compute top, left, right, bottom
+		else{
+			self.containerOffset = $(ce).offset();
+			self.containerPosition = $(ce).position();
+			self.containerSize = { height: $(ce).innerHeight(), width: $(ce).innerWidth() };
+
+			var co = self.containerOffset, ch = self.containerSize.height,	cw = self.containerSize.width,
+						width = ($.ui.hasScroll(ce, "left") ? ce.scrollWidth : cw ), height = ($.ui.hasScroll(ce) ? ce.scrollHeight : ch);
+
+			self.parentData = {
+				element: ce, left: co.left, top: co.top, width: width, height: height
+			};
+		}
+	},
+
+	resize: function(event, ui) {
+		var o = ui.options, self = $(this).data("resizable"),
+				ps = self.containerSize, co = self.containerOffset, cs = self.size, cp = self.position,
+				pRatio = o._aspectRatio || event.shiftKey, cop = { top:0, left:0 }, ce = self.containerElement;
+
+		if (ce[0] != document && (/static/).test(ce.css('position')))
+			cop = self.containerPosition;
+
+		if (cp.left < (o.helper ? co.left : 0)) {
+			self.size.width = self.size.width + (o.helper ? (self.position.left - co.left) : (self.position.left - cop.left));
+			if (pRatio) self.size.height = self.size.width / o.aspectRatio;
+			self.position.left = o.helper ? co.left : 0;
+		}
+
+		if (cp.top < (o.helper ? co.top : 0)) {
+			self.size.height = self.size.height + (o.helper ? (self.position.top - co.top) : self.position.top);
+			if (pRatio) self.size.width = self.size.height * o.aspectRatio;
+			self.position.top = o.helper ? co.top : 0;
+		}
+
+		var woset = Math.abs( (o.helper ? self.offset.left - cop.left : (self.offset.left - cop.left)) + self.sizeDiff.width ),
+					hoset = Math.abs( (o.helper ? self.offset.top - cop.top : (self.offset.top - co.top)) + self.sizeDiff.height );
+
+		if (woset + self.size.width >= self.parentData.width) {
+			self.size.width = self.parentData.width - woset;
+			if (pRatio) self.size.height = self.size.width / o.aspectRatio;
+		}
+
+		if (hoset + self.size.height >= self.parentData.height) {
+			self.size.height = self.parentData.height - hoset;
+			if (pRatio) self.size.width = self.size.height * o.aspectRatio;
+		}
+	},
+
+	stop: function(event, ui){
+		var o = ui.options, self = $(this).data("resizable"), cp = self.position,
+				co = self.containerOffset, cop = self.containerPosition, ce = self.containerElement;
+
+		var helper = $(self.helper), ho = helper.offset(), w = helper.outerWidth() - self.sizeDiff.width, h = helper.outerHeight() - self.sizeDiff.height;
+
+		if (o.helper && !o.animate && (/relative/).test(ce.css('position')))
+			$(this).css({ left: ho.left - cop.left - co.left, width: w, height: h });
+
+		if (o.helper && !o.animate && (/static/).test(ce.css('position')))
+			$(this).css({ left: ho.left - cop.left - co.left, width: w, height: h });
+
+	}
+});
+
+$.ui.plugin.add("resizable", "ghost", {
+
+	start: function(event, ui) {
+		var o = ui.options, self = $(this).data("resizable"), pr = o.proportionallyResize, cs = self.size;
+
+		if (!pr) self.ghost = self.element.clone();
+		else self.ghost = pr.clone();
+
+		self.ghost.css(
+			{ opacity: .25, display: 'block', position: 'relative', height: cs.height, width: cs.width, margin: 0, left: 0, top: 0 }
+		)
+		.addClass('ui-resizable-ghost').addClass(typeof o.ghost == 'string' ? o.ghost : '');
+
+		self.ghost.appendTo(self.helper);
+
+	},
+
+	resize: function(event, ui){
+		var o = ui.options, self = $(this).data("resizable"), pr = o.proportionallyResize;
+
+		if (self.ghost) self.ghost.css({ position: 'relative', height: self.size.height, width: self.size.width });
+
+	},
+
+	stop: function(event, ui){
+		var o = ui.options, self = $(this).data("resizable"), pr = o.proportionallyResize;
+		if (self.ghost && self.helper) self.helper.get(0).removeChild(self.ghost.get(0));
+	}
+
+});
+
+$.ui.plugin.add("resizable", "grid", {
+
+	resize: function(event, ui) {
+		var o = ui.options, self = $(this).data("resizable"), cs = self.size, os = self.originalSize, op = self.originalPosition, a = self.axis, ratio = o._aspectRatio || event.shiftKey;
+		o.grid = typeof o.grid == "number" ? [o.grid, o.grid] : o.grid;
+		var ox = Math.round((cs.width - os.width) / (o.grid[0]||1)) * (o.grid[0]||1), oy = Math.round((cs.height - os.height) / (o.grid[1]||1)) * (o.grid[1]||1);
+
+		if (/^(se|s|e)$/.test(a)) {
+			self.size.width = os.width + ox;
+			self.size.height = os.height + oy;
+		}
+		else if (/^(ne)$/.test(a)) {
+			self.size.width = os.width + ox;
+			self.size.height = os.height + oy;
+			self.position.top = op.top - oy;
+		}
+		else if (/^(sw)$/.test(a)) {
+			self.size.width = os.width + ox;
+			self.size.height = os.height + oy;
+			self.position.left = op.left - ox;
+		}
+		else {
+			self.size.width = os.width + ox;
+			self.size.height = os.height + oy;
+			self.position.top = op.top - oy;
+			self.position.left = op.left - ox;
+		}
+	}
+
+});
+
+function isVisible(element) {
+	return !($(element).is(':hidden') || $(element).parents(':hidden').length);
+}
+
+})(jQuery);
+/*
+ * jQuery UI Selectable 1.6rc5
+ *
+ * Copyright (c) 2009 AUTHORS.txt (http://ui.jquery.com/about)
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ *
+ * http://docs.jquery.com/UI/Selectables
+ *
+ * Depends:
+ *	ui.core.js
+ */
+(function($) {
+
+$.widget("ui.selectable", $.extend({}, $.ui.mouse, {
+
+	_init: function() {
+		var self = this;
+
+		this.element.addClass("ui-selectable");
+
+		this.dragged = false;
+
+		// cache selectee children based on filter
+		var selectees;
+		this.refresh = function() {
+			selectees = $(self.options.filter, self.element[0]);
+			selectees.each(function() {
+				var $this = $(this);
+				var pos = $this.offset();
+				$.data(this, "selectable-item", {
+					element: this,
+					$element: $this,
+					left: pos.left,
+					top: pos.top,
+					right: pos.left + $this.outerWidth(),
+					bottom: pos.top + $this.outerHeight(),
+					startselected: false,
+					selected: $this.hasClass('ui-selected'),
+					selecting: $this.hasClass('ui-selecting'),
+					unselecting: $this.hasClass('ui-unselecting')
+				});
+			});
+		};
+		this.refresh();
+
+		this.selectees = selectees.addClass("ui-selectee");
+
+		this._mouseInit();
+
+		this.helper = $(document.createElement('div'))
+			.css({border:'1px dotted black'})
+			.addClass("ui-selectable-helper");
+	},
+
+	destroy: function() {
+		this.element
+			.removeClass("ui-selectable ui-selectable-disabled")
+			.removeData("selectable")
+			.unbind(".selectable");
+		this._mouseDestroy();
+	},
+
+	_mouseStart: function(event) {
+		var self = this;
+
+		this.opos = [event.pageX, event.pageY];
+
+		if (this.options.disabled)
+			return;
+
+		var options = this.options;
+
+		this.selectees = $(options.filter, this.element[0]);
+
+		this._trigger("start", event);
+
+		$('body').append(this.helper);
+		// position helper (lasso)
+		this.helper.css({
+			"z-index": 100,
+			"position": "absolute",
+			"left": event.clientX,
+			"top": event.clientY,
+			"width": 0,
+			"height": 0
+		});
+
+		if (options.autoRefresh) {
+			this.refresh();
+		}
+
+		this.selectees.filter('.ui-selected').each(function() {
+			var selectee = $.data(this, "selectable-item");
+			selectee.startselected = true;
+			if (!event.metaKey) {
+				selectee.$element.removeClass('ui-selected');
+				selectee.selected = false;
+				selectee.$element.addClass('ui-unselecting');
+				selectee.unselecting = true;
+				// selectable UNSELECTING callback
+				self._trigger("unselecting", event, {
+					unselecting: selectee.element
+				});
+			}
+		});
+
+		$(event.target).parents().andSelf().each(function() {
+			var selectee = $.data(this, "selectable-item");
+			if (selectee) {
+				selectee.$element.removeClass("ui-unselecting").addClass('ui-selecting');
+				selectee.unselecting = false;
+				selectee.selecting = true;
+				selectee.selected = true;
+				// selectable SELECTING callback
+				self._trigger("selecting", event, {
+					selecting: selectee.element
+				});
+				return false;
+			}
+		});
+
+	},
+
+	_mouseDrag: function(event) {
+		var self = this;
+		this.dragged = true;
+
+		if (this.options.disabled)
+			return;
+
+		var options = this.options;
+
+		var x1 = this.opos[0], y1 = this.opos[1], x2 = event.pageX, y2 = event.pageY;
+		if (x1 > x2) { var tmp = x2; x2 = x1; x1 = tmp; }
+		if (y1 > y2) { var tmp = y2; y2 = y1; y1 = tmp; }
+		this.helper.css({left: x1, top: y1, width: x2-x1, height: y2-y1});
+
+		this.selectees.each(function() {
+			var selectee = $.data(this, "selectable-item");
+			//prevent helper from being selected if appendTo: selectable
+			if (!selectee || selectee.element == self.element[0])
+				return;
+			var hit = false;
+			if (options.tolerance == 'touch') {
+				hit = ( !(selectee.left > x2 || selectee.right < x1 || selectee.top > y2 || selectee.bottom < y1) );
+			} else if (options.tolerance == 'fit') {
+				hit = (selectee.left > x1 && selectee.right < x2 && selectee.top > y1 && selectee.bottom < y2);
+			}
+
+			if (hit) {
+				// SELECT
+				if (selectee.selected) {
+					selectee.$element.removeClass('ui-selected');
+					selectee.selected = false;
+				}
+				if (selectee.unselecting) {
+					selectee.$element.removeClass('ui-unselecting');
+					selectee.unselecting = false;
+				}
+				if (!selectee.selecting) {
+					selectee.$element.addClass('ui-selecting');
+					selectee.selecting = true;
+					// selectable SELECTING callback
+					self._trigger("selecting", event, {
+						selecting: selectee.element
+					});
+				}
+			} else {
+				// UNSELECT
+				if (selectee.selecting) {
+					if (event.metaKey && selectee.startselected) {
+						selectee.$element.removeClass('ui-selecting');
+						selectee.selecting = false;
+						selectee.$element.addClass('ui-selected');
+						selectee.selected = true;
+					} else {
+						selectee.$element.removeClass('ui-selecting');
+						selectee.selecting = false;
+						if (selectee.startselected) {
+							selectee.$element.addClass('ui-unselecting');
+							selectee.unselecting = true;
+						}
+						// selectable UNSELECTING callback
+						self._trigger("unselecting", event, {
+							unselecting: selectee.element
+						});
+					}
+				}
+				if (selectee.selected) {
+					if (!event.metaKey && !selectee.startselected) {
+						selectee.$element.removeClass('ui-selected');
+						selectee.selected = false;
+
+						selectee.$element.addClass('ui-unselecting');
+						selectee.unselecting = true;
+						// selectable UNSELECTING callback
+						self._trigger("unselecting", event, {
+							unselecting: selectee.element
+						});
+					}
+				}
+			}
+		});
+
+		return false;
+	},
+
+	_mouseStop: function(event) {
+		var self = this;
+
+		this.dragged = false;
+
+		var options = this.options;
+
+		$('.ui-unselecting', this.element[0]).each(function() {
+			var selectee = $.data(this, "selectable-item");
+			selectee.$element.removeClass('ui-unselecting');
+			selectee.unselecting = false;
+			selectee.startselected = false;
+			self._trigger("unselected", event, {
+				unselected: selectee.element
+			});
+		});
+		$('.ui-selecting', this.element[0]).each(function() {
+			var selectee = $.data(this, "selectable-item");
+			selectee.$element.removeClass('ui-selecting').addClass('ui-selected');
+			selectee.selecting = false;
+			selectee.selected = true;
+			selectee.startselected = true;
+			self._trigger("selected", event, {
+				selected: selectee.element
+			});
+		});
+		this._trigger("stop", event);
+
+		this.helper.remove();
+
+		return false;
+	}
+
+}));
+
+$.extend($.ui.selectable, {
+	version: "1.6rc5",
+	defaults: {
+		appendTo: 'body',
+		autoRefresh: true,
+		cancel: ":input,option",
+		delay: 0,
+		distance: 0,
+		filter: '*',
+		tolerance: 'touch'
+	}
+});
+
+})(jQuery);
+/*
+ * jQuery UI Sortable 1.6rc5
+ *
+ * Copyright (c) 2009 AUTHORS.txt (http://ui.jquery.com/about)
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ *
+ * http://docs.jquery.com/UI/Sortables
+ *
+ * Depends:
+ *	ui.core.js
+ */
+(function($) {
+
+$.widget("ui.sortable", $.extend({}, $.ui.mouse, {
+	_init: function() {
+
+		var o = this.options;
+		this.containerCache = {};
+		(this.options.cssNamespace && this.element.addClass(this.options.cssNamespace+"-sortable"));
+
+		//Get the items
+		this.refresh();
+
+		//Let's determine if the items are floating
+		this.floating = this.items.length ? (/left|right/).test(this.items[0].item.css('float')) : false;
+
+		//Let's determine the parent's offset
+		this.offset = this.element.offset();
+
+		//Initialize mouse events for interaction
+		this._mouseInit();
+
+	},
+
+	destroy: function() {
+		this.element
+			.removeClass(this.options.cssNamespace+"-sortable "+this.options.cssNamespace+"-sortable-disabled")
+			.removeData("sortable")
+			.unbind(".sortable");
+		this._mouseDestroy();
+
+		for ( var i = this.items.length - 1; i >= 0; i-- )
+			this.items[i].item.removeData("sortable-item");
+	},
+
+	_mouseCapture: function(event, overrideHandle) {
+
+		if (this.reverting) {
+			return false;
+		}
+
+		if(this.options.disabled || this.options.type == 'static') return false;
+
+		//We have to refresh the items data once first
+		this._refreshItems(event);
+
+		//Find out if the clicked node (or one of its parents) is a actual item in this.items
+		var currentItem = null, self = this, nodes = $(event.target).parents().each(function() {
+			if($.data(this, 'sortable-item') == self) {
+				currentItem = $(this);
+				return false;
+			}
+		});
+		if($.data(event.target, 'sortable-item') == self) currentItem = $(event.target);
+
+		if(!currentItem) return false;
+		if(this.options.handle && !overrideHandle) {
+			var validHandle = false;
+
+			$(this.options.handle, currentItem).find("*").andSelf().each(function() { if(this == event.target) validHandle = true; });
+			if(!validHandle) return false;
+		}
+
+		this.currentItem = currentItem;
+		this._removeCurrentsFromItems();
+		return true;
+
+	},
+
+	_mouseStart: function(event, overrideHandle, noActivation) {
+
+		var o = this.options;
+		this.currentContainer = this;
+
+		//We only need to call refreshPositions, because the refreshItems call has been moved to mouseCapture
+		this.refreshPositions();
+
+		//Create and append the visible helper
+		this.helper = this._createHelper(event);
+
+		//Cache the helper size
+		this._cacheHelperProportions();
+
+		/*
+		 * - Position generation -
+		 * This block generates everything position related - it's the core of draggables.
+		 */
+
+		//Cache the margins of the original element
+		this._cacheMargins();
+
+		//Get the next scrolling parent
+		this.scrollParent = this.helper.scrollParent();
+
+		//The element's absolute position on the page minus margins
+		this.offset = this.currentItem.offset();
+		this.offset = {
+			top: this.offset.top - this.margins.top,
+			left: this.offset.left - this.margins.left
+		};
+
+		// Only after we got the offset, we can change the helper's position to absolute
+		// TODO: Still need to figure out a way to make relative sorting possible
+		this.helper.css("position", "absolute");
+		this.cssPosition = this.helper.css("position");
+
+		$.extend(this.offset, {
+			click: { //Where the click happened, relative to the element
+				left: event.pageX - this.offset.left,
+				top: event.pageY - this.offset.top
+			},
+			parent: this._getParentOffset(),
+			relative: this._getRelativeOffset() //This is a relative to absolute position minus the actual position calculation - only used for relative positioned helper
+		});
+
+		//Generate the original position
+		this.originalPosition = this._generatePosition(event);
+		this.originalPageX = event.pageX;
+		this.originalPageY = event.pageY;
+
+		//Adjust the mouse offset relative to the helper if 'cursorAt' is supplied
+		if(o.cursorAt)
+			this._adjustOffsetFromHelper(o.cursorAt);
+
+		//Cache the former DOM position
+		this.domPosition = { prev: this.currentItem.prev()[0], parent: this.currentItem.parent()[0] };
+
+		//If the helper is not the original, hide the original so it's not playing any role during the drag, won't cause anything bad this way
+		if(this.helper[0] != this.currentItem[0]) {
+			this.currentItem.hide();
+		}
+
+		//Create the placeholder
+		this._createPlaceholder();
+
+		//Set a containment if given in the options
+		if(o.containment)
+			this._setContainment();
+
+		//Call plugins and callbacks
+		this._trigger("start", event);
+
+		//Recache the helper size
+		if(!this._preserveHelperProportions)
+			this._cacheHelperProportions();
+
+
+		//Post 'activate' events to possible containers
+		if(!noActivation) {
+			 for (var i = this.containers.length - 1; i >= 0; i--) { this.containers[i]._trigger("activate", event, this); }
+		}
+
+		//Prepare possible droppables
+		if($.ui.ddmanager)
+			$.ui.ddmanager.current = this;
+
+		if ($.ui.ddmanager && !o.dropBehaviour)
+			$.ui.ddmanager.prepareOffsets(this, event);
+
+		this.dragging = true;
+
+		this.helper.addClass(o.cssNamespace+'-sortable-helper');
+		this._mouseDrag(event); //Execute the drag once - this causes the helper not to be visible before getting its correct position
+		return true;
+
+	},
+
+	_mouseDrag: function(event) {
+
+		//Compute the helpers position
+		this.position = this._generatePosition(event);
+		this.positionAbs = this._convertPositionTo("absolute");
+
+		if (!this.lastPositionAbs) {
+			this.lastPositionAbs = this.positionAbs;
+		}
+
+		//Call the internal plugins
+		$.ui.plugin.call(this, "sort", [event, this._uiHash()]);
+
+		//Regenerate the absolute position used for position checks
+		this.positionAbs = this._convertPositionTo("absolute");
+
+		//Set the helper position
+		if(!this.options.axis || this.options.axis != "y") this.helper[0].style.left = this.position.left+'px';
+		if(!this.options.axis || this.options.axis != "x") this.helper[0].style.top = this.position.top+'px';
+
+		//Rearrange
+		for (var i = this.items.length - 1; i >= 0; i--) {
+
+			//Cache variables and intersection, continue if no intersection
+			var item = this.items[i], itemElement = item.item[0], intersection = this._intersectsWithPointer(item);
+			if (!intersection) continue;
+
+			if(itemElement != this.currentItem[0] //cannot intersect with itself
+				&&	this.placeholder[intersection == 1 ? "next" : "prev"]()[0] != itemElement //no useless actions that have been done before
+				&&	!$.ui.contains(this.placeholder[0], itemElement) //no action if the item moved is the parent of the item checked
+				&& (this.options.type == 'semi-dynamic' ? !$.ui.contains(this.element[0], itemElement) : true)
+			) {
+
+				this.direction = intersection == 1 ? "down" : "up";
+
+				if (this.options.tolerance == "pointer" || this._intersectsWithSides(item)) {
+					this.options.sortIndicator.call(this, event, item);
+				} else {
+					break;
+				}
+
+				this._trigger("change", event); //Call plugins and callbacks
+				break;
+			}
+		}
+
+		//Post events to containers
+		this._contactContainers(event);
+
+		//Interconnect with droppables
+		if($.ui.ddmanager) $.ui.ddmanager.drag(this, event);
+
+		//Call callbacks
+		this._trigger('sort', event);
+
+		this.lastPositionAbs = this.positionAbs;
+		return false;
+
+	},
+
+	_mouseStop: function(event, noPropagation) {
+
+		if(!event) return;
+
+		//If we are using droppables, inform the manager about the drop
+		if ($.ui.ddmanager && !this.options.dropBehaviour)
+			$.ui.ddmanager.drop(this, event);
+
+		if(this.options.revert) {
+			var self = this;
+			var cur = self.placeholder.offset();
+
+			self.reverting = true;
+
+			$(this.helper).animate({
+				left: cur.left - this.offset.parent.left - self.margins.left + (this.offsetParent[0] == document.body ? 0 : this.offsetParent[0].scrollLeft),
+				top: cur.top - this.offset.parent.top - self.margins.top + (this.offsetParent[0] == document.body ? 0 : this.offsetParent[0].scrollTop)
+			}, parseInt(this.options.revert, 10) || 500, function() {
+				self._clear(event);
+			});
+		} else {
+			this._clear(event, noPropagation);
+		}
+
+		return false;
+
+	},
+
+	cancel: function() {
+
+		if(this.dragging) {
+
+			this._mouseUp();
+
+			if(this.options.helper == "original")
+				this.currentItem.css(this._storedCSS).removeClass(this.options.cssNamespace+"-sortable-helper");
+			else
+				this.currentItem.show();
+
+			//Post deactivating events to containers
+			for (var i = this.containers.length - 1; i >= 0; i--){
+				this.containers[i]._trigger("deactivate", null, this);
+				if(this.containers[i].containerCache.over) {
+					this.containers[i]._trigger("out", null, this);
+					this.containers[i].containerCache.over = 0;
+				}
+			}
+
+		}
+
+		//$(this.placeholder[0]).remove(); would have been the jQuery way - unfortunately, it unbinds ALL events from the original node!
+		if(this.placeholder[0].parentNode) this.placeholder[0].parentNode.removeChild(this.placeholder[0]);
+		if(this.options.helper != "original" && this.helper && this.helper[0].parentNode) this.helper.remove();
+
+		$.extend(this, {
+			helper: null,
+			dragging: false,
+			reverting: false,
+			_noFinalSort: null
+		});
+
+		if(this.domPosition.prev) {
+			$(this.domPosition.prev).after(this.currentItem);
+		} else {
+			$(this.domPosition.parent).prepend(this.currentItem);
+		}
+
+		return true;
+
+	},
+
+	serialize: function(o) {
+
+		var items = this._getItemsAsjQuery(o && o.connected);
+		var str = []; o = o || {};
+
+		$(items).each(function() {
+			var res = ($(o.item || this).attr(o.attribute || 'id') || '').match(o.expression || (/(.+)[-=_](.+)/));
+			if(res) str.push((o.key || res[1]+'[]')+'='+(o.key && o.expression ? res[1] : res[2]));
+		});
+
+		return str.join('&');
+
+	},
+
+	toArray: function(o) {
+
+		var items = this._getItemsAsjQuery(o && o.connected);
+		var ret = []; o = o || {};
+
+		items.each(function() { ret.push($(o.item || this).attr(o.attribute || 'id') || ''); });
+		return ret;
+
+	},
+
+	/* Be careful with the following core functions */
+	_intersectsWith: function(item) {
+
+		var x1 = this.positionAbs.left,
+			x2 = x1 + this.helperProportions.width,
+			y1 = this.positionAbs.top,
+			y2 = y1 + this.helperProportions.height;
+
+		var l = item.left,
+			r = l + item.width,
+			t = item.top,
+			b = t + item.height;
+
+		var dyClick = this.offset.click.top,
+			dxClick = this.offset.click.left;
+
+		var isOverElement = (y1 + dyClick) > t && (y1 + dyClick) < b && (x1 + dxClick) > l && (x1 + dxClick) < r;
+
+		if(	   this.options.tolerance == "pointer"
+			|| this.options.forcePointerForContainers
+			|| (this.options.tolerance != "pointer" && this.helperProportions[this.floating ? 'width' : 'height'] > item[this.floating ? 'width' : 'height'])
+		) {
+			return isOverElement;
+		} else {
+
+			return (l < x1 + (this.helperProportions.width / 2) // Right Half
+				&& x2 - (this.helperProportions.width / 2) < r // Left Half
+				&& t < y1 + (this.helperProportions.height / 2) // Bottom Half
+				&& y2 - (this.helperProportions.height / 2) < b ); // Top Half
+
+		}
+	},
+
+	_intersectsWithPointer: function(item) {
+
+		var isOverElementHeight = $.ui.isOverAxis(this.positionAbs.top + this.offset.click.top, item.top, item.height),
+			isOverElementWidth = $.ui.isOverAxis(this.positionAbs.left + this.offset.click.left, item.left, item.width),
+			isOverElement = isOverElementHeight && isOverElementWidth,
+			verticalDirection = this._getDragVerticalDirection(),
+			horizontalDirection = this._getDragHorizontalDirection();
+
+		if (!isOverElement)
+			return false;
+
+		return this.floating ?
+			( ((horizontalDirection && horizontalDirection == "right") || verticalDirection == "down") ? 2 : 1 )
+			: ( verticalDirection && (verticalDirection == "down" ? 2 : 1) );
+
+	},
+
+	_intersectsWithSides: function(item) {
+
+		var isOverBottomHalf = $.ui.isOverAxis(this.positionAbs.top + this.offset.click.top, item.top + (item.height/2), item.height),
+			isOverRightHalf = $.ui.isOverAxis(this.positionAbs.left + this.offset.click.left, item.left + (item.width/2), item.width),
+			verticalDirection = this._getDragVerticalDirection(),
+			horizontalDirection = this._getDragHorizontalDirection();
+
+		if (this.floating && horizontalDirection) {
+			return ((horizontalDirection == "right" && isOverRightHalf) || (horizontalDirection == "left" && !isOverRightHalf));
+		} else {
+			return verticalDirection && ((verticalDirection == "down" && isOverBottomHalf) || (verticalDirection == "up" && !isOverBottomHalf));
+		}
+
+	},
+
+	_getDragVerticalDirection: function() {
+		var delta = this.positionAbs.top - this.lastPositionAbs.top;
+		return delta != 0 && (delta > 0 ? "down" : "up");
+	},
+
+	_getDragHorizontalDirection: function() {
+		var delta = this.positionAbs.left - this.lastPositionAbs.left;
+		return delta != 0 && (delta > 0 ? "right" : "left");
+	},
+
+	refresh: function(event) {
+		this._refreshItems(event);
+		this.refreshPositions();
+	},
+
+	_getItemsAsjQuery: function(connected) {
+
+		var self = this;
+		var items = [];
+		var queries = [];
+
+		if(this.options.connectWith && connected) {
+			for (var i = this.options.connectWith.length - 1; i >= 0; i--){
+				var cur = $(this.options.connectWith[i]);
+				for (var j = cur.length - 1; j >= 0; j--){
+					var inst = $.data(cur[j], 'sortable');
+					if(inst && inst != this && !inst.options.disabled) {
+						queries.push([$.isFunction(inst.options.items) ? inst.options.items.call(inst.element) : $(inst.options.items, inst.element).not("."+inst.options.cssNamespace+"-sortable-helper"), inst]);
+					}
+				};
+			};
+		}
+
+		queries.push([$.isFunction(this.options.items) ? this.options.items.call(this.element, null, { options: this.options, item: this.currentItem }) : $(this.options.items, this.element).not("."+this.options.cssNamespace+"-sortable-helper"), this]);
+
+		for (var i = queries.length - 1; i >= 0; i--){
+			queries[i][0].each(function() {
+				items.push(this);
+			});
+		};
+
+		return $(items);
+
+	},
+
+	_removeCurrentsFromItems: function() {
+
+		var list = this.currentItem.find(":data(sortable-item)");
+
+		for (var i=0; i < this.items.length; i++) {
+
+			for (var j=0; j < list.length; j++) {
+				if(list[j] == this.items[i].item[0])
+					this.items.splice(i,1);
+			};
+
+		};
+
+	},
+
+	_refreshItems: function(event) {
+
+		this.items = [];
+		this.containers = [this];
+		var items = this.items;
+		var self = this;
+		var queries = [[$.isFunction(this.options.items) ? this.options.items.call(this.element[0], event, { item: this.currentItem }) : $(this.options.items, this.element), this]];
+
+		if(this.options.connectWith) {
+			for (var i = this.options.connectWith.length - 1; i >= 0; i--){
+				var cur = $(this.options.connectWith[i]);
+				for (var j = cur.length - 1; j >= 0; j--){
+					var inst = $.data(cur[j], 'sortable');
+					if(inst && inst != this && !inst.options.disabled) {
+						queries.push([$.isFunction(inst.options.items) ? inst.options.items.call(inst.element[0], event, { item: this.currentItem }) : $(inst.options.items, inst.element), inst]);
+						this.containers.push(inst);
+					}
+				};
+			};
+		}
+
+		for (var i = queries.length - 1; i >= 0; i--) {
+			var targetData = queries[i][1];
+			var _queries = queries[i][0];
+
+			for (var j=0, queriesLength = _queries.length; j < queriesLength; j++) {
+				var item = $(_queries[j]);
+
+				item.data('sortable-item', targetData); // Data for target checking (mouse manager)
+
+				items.push({
+					item: item,
+					instance: targetData,
+					width: 0, height: 0,
+					left: 0, top: 0
+				});
+			};
+		};
+
+	},
+
+	refreshPositions: function(fast) {
+
+		//This has to be redone because due to the item being moved out/into the offsetParent, the offsetParent's position will change
+		if(this.offsetParent && this.helper) {
+			this.offset.parent = this._getParentOffset();
+		}
+
+		for (var i = this.items.length - 1; i >= 0; i--){
+			var item = this.items[i];
+
+			//We ignore calculating positions of all connected containers when we're not over them
+			if(item.instance != this.currentContainer && this.currentContainer && item.item[0] != this.currentItem[0])
+				continue;
+
+			var t = this.options.toleranceElement ? $(this.options.toleranceElement, item.item) : item.item;
+
+			if (!fast) {
+				if (this.options.accurateIntersection) {
+					item.width = t.outerWidth();
+					item.height = t.outerHeight();
+				}
+				else {
+					item.width = t[0].offsetWidth;
+					item.height = t[0].offsetHeight;
+				}
+			}
+
+			var p = t.offset();
+			item.left = p.left;
+			item.top = p.top;
+		};
+
+		if(this.options.custom && this.options.custom.refreshContainers) {
+			this.options.custom.refreshContainers.call(this);
+		} else {
+			for (var i = this.containers.length - 1; i >= 0; i--){
+				var p = this.containers[i].element.offset();
+				this.containers[i].containerCache.left = p.left;
+				this.containers[i].containerCache.top = p.top;
+				this.containers[i].containerCache.width	= this.containers[i].element.outerWidth();
+				this.containers[i].containerCache.height = this.containers[i].element.outerHeight();
+			};
+		}
+
+	},
+
+	_createPlaceholder: function(that) {
+
+		var self = that || this, o = self.options;
+
+		if(!o.placeholder || o.placeholder.constructor == String) {
+			var className = o.placeholder;
+			o.placeholder = {
+				element: function() {
+
+					var el = $(document.createElement(self.currentItem[0].nodeName))
+						.addClass(className || self.currentItem[0].className+" "+self.options.cssNamespace+"-sortable-placeholder")
+						.removeClass(self.options.cssNamespace+'-sortable-helper')[0];
+
+					if(!className)
+						el.style.visibility = "hidden";
+
+					return el;
+				},
+				update: function(container, p) {
+					
+					// 1. If a className is set as 'placeholder option, we don't force sizes - the class is responsible for that
+					// 2. The option 'forcePlaceholderSize can be enabled to force it even if a class name is specified
+					if(className && !o.forcePlaceholderSize) return;
+					
+					//If the element doesn't have a actual height by itself (without styles coming from a stylesheet), it receives the inline height from the dragged item
+					if(!p.height()) { p.height(self.currentItem.innerHeight() - parseInt(self.currentItem.css('paddingTop')||0, 10) - parseInt(self.currentItem.css('paddingBottom')||0, 10)); };
+					if(!p.width()) { p.width(self.currentItem.innerWidth() - parseInt(self.currentItem.css('paddingLeft')||0, 10) - parseInt(self.currentItem.css('paddingRight')||0, 10)); };
+				}
+			};
+		}
+
+		//Create the placeholder
+		self.placeholder = $(o.placeholder.element.call(self.element, self.currentItem));
+
+		//Append it after the actual current item
+		self.currentItem.after(self.placeholder);
+
+		//Update the size of the placeholder (TODO: Logic to fuzzy, see line 316/317)
+		o.placeholder.update(self, self.placeholder);
+
+	},
+
+	_contactContainers: function(event) {
+		for (var i = this.containers.length - 1; i >= 0; i--){
+
+			if(this._intersectsWith(this.containers[i].containerCache)) {
+				if(!this.containers[i].containerCache.over) {
+
+					if(this.currentContainer != this.containers[i]) {
+
+						//When entering a new container, we will find the item with the least distance and append our item near it
+						var dist = 10000; var itemWithLeastDistance = null; var base = this.positionAbs[this.containers[i].floating ? 'left' : 'top'];
+						for (var j = this.items.length - 1; j >= 0; j--) {
+							if(!$.ui.contains(this.containers[i].element[0], this.items[j].item[0])) continue;
+							var cur = this.items[j][this.containers[i].floating ? 'left' : 'top'];
+							if(Math.abs(cur - base) < dist) {
+								dist = Math.abs(cur - base); itemWithLeastDistance = this.items[j];
+							}
+						}
+
+						if(!itemWithLeastDistance && !this.options.dropOnEmpty) //Check if dropOnEmpty is enabled
+							continue;
+
+						this.currentContainer = this.containers[i];
+						itemWithLeastDistance ? this.options.sortIndicator.call(this, event, itemWithLeastDistance, null, true) : this.options.sortIndicator.call(this, event, null, this.containers[i].element, true);
+						this._trigger("change", event); //Call plugins and callbacks
+						this.containers[i]._trigger("change", event, this); //Call plugins and callbacks
+
+						//Update the placeholder
+						this.options.placeholder.update(this.currentContainer, this.placeholder);
+
+					}
+
+					this.containers[i]._trigger("over", event, this);
+					this.containers[i].containerCache.over = 1;
+				}
+			} else {
+				if(this.containers[i].containerCache.over) {
+					this.containers[i]._trigger("out", event, this);
+					this.containers[i].containerCache.over = 0;
+				}
+			}
+
+		};
+	},
+
+	_createHelper: function(event) {
+
+		var o = this.options;
+		var helper = $.isFunction(o.helper) ? $(o.helper.apply(this.element[0], [event, this.currentItem])) : (o.helper == 'clone' ? this.currentItem.clone() : this.currentItem);
+
+		if(!helper.parents('body').length) //Add the helper to the DOM if that didn't happen already
+			$(o.appendTo != 'parent' ? o.appendTo : this.currentItem[0].parentNode)[0].appendChild(helper[0]);
+
+		if(helper[0] == this.currentItem[0])
+			this._storedCSS = { width: this.currentItem[0].style.width, height: this.currentItem[0].style.height, position: this.currentItem.css("position"), top: this.currentItem.css("top"), left: this.currentItem.css("left") };
+
+		if(helper[0].style.width == '' || o.forceHelperSize) helper.width(this.currentItem.width());
+		if(helper[0].style.height == '' || o.forceHelperSize) helper.height(this.currentItem.height());
+
+		return helper;
+
+	},
+
+	_adjustOffsetFromHelper: function(obj) {
+		if(obj.left != undefined) this.offset.click.left = obj.left + this.margins.left;
+		if(obj.right != undefined) this.offset.click.left = this.helperProportions.width - obj.right + this.margins.left;
+		if(obj.top != undefined) this.offset.click.top = obj.top + this.margins.top;
+		if(obj.bottom != undefined) this.offset.click.top = this.helperProportions.height - obj.bottom + this.margins.top;
+	},
+
+	_getParentOffset: function() {
+
+
+		//Get the offsetParent and cache its position
+		this.offsetParent = this.helper.offsetParent();
+		var po = this.offsetParent.offset();
+		
+		// This is a special case where we need to modify a offset calculated on start, since the following happened:
+		// 1. The position of the helper is absolute, so it's position is calculated based on the next positioned parent
+		// 2. The actual offset parent is a child of the scroll parent, and the scroll parent isn't the document, which means that
+		//    the scroll is included in the initial calculation of the offset of the parent, and never recalculated upon drag
+		if(this.cssPosition == 'absolute' && this.scrollParent[0] != document && $.ui.contains(this.scrollParent[0], this.offsetParent[0])) {
+			po.left += this.scrollParent.scrollLeft();
+			po.top += this.scrollParent.scrollTop();
+		}
+
+		if((this.offsetParent[0] == document.body && $.browser.mozilla)	//Ugly FF3 fix
+		|| (this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() == 'html' && $.browser.msie)) //Ugly IE fix
+			po = { top: 0, left: 0 };
+
+		return {
+			top: po.top + (parseInt(this.offsetParent.css("borderTopWidth"),10) || 0),
+			left: po.left + (parseInt(this.offsetParent.css("borderLeftWidth"),10) || 0)
+		};
+
+	},
+
+	_getRelativeOffset: function() {
+
+		if(this.cssPosition == "relative") {
+			var p = this.currentItem.position();
+			return {
+				top: p.top - (parseInt(this.helper.css("top"),10) || 0) + this.scrollParent.scrollTop(),
+				left: p.left - (parseInt(this.helper.css("left"),10) || 0) + this.scrollParent.scrollLeft()
+			};
+		} else {
+			return { top: 0, left: 0 };
+		}
+
+	},
+
+	_cacheMargins: function() {
+		this.margins = {
+			left: (parseInt(this.currentItem.css("marginLeft"),10) || 0),
+			top: (parseInt(this.currentItem.css("marginTop"),10) || 0)
+		};
+	},
+
+	_cacheHelperProportions: function() {
+		this.helperProportions = {
+			width: this.helper.outerWidth(),
+			height: this.helper.outerHeight()
+		};
+	},
+
+	_setContainment: function() {
+
+		var o = this.options;
+		if(o.containment == 'parent') o.containment = this.helper[0].parentNode;
+		if(o.containment == 'document' || o.containment == 'window') this.containment = [
+			0 - this.offset.relative.left - this.offset.parent.left,
+			0 - this.offset.relative.top - this.offset.parent.top,
+			$(o.containment == 'document' ? document : window).width() - this.helperProportions.width - this.margins.left,
+			($(o.containment == 'document' ? document : window).height() || document.body.parentNode.scrollHeight) - this.helperProportions.height - this.margins.top
+		];
+
+		if(!(/^(document|window|parent)$/).test(o.containment)) {
+			var ce = $(o.containment)[0];
+			var co = $(o.containment).offset();
+			var over = ($(ce).css("overflow") != 'hidden');
+
+			this.containment = [
+				co.left + (parseInt($(ce).css("borderLeftWidth"),10) || 0) - this.margins.left,
+				co.top + (parseInt($(ce).css("borderTopWidth"),10) || 0) - this.margins.top,
+				co.left+(over ? Math.max(ce.scrollWidth,ce.offsetWidth) : ce.offsetWidth) - (parseInt($(ce).css("borderLeftWidth"),10) || 0) - this.helperProportions.width - this.margins.left,
+				co.top+(over ? Math.max(ce.scrollHeight,ce.offsetHeight) : ce.offsetHeight) - (parseInt($(ce).css("borderTopWidth"),10) || 0) - this.helperProportions.height - this.margins.top
+			];
+		}
+
+	},
+
+	_convertPositionTo: function(d, pos) {
+
+		if(!pos) pos = this.position;
+		var mod = d == "absolute" ? 1 : -1;
+		var o = this.options, scroll = this.cssPosition == 'absolute' && !(this.scrollParent[0] != document && $.ui.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent, scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
+
+		return {
+			top: (
+				pos.top																	// The absolute mouse position
+				+ this.offset.relative.top * mod										// Only for relative positioned nodes: Relative offset from element to offset parent
+				+ this.offset.parent.top * mod											// The offsetParent's offset without borders (offset + border)
+				- ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollTop() : ( scrollIsRootNode ? 0 : scroll.scrollTop() ) ) * mod
+			),
+			left: (
+				pos.left																// The absolute mouse position
+				+ this.offset.relative.left * mod										// Only for relative positioned nodes: Relative offset from element to offset parent
+				+ this.offset.parent.left * mod											// The offsetParent's offset without borders (offset + border)
+				- ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollLeft() : scrollIsRootNode ? 0 : scroll.scrollLeft() ) * mod
+			)
+		};
+		
+	},
+
+	_generatePosition: function(event) {
+
+		var o = this.options, scroll = this.cssPosition == 'absolute' && !(this.scrollParent[0] != document && $.ui.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent, scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
+
+		// This is another very weird special case that only happens for relative elements:
+		// 1. If the css position is relative
+		// 2. and the scroll parent is the document or similar to the offset parent
+		// we have to refresh the relative offset during the scroll so there are no jumps
+		if(this.cssPosition == 'relative' && !(this.scrollParent[0] != document && this.scrollParent[0] != this.offsetParent[0])) {
+			this.offset.relative = this._getRelativeOffset();
+		}
+		
+		var pageX = event.pageX;
+		var pageY = event.pageY;
+
+		/*
+		 * - Position constraining -
+		 * Constrain the position to a mix of grid, containment.
+		 */
+		 
+		if(this.originalPosition) { //If we are not dragging yet, we won't check for options
+
+			if(this.containment) {
+				if(event.pageX - this.offset.click.left < this.containment[0]) pageX = this.containment[0] + this.offset.click.left;
+				if(event.pageY - this.offset.click.top < this.containment[1]) pageY = this.containment[1] + this.offset.click.top;
+				if(event.pageX - this.offset.click.left > this.containment[2]) pageX = this.containment[2] + this.offset.click.left;
+				if(event.pageY - this.offset.click.top > this.containment[3]) pageY = this.containment[3] + this.offset.click.top;
+			}
+			
+			if(o.grid) {
+				var top = this.originalPageY + Math.round((pageY - this.originalPageY) / o.grid[1]) * o.grid[1];
+				pageY = this.containment ? (!(top - this.offset.click.top < this.containment[1] || top - this.offset.click.top > this.containment[3]) ? top : (!(top - this.offset.click.top < this.containment[1]) ? top - o.grid[1] : top + o.grid[1])) : top;
+
+				var left = this.originalPageX + Math.round((pageX - this.originalPageX) / o.grid[0]) * o.grid[0];
+				pageX = this.containment ? (!(left - this.offset.click.left < this.containment[0] || left - this.offset.click.left > this.containment[2]) ? left : (!(left - this.offset.click.left < this.containment[0]) ? left - o.grid[0] : left + o.grid[0])) : left;
+			}
+
+		}
+
+		return {
+			top: (
+				pageY																// The absolute mouse position
+				- this.offset.click.top													// Click offset (relative to the element)
+				- this.offset.relative.top												// Only for relative positioned nodes: Relative offset from element to offset parent
+				- this.offset.parent.top												// The offsetParent's offset without borders (offset + border)
+				+ ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollTop() : ( scrollIsRootNode ? 0 : scroll.scrollTop() ) )
+			),
+			left: (
+				pageX																// The absolute mouse position
+				- this.offset.click.left												// Click offset (relative to the element)
+				- this.offset.relative.left												// Only for relative positioned nodes: Relative offset from element to offset parent
+				- this.offset.parent.left												// The offsetParent's offset without borders (offset + border)
+				+ ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollLeft() : scrollIsRootNode ? 0 : scroll.scrollLeft() )
+			)
+		};
+		
+	},
+
+	_rearrange: function(event, i, a, hardRefresh) {
+
+		a ? a[0].appendChild(this.placeholder[0]) : i.item[0].parentNode.insertBefore(this.placeholder[0], (this.direction == 'down' ? i.item[0] : i.item[0].nextSibling));
+
+		//Various things done here to improve the performance:
+		// 1. we create a setTimeout, that calls refreshPositions
+		// 2. on the instance, we have a counter variable, that get's higher after every append
+		// 3. on the local scope, we copy the counter variable, and check in the timeout, if it's still the same
+		// 4. this lets only the last addition to the timeout stack through
+		this.counter = this.counter ? ++this.counter : 1;
+		var self = this, counter = this.counter;
+
+		window.setTimeout(function() {
+			if(counter == self.counter) self.refreshPositions(!hardRefresh); //Precompute after each DOM insertion, NOT on mousemove
+		},0);
+
+	},
+
+	_clear: function(event, noPropagation) {
+
+		this.reverting = false;
+
+		//We first have to update the dom position of the actual currentItem
+		if(!this._noFinalSort) this.placeholder.before(this.currentItem);
+		this._noFinalSort = null;
+
+		if(this.helper[0] == this.currentItem[0]) {
+			for(var i in this._storedCSS) {
+				if(this._storedCSS[i] == 'auto' || this._storedCSS[i] == 'static') this._storedCSS[i] = '';
+			}
+			this.currentItem.css(this._storedCSS).removeClass(this.options.cssNamespace+"-sortable-helper");
+		} else {
+			this.currentItem.show();
+		}
+
+		if(this.fromOutside) this._trigger("receive", event, this, noPropagation);
+		if(this.fromOutside || this.domPosition.prev != this.currentItem.prev().not("."+this.options.cssNamespace+"-sortable-helper")[0] || this.domPosition.parent != this.currentItem.parent()[0]) this._trigger("update", event, null, noPropagation); //Trigger update callback if the DOM position has changed
+		if(!$.ui.contains(this.element[0], this.currentItem[0])) { //Node was moved out of the current element
+			this._trigger("remove", event, null, noPropagation);
+			for (var i = this.containers.length - 1; i >= 0; i--){
+				if($.ui.contains(this.containers[i].element[0], this.currentItem[0])) {
+					this.containers[i]._trigger("receive", event, this, noPropagation);
+					this.containers[i]._trigger("update", event, this, noPropagation);
+				}
+			};
+		};
+
+		//Post events to containers
+		for (var i = this.containers.length - 1; i >= 0; i--){
+			this.containers[i]._trigger("deactivate", event, this, noPropagation);
+			if(this.containers[i].containerCache.over) {
+				this.containers[i]._trigger("out", event, this);
+				this.containers[i].containerCache.over = 0;
+			}
+		}
+
+		this.dragging = false;
+		if(this.cancelHelperRemoval) {
+			this._trigger("beforeStop", event, null, noPropagation);
+			this._trigger("stop", event, null, noPropagation);
+			return false;
+		}
+
+		this._trigger("beforeStop", event, null, noPropagation);
+
+		//$(this.placeholder[0]).remove(); would have been the jQuery way - unfortunately, it unbinds ALL events from the original node!
+		this.placeholder[0].parentNode.removeChild(this.placeholder[0]);
+
+		if(this.helper[0] != this.currentItem[0]) this.helper.remove(); this.helper = null;
+		this._trigger("stop", event, null, noPropagation);
+
+		this.fromOutside = false;
+		return true;
+
+	},
+
+	_trigger: function(type, event, inst, noPropagation) {
+		$.ui.plugin.call(this, type, [event, this._uiHash(inst)]);
+		if(!noPropagation) {
+			if ($.widget.prototype._trigger.call(this, type, event, this._uiHash(inst)) === false) {
+				this.cancel();
+			}
+		}
+	},
+
+	plugins: {},
+
+	_uiHash: function(inst) {
+		var self = inst || this;
+		return {
+			helper: self.helper,
+			placeholder: self.placeholder || $([]),
+			position: self.position,
+			absolutePosition: self.positionAbs,
+			item: self.currentItem,
+			sender: inst ? inst.element : null
+		};
+	}
+
+}));
+
+$.extend($.ui.sortable, {
+	getter: "serialize toArray",
+	version: "1.6rc5",
+	defaults: {
+		accurateIntersection: true,
+		appendTo: "parent",
+		cancel: ":input,option",
+		cssNamespace: 'ui',
+		delay: 0,
+		distance: 1,
+		dropOnEmpty: true,
+		forcePlaceholderSize: false,
+		forceHelperSize: false,
+		helper: "original",
+		items: '> *',
+		scope: "default",
+		scroll: true,
+		scrollSensitivity: 20,
+		scrollSpeed: 20,
+		sortIndicator: $.ui.sortable.prototype._rearrange,
+		tolerance: "default",
+		zIndex: 1000
+	}
+});
+
+/*
+ * Sortable Extensions
+ */
+
+$.ui.plugin.add("sortable", "cursor", {
+	start: function(event, ui) {
+		var t = $('body'), i = $(this).data('sortable');
+		if (t.css("cursor")) i.options._cursor = t.css("cursor");
+		t.css("cursor", i.options.cursor);
+	},
+	beforeStop: function(event, ui) {
+		var i = $(this).data('sortable');
+		if (i.options._cursor) $('body').css("cursor", i.options._cursor);
+	}
+});
+
+$.ui.plugin.add("sortable", "opacity", {
+	start: function(event, ui) {
+		var t = ui.helper, i = $(this).data('sortable');
+		if(t.css("opacity")) i.options._opacity = t.css("opacity");
+		t.css('opacity', i.options.opacity);
+	},
+	beforeStop: function(event, ui) {
+		var i = $(this).data('sortable');
+		if(i.options._opacity) $(ui.helper).css('opacity', i.options._opacity);
+	}
+});
+
+$.ui.plugin.add("sortable", "scroll", {
+	start: function(event, ui) {
+		var i = $(this).data("sortable"), o = i.options;
+		if(i.scrollParent[0] != document && i.scrollParent[0].tagName != 'HTML') i.overflowOffset = i.scrollParent.offset();
+	},
+	sort: function(event, ui) {
+
+		var i = $(this).data("sortable"), o = i.options, scrolled = false;
+
+		if(i.scrollParent[0] != document && i.scrollParent[0].tagName != 'HTML') {
+
+			if((i.overflowOffset.top + i.scrollParent[0].offsetHeight) - event.pageY < o.scrollSensitivity)
+				i.scrollParent[0].scrollTop = scrolled = i.scrollParent[0].scrollTop + o.scrollSpeed;
+			else if(event.pageY - i.overflowOffset.top < o.scrollSensitivity)
+				i.scrollParent[0].scrollTop = scrolled = i.scrollParent[0].scrollTop - o.scrollSpeed;
+
+			if((i.overflowOffset.left + i.scrollParent[0].offsetWidth) - event.pageX < o.scrollSensitivity)
+				i.scrollParent[0].scrollLeft = scrolled = i.scrollParent[0].scrollLeft + o.scrollSpeed;
+			else if(event.pageX - i.overflowOffset.left < o.scrollSensitivity)
+				i.scrollParent[0].scrollLeft = scrolled = i.scrollParent[0].scrollLeft - o.scrollSpeed;
+
+		} else {
+
+			if(event.pageY - $(document).scrollTop() < o.scrollSensitivity)
+				scrolled = $(document).scrollTop($(document).scrollTop() - o.scrollSpeed);
+			else if($(window).height() - (event.pageY - $(document).scrollTop()) < o.scrollSensitivity)
+				scrolled = $(document).scrollTop($(document).scrollTop() + o.scrollSpeed);
+
+			if(event.pageX - $(document).scrollLeft() < o.scrollSensitivity)
+				scrolled = $(document).scrollLeft($(document).scrollLeft() - o.scrollSpeed);
+			else if($(window).width() - (event.pageX - $(document).scrollLeft()) < o.scrollSensitivity)
+				scrolled = $(document).scrollLeft($(document).scrollLeft() + o.scrollSpeed);
+
+		}
+
+		if(scrolled !== false && $.ui.ddmanager && !o.dropBehaviour)
+			$.ui.ddmanager.prepareOffsets(i, event);
+
+	}
+});
+
+$.ui.plugin.add("sortable", "zIndex", {
+	start: function(event, ui) {
+		var t = ui.helper, i = $(this).data('sortable');
+		if(t.css("zIndex")) i.options._zIndex = t.css("zIndex");
+		t.css('zIndex', i.options.zIndex);
+	},
+	beforeStop: function(event, ui) {
+		var i = $(this).data('sortable');
+		if(i.options._zIndex) $(ui.helper).css('zIndex', i.options._zIndex == 'auto' ? '' : i.options._zIndex);
+	}
+});
+
+})(jQuery);
