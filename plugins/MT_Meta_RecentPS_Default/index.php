@@ -133,10 +133,40 @@ function MT_Cover_getRecentEntries($parameters){
 }
 
 function MT_Cover_getRecentEntries_purgeCache($target, $mother) {
-	$cache = new PageCache;
-	$cache->name = 'MT_Cover_RecentPS';
-	$cache->purge();
+    global $database, $configVal;
+
+    $data = Setting::fetchConfigVal($configVal);
+
+    $blogId = getBlogId();
+    $timestamp = 0;
+    switch($data['purecache']) {
+        case "3":
+            $timestamp = $_SERVER['REQUEST_TIME'] - 30*60;
+        break;
+        case "2":
+            $timestamp = $_SERVER['REQUEST_TIME'] - 10*60;
+        break;
+        case "1":
+            $timestamp = $_SERVER['REQUEST_TIME'] - 5*60;
+        break;
+        case "0":
+        default:
+            $timestamp = 0;
+    }
+
+    if(POD::queryCount("SELECT `id` FROM `{$database['prefix']}Entries` WHERE `blogid`={$blogId} AND `modified`>={$timestamp}")) {
+        MT_Cover_doRealPurgeCache();
+    }
+
 	return $target;
+}
+
+function MT_Cover_doRealPurgeCache() {
+    $cache = new PageCache;
+   	$cache->name = 'MT_Cover_RecentPS';
+   	$cache->purge();
+
+    return true;
 }
 
 function MT_Cover_getImageResizer($blogid, $filename, $cropSize){
@@ -276,38 +306,8 @@ function MT_Cover_getRecentEntries_DataSet($DATA){
 	MT_Cover_getRecentEntries_purgeCache(null, null);
 	return true;
 }
-function MT_Cover_getRecentEntries_ConfigOut_ko($plugin) {
-	$manifest = NULL;
 
-	$manifest .= '<?xml version="1.0" encoding="utf-8"?>'.CRLF;
-	$manifest .= '<config dataValHandler="MT_Cover_getRecentEntries_DataSet" >'.CRLF;
-	$manifest .= '	<window width="500" height="345" />'.CRLF;
-	$manifest .= '	<fieldset legend="표지 출력 설정">'.CRLF;
-	$manifest .= '		<field title="출력 형태 :" name="coverMode" type="radio"  >'.CRLF;
-	$manifest .= '			<op value="1" checked="checked"><![CDATA[단일 사용자&nbsp;]]></op>'.CRLF;
-	$manifest .= '			<op value="2">다중 사용자</op>'.CRLF;
-	$manifest .= '		</field>'.CRLF;
-	$manifest .= '		<field title="페이징 적용 :" name="paging" type="radio"  >'.CRLF;
-	$manifest .= '			<op value="1"><![CDATA[적용&nbsp;]]></op>'.CRLF;
-	$manifest .= '			<op value="2" checked="checked">미적용</op>'.CRLF;
-	$manifest .= '		</field>'.CRLF;
-	$manifest .= '		<field title="스크린 샷 :" name="screenshot" type="radio"  >'.CRLF;
-	$manifest .= '			<op value="1" checked="checked"><![CDATA[적용&nbsp;]]></op>'.CRLF;
-	$manifest .= '			<op value="2">미적용</op>'.CRLF;
-	$manifest .= '		</field>'.CRLF;
-	$manifest .= '		<field title="스크린 샷 크기 :" name="screenshotSize" type="text" size="5" value="90" />'.CRLF;
-	$manifest .= '		<field title="CSS 적용 :" name="cssSelect" type="radio"  >'.CRLF;
-	$manifest .= '			<op value="1" checked="checked"><![CDATA[적용&nbsp;]]></op>'.CRLF;
-	$manifest .= '			<op value="2">미적용</op>'.CRLF;
-	$manifest .= '		</field>'.CRLF;
-	$manifest .= '		<field title="본문 길이 :" name="contentLength" type="text" size="5" value="250" />'.CRLF;
-	$manifest .= '	</fieldset>'.CRLF;
-	$manifest .= '</config>'.CRLF;
-
-	return $manifest;
-}
-
-function MT_Cover_getRecentEntries_ConfigOut_en($plugin) {
+function MT_Cover_getRecentEntries_ConfigOut($plugin) {
 
 	$manifest = NULL;
 
@@ -333,6 +333,12 @@ function MT_Cover_getRecentEntries_ConfigOut_en($plugin) {
 	$manifest .= '			<op value="2">Not apply</op>'.CRLF;
 	$manifest .= '		</field>'.CRLF;
 	$manifest .= '		<field title="Content length :" name="contentLength" type="text" size="5" value="250" />'.CRLF;
+    $manifest .= '		<field title="Cache setting :" name="purecache" type="radio"  >'.CRLF;
+	$manifest .= '			<op value="0" checked="checked"><![CDATA[Real time&nbsp;]]></op>'.CRLF;
+	$manifest .= '			<op value="1"><![CDATA[5 &nbsp;]]></op>'.CRLF;
+    $manifest .= '			<op value="2"><![CDATA[10 &nbsp;]]></op>'.CRLF;
+    $manifest .= '			<op value="3"><![CDATA[30 mins.&nbsp;]]></op>'.CRLF;
+    $manifest .= '		</field>'.CRLF;
 	$manifest .= '	</fieldset>'.CRLF;
 	$manifest .= '</config>'.CRLF;
 
@@ -364,6 +370,12 @@ function MT_Cover_getRecentEntries_ConfigOut_zh_TW($plugin) {
 	$manifest .= '			<op value="2">不使用</op>'.CRLF;
 	$manifest .= '		</field>'.CRLF;
 	$manifest .= '		<field title="內文長度 :" name="contentLength" type="text" size="5" value="250" />'.CRLF;
+    $manifest .= '		<field title="快取設定 :" name="purecache" type="radio"  >'.CRLF;
+	$manifest .= '			<op value="0" checked="checked"><![CDATA[即時&nbsp;]]></op>'.CRLF;
+	$manifest .= '			<op value="1"><![CDATA[每 5&nbsp;]]></op>'.CRLF;
+    $manifest .= '			<op value="2"><![CDATA[10&nbsp;]]></op>'.CRLF;
+    $manifest .= '			<op value="3"><![CDATA[30 分鐘]]></op>'.CRLF;
+    $manifest .= '		</field>'.CRLF;
 	$manifest .= '	</fieldset>'.CRLF;
 	$manifest .= '</config>'.CRLF;
 
@@ -395,6 +407,12 @@ function MT_Cover_getRecentEntries_ConfigOut_zh_CN($plugin) {
 	$manifest .= '			<op value="2">不使用</op>'.CRLF;
 	$manifest .= '		</field>'.CRLF;
 	$manifest .= '		<field title="内文长度 :" name="contentLength" type="text" size="5" value="250" />'.CRLF;
+    $manifest .= '		<field title="快取设定 :" name="purecache" type="radio"  >'.CRLF;
+	$manifest .= '			<op value="0" checked="checked"><![CDATA[即时&nbsp;]]></op>'.CRLF;
+	$manifest .= '			<op value="1"><![CDATA[每 5&nbsp;]]></op>'.CRLF;
+    $manifest .= '			<op value="2"><![CDATA[10&nbsp;]]></op>'.CRLF;
+    $manifest .= '			<op value="3"><![CDATA[30 分钟]]></op>'.CRLF;
+    $manifest .= '		</field>'.CRLF;
 	$manifest .= '	</fieldset>'.CRLF;
 	$manifest .= '</config>'.CRLF;
 
