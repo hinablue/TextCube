@@ -1,5 +1,13 @@
 <?php
 /* 強制 UTF-8 */
+global $blogid;
+define('BASE_PATH', ROOT. DIRECTORY_SEPARATOR . "cache" . DIRECTORY_SEPARATOR );
+define('PLURK_COOKIE_PATH', BASE_PATH . 'plurk.'.$blogid.'.cookie');
+define('PLURK_LOG_PATH', BASE_PATH . 'plurk.log');
+
+define('PLURK_NOT_LOGIN', 'You are not login.');
+define('PLURK_AGENT', 'php-plurk-api agent');
+
 
 function myPlurk_ResponseStyle($target) {
 	global $configVal, $pluginURL;
