@@ -32,13 +32,17 @@
             <field title="Auto plurk with entries" type="select" name="autoPlurkEntries">
 				<op value="0"><![CDATA[No, thanks.]]></op>
 				<op value="1"><![CDATA[Yes, please, all the "Public" entries will be send to plurk.]]></op>
-                <op value="2" checked="checked"><![CDATA[Yes, only the entry setting in the "Publish".]]></op>
+                <op value="2" selected="selected"><![CDATA[Yes, only the entry setting in the "Publish".]]></op>
 			</field>
+            <field title="Plurk url with entry slogan" type="select" name="plurkwithslogan">
+                <op value="0"><![CDATA[No, use my blog title.]]></op>
+                <op value="1" selected="selected"><![CDATA[Yes, use my entry slogan.]]></op>
+            </field>
         </fieldset>
 		<fieldset legend="Plurk responses" >
 			<field title="Add in the end of entry" type="select" name="attachResponses">
 				<op value="0"><![CDATA[No, thanks.]]></op>
-				<op value="1" checked="checked"><![CDATA[Yes.]]></op>
+				<op value="1" selected="selected"><![CDATA[Yes.]]></op>
 			</field>
 		</fieldset>
 	</config>
@@ -52,12 +56,16 @@
             <field title="自動將文章轉到噗浪" type="select" name="autoPlurkEntries">
 				<op value="0"><![CDATA[否]]></op>
 				<op value="1"><![CDATA[是，將所有 "公開" 的文章轉到噗浪。]]></op>
-                <op value="2" checked="checked"><![CDATA[是，將設定為 "發行" 狀態的文章轉到噗浪。]]></op>
+                <op value="2" selected="selected"><![CDATA[是，將設定為 "發行" 狀態的文章轉到噗浪。]]></op>
 			</field>
+            <field title="噗浪鍊結使用文章標題" type="select" name="plurkwithslogan">
+                <op value="0"><![CDATA[使用我的部落格名稱]]></op>
+                <op value="1" selected="selected"><![CDATA[使用我的文章標題]]></op>
+            </field>
         </fieldset>
 		<fieldset legend="噗浪回應" >
 			<field title="將回應加入文章" type="select" name="attachResponses">
-				<op value="0" checked="checked"><![CDATA[否]]></op>
+				<op value="0" selected="selected"><![CDATA[否]]></op>
 				<op value="1"><![CDATA[是]]></op>
 			</field>
 		</fieldset>
@@ -72,12 +80,16 @@
             <field title="自动将文章转到噗浪" type="select" name="autoPlurkEntries">
 				<op value="0"><![CDATA[否]]></op>
 				<op value="1"><![CDATA[是，将所有 "公开" 文章自动转到噗浪。]]></op>
-                <op value="2" checked="checked"><![CDATA[是，将设置为 "发行" 状态的文章转到噗浪。]]></op>
+                <op value="2" selected="selected"><![CDATA[是，将设置为 "发行" 状态的文章转到噗浪。]]></op>
 			</field>
+            <field title="噗浪链结使用文章标题" type="select" name="plurkwithslogan">
+                <op value="0"><![CDATA[使用我的部落格名称]]></op>
+                <op value="1" selected="selected"><![CDATA[使用我的文章标题]]></op>
+            </field>
         </fieldset>
 		<fieldset legend="噗浪回应" >
 			<field title="将回应加入文章" type="select" name="attachResponses">
-				<op value="0" checked="checked"><![CDATA[否]]></op>
+				<op value="0" selected="selected"><![CDATA[否]]></op>
 				<op value="1"><![CDATA[是]]></op>
 			</field>
 		</fieldset>

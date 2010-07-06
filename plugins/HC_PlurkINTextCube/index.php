@@ -19,7 +19,7 @@ function myPlurk_ResponseStyle($target) {
 		return $target;
 	}
 	
-    $target .= "<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"$pluginURL/plurk.css\" />\n";
+    $target .= "<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"{$pluginURL}/plurk.css\" />\n";
 
     return $target;
 }
@@ -217,6 +217,8 @@ function myPlurk_UpdatePlurk($target, $mother) {
 
     $data = misc::fetchConfigVal($configVal);
     $autoPlurkEntries = (int) ($data['autoPlurkEntries']);
+    $plurkwithslogan = (int) ($data['plurkwithslogan']);
+    $plurklang = Setting::getBlogSettingGlobal('blogLanguage','');
 
     $plurk = new plurk_api();
     $googl = new googleURLShortner();
@@ -236,9 +238,23 @@ function myPlurk_UpdatePlurk($target, $mother) {
         $url = $googl->shortner( $permalink );
         $url = ($url !== false) ? $url : $permalink;
 
-		$content = $mother['title'] . " via ". $url . " (".Setting::getBlogSettingGlobal('title', '').") with Textcube Plurk-API.";
+        $lang = "en";
+        switch($plurklang) {
+            case "zh-TW":
+                $lang = "tr_ch";
+            break;
+            case "zh-CN":
+                $lang = "cn";
+            default:
+                $lang = "en";
+        }
+        if (1===$plurkwithslogan) {
+            $content = $url . " (" . $mother['title'] . ") via ".Setting::getBlogSettingGlobal('title', '')." with Textcube Plurk-API.";
+        } else {
+    		$content = $mother['title'] . " via ". $url . " (".Setting::getBlogSettingGlobal('title', '').") with Textcube Plurk-API.";
+        }
 		$acceptComment = ($mother['acceptComment']==1) ? true : false;
-		$response = $plurk->add_plurk("tr_ch", "shares", $content, NULL, $acceptComment);
+		$response = $plurk->add_plurk($lang, "shares", $content, NULL, $acceptComment);
 
 		if (isset($response->plurk_id) && $response->plurk_id > 0) {
 			$plurk_id = $response->plurk_id;
@@ -255,6 +271,7 @@ function myPlurk_AddPlurkIcon($target, $mother) {
 
 	$data = misc::fetchConfigVal($configVal);
 	$attachResponses = (isset($data['attachResponses']) && $data['attachResponses']==1) ? true : false;
+    $plurklang = Setting::getBlogSettingGlobal('blogLanguage','');
 	
 	$plurkIcon = "";
 	$responsePlurks = "";
@@ -288,10 +305,26 @@ function myPlurk_AddPlurkIcon($target, $mother) {
 				"loves", "likes", "shares", "gives", "hates", "wants", "wishes", "needs", "will",
 				"hopes", "asks", "has", "was", "wonders", "feels", "thinks", "says", "is"
 			);
-			$qualifiers_trch = array(
-				"愛", "喜歡", "推", "給", "討厭", "想要", "希望", "需要", "打算",
-				"希望", "問", "已經", "曾經", "好奇", "覺得", "想", "說", "正在"
-			);
+            $qualifiers_locale = array('en' => $qualifiers,
+                    'zh-TW' => array(
+			        	"愛", "喜歡", "推", "給", "討厭", "想要", "希望", "需要", "打算",
+        				"希望", "問", "已經", "曾經", "好奇", "覺得", "想", "說", "正在"
+		        	), 
+                    'zh-CN' => array(
+                        "爱", "喜欢", "推", "给", "讨厌", "想要", "希望", "需要", "打算",
+                        "希望", "问", "已经", "曾经", "好奇", "觉得", "想", "说", "正在"
+                    )
+            );
+            $lang = "en";
+            switch($plurklang) {
+                case "zh-TW":
+                case "zh-CN":
+                    $lang = $plurklang;
+                break;
+                default:
+                    $lang = "en";
+            }
+
 			$friends = array();
             $nick2displayname = array('nickname'=>array(), 'displayname'=>array());
 			foreach($response->friends as $friend) {
@@ -318,7 +351,7 @@ function myPlurk_AddPlurkIcon($target, $mother) {
 				$nick_name = $friends[$comment['user_id']]['nick_name'];
 				$qualifier = (in_array($comment['qualifier'], $qualifiers)) ? $comment['qualifier'] : "";
 				$qualifierKey = array_keys($qualifiers, $comment['qualifier']);
-				$qualifier_trch = (isset($qualifiers_trch[$qualifierKey[0]])) ? $qualifiers_trch[$qualifierKey[0]] : '';
+				$qualifier_trans = (isset($qualifiers_locale[$lang][$qualifierKey[0]])) ? $qualifiers_locale[$lang][$qualifierKey[0]] : '';
 
 				if (preg_match_all('/<a href="http:\/\/www.plurk.com\/(.*?)" class="ex_link">(.*?)<\/a>/ms', $comment['content'], $matches)) {
                     $mlen = count($matches[1]);
@@ -334,7 +367,7 @@ function myPlurk_AddPlurkIcon($target, $mother) {
 				}
 				echo "<tr><td class=\"user_icon\"><a href=\"http://www.plurk.com/{$nick_name}\" target=\"_blank\"><img src=\"{$userIcon}\" border=\"0\" width=\"45\" height=\"45\" alt=\"{$display_name}\" title=\"{$display_name}\" onerror=\"this.src='{$pluginURL}/images/nonusericon.gif'\" /></a></td>\n";
 				echo "<td class=\"plurkcontent\"><a href=\"http://www.plurk.com/{$nick_name}\" target=\"_blank\">{$display_name}</a>&nbsp;\n";
-				echo "<span class=\"qualifier_{$qualifier}\">{$qualifier_trch}</span>&nbsp;<span class=\"plurkcomment\">{$comment['content']}</span></td></tr>\n";
+				echo "<span class=\"qualifier_{$qualifier}\">{$qualifier_trans}</span>&nbsp;<span class=\"plurkcomment\">{$comment['content']}</span></td></tr>\n";
 			}
 			echo "</table>\n</div>\n<p style=\"text-align:right;line-height:1em;\" class=\"plurkResponseMoreButton\">"._t('MorePlurk...')."</p>\n";
 			echo "</div>\n\n";
