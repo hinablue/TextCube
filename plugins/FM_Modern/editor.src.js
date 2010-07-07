@@ -111,6 +111,7 @@ TTModernEditor.prototype.initialize = function(textarea) {
 	var div = document.createElement('div');
 	div.id = 'moderneditor-textbox';
 	div.className = 'container';
+    div.style.width = Math.min(skinContentWidth + (STD.isIE ? 56 : 64), 1050) + "px";
 	//textarea.parentNode.insertBefore(this.getEditorPalette(), textarea);
 	document.getElementById('formatbox-container').innerHTML = this.getEditorPalette(true);
 	textarea.parentNode.insertBefore(div, textarea);
