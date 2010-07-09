@@ -24,15 +24,14 @@
   <binding>
   	<listener event="AddPost" handler="MT_Cover_getRecentEntries_purgeCache" />
   	<listener event="UpdatePost" handler="MT_Cover_getRecentEntries_purgeCache" />
-  	<listener event="DeletePost" handler="MT_Cover_getRecentEntries_purgeCache" />
-	<listener event="ChangeVisibility" handler="MT_Cover_getRecentEntries_purgeCache" />
-
-	<listener event="ToggleBlogSlogan" handler="MT_Cover_getRecentEntries_purgeCache" />
-	<listener event="ModifyPluginParam_MT_Meta_RecentPS_Default" handler="MT_Cover_getRecentEntries_purgeCache" />
-
+    <listener event="ToggleBlogSlogan" handler="MT_Cover_getRecentEntries_purgeCache" />
     <listener event="Cron5m" handler="MT_Cover_getRecentEntries_purgeCache" />
     <listener event="Cron10m" handler="MT_Cover_getRecentEntries_purgeCache" />
     <listener event="Cron30m" handler="MT_Cover_getRecentEntries_purgeCache" />
+
+  	<listener event="DeletePost" handler="MT_Cover_doRealPurgeCache" />
+	<listener event="ChangeVisibility" handler="MT_Cover_doRealPurgeCache" />
+	<listener event="ModifyPluginParam_MT_Meta_RecentPS_Default" handler="MT_Cover_doRealPurgeCache" />
 
 	<tag name="SKIN_head_end" handler="MT_Cover_getRecentEntryStyle" />
     <coverpage title="Recent Posts" handler="MT_Cover_getRecentEntries">

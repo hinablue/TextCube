@@ -277,15 +277,17 @@ function MT_Cover_getRemoteImageFilename($filename) {
 	return $filename;
 }
 
-function MT_Cover_getAttachmentExtract($content){
+function MT_Cover_getAttachmentExtract($content) {
 	$result = null;
-	if(preg_match_all('/\[##_(1R|1L|1C|2C|3C|iMazing|Gallery)\|[^|]*\.(gif|jpg|jpeg|png|bmp|GIF|JPG|JPEG|PNG|BMP)\|.*_##\]/si', $content, $matches)) {
+	if (preg_match_all('/\[##_(1R|1L|1C|2C|3C|iMazing|Gallery)\|[^|]*\.(gif|jpg|jpeg|png|bmp|GIF|JPG|JPEG|PNG|BMP)\|.*_##\]/si', $content, $matches)) {
 		$split = explode("|", $matches[0][0]);
 		$result = $split[1];
-	}else if(preg_match_all('/<img[^>]+?src=("|\')?([^\'">]*?)("|\')/si', $content, $matches)) {
-		if( stristr($matches[2][0], 'http://') ){
+	} else if (preg_match_all('/<img[^>]+?src=("|\')?([^\'">]*?)("|\')/si', $content, $matches)) {
+		if( stristr($matches[2][0], 'http://') ) {
 			$result = $matches[2][0];
-		}
+		} else if ( stristr($matches[2][0], '[##_ATTACH_PATH_##]')) {
+            $result = str_replace('[##_ATTACH_PATH_##]/', '', $matches[2][0]);
+        }
 	}
 	return $result;
 }
