@@ -285,7 +285,17 @@ function myPlurk_AddPlurkIcon($target, $mother) {
 		}
 		
 		if (!$attachResponses) return $plurkIcon . $target;
-		
+	
+        $cache = new PageCache;
+        $cache->name = 'HC_TCPlurkCache';
+
+        if($cache->load()) {
+            $cache->contents = unserialize($cache->contents);
+            if(array_key_exists($mother, $cache->contents) && (Timestamp::getUNIXtime() - $cache->dbContents < 600)) {
+                return $plurkIcon . $target . $cache->contents[$mother];
+            }
+        }
+
         require_once ("libs/plurk_api.php");
 		
 		$plurk = new plurk_api();
@@ -297,7 +307,7 @@ function myPlurk_AddPlurkIcon($target, $mother) {
         {
             return $plurkIcon . $target;
         }
-    
+        $responsePlurks = "";
 		$response = $plurk->get_responses($plurk_id);
 
         if ($response->responses_seen > 0) {
@@ -376,6 +386,12 @@ function myPlurk_AddPlurkIcon($target, $mother) {
         } else {
             // no response
         }
+
+        $cache->contents[$mother] = $responsePlurks;
+    	$cache->contents = serialize($cache->contents);
+    	$cache->dbContents = Timestamp::getUNIXtime();
+	    $cache->update();
+	    unset($cache);
     }
 		
 	return $plurkIcon . $target . $responsePlurks;
