@@ -10,6 +10,7 @@ function MT_Cover_getRecentEntries($parameters){
 	$data['screenshotSize']	= !isset($data['screenshotSize']) ? 90 : $data['screenshotSize'];
 	$data['paging'] = !isset($data['paging'])?'2':$data['paging'];
 	$data['contentLength']	= !isset($data['contentLength']) ? 250 : $data['contentLength'];
+    $data['cachelifetime'] = !isset($data['cachelifetime']) ? 300 : $data['cachelifetime'];
 
 	if (isset($parameters['preview'])) {
 		// preview mode
@@ -38,7 +39,7 @@ function MT_Cover_getRecentEntries($parameters){
 	if($cache->load()) { //If successful loads
 		$cache->contents = unserialize($cache->contents);
 		// If coverpage is single mode OR coverpage is coverblog and cache is not expired, return cache contents.
-		if(($data['coverMode']==1 || $data['coverMode']==2) && array_key_exists($page, $cache->contents) && (Timestamp::getUNIXtime() - $cache->dbContents < 300)) {
+		if(($data['coverMode']==1 || $data['coverMode']==2) && array_key_exists($page, $cache->contents) && (Timestamp::getUNIXtime() - $cache->dbContents < $data['cachelifetime'])) {
 			return $cache->contents[$page];
 		}
 	}
@@ -341,6 +342,7 @@ function MT_Cover_getRecentEntries_ConfigOut($plugin) {
     $manifest .= '			<op value="2"><![CDATA[10 &nbsp;]]></op>'.CRLF;
     $manifest .= '			<op value="3"><![CDATA[30 mins.&nbsp;]]></op>'.CRLF;
     $manifest .= '		</field>'.CRLF;
+    $manifest .= '      <field title="Cache Life Time(sec) :" name="cachelifetime" type="text" size="5" value="300" />'.CRLF;
 	$manifest .= '	</fieldset>'.CRLF;
 	$manifest .= '</config>'.CRLF;
 
@@ -378,6 +380,7 @@ function MT_Cover_getRecentEntries_ConfigOut_zh_TW($plugin) {
     $manifest .= '			<op value="2"><![CDATA[10&nbsp;]]></op>'.CRLF;
     $manifest .= '			<op value="3"><![CDATA[30 分鐘]]></op>'.CRLF;
     $manifest .= '		</field>'.CRLF;
+    $manifest .= '      <field title="快取存活時間(秒) :" name="cachelifetime" type="text" size="5" value="300" />'.CRLF;
 	$manifest .= '	</fieldset>'.CRLF;
 	$manifest .= '</config>'.CRLF;
 
@@ -415,6 +418,7 @@ function MT_Cover_getRecentEntries_ConfigOut_zh_CN($plugin) {
     $manifest .= '			<op value="2"><![CDATA[10&nbsp;]]></op>'.CRLF;
     $manifest .= '			<op value="3"><![CDATA[30 分钟]]></op>'.CRLF;
     $manifest .= '		</field>'.CRLF;
+    $manifest .= '      <field title="快取存活时间(秒) :" name="cachelifetime" type="text" size="5" value="300" />'.CRLF;
 	$manifest .= '	</fieldset>'.CRLF;
 	$manifest .= '</config>'.CRLF;
 
