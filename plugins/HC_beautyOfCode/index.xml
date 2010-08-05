@@ -38,6 +38,7 @@
   <binding>
     <listener event="ViewPostContent">CodeHighLighter_DressContent</listener>
     <listener event="ViewNoticeContent">CodeHighLighter_DressContent</listener>
-	<tag name="SKIN_body_end" handler="CodeHighLighter_ApplyScript" />
+    <tag name="SKIN_head_end" handler="CodeHighLighter_ApplyStyles" />
+	<tag name="SKIN_body_end" handler="CodeHighLighter_ApplyScripts" />
   </binding>
 </plugin>

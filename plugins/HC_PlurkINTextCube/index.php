@@ -10,7 +10,13 @@ define('PLURK_AGENT', 'php-plurk-api agent');
 
 
 function myPlurk_ResponseStyle($target) {
-	global $configVal, $pluginURL;
+	global $suri, $configVal, $pluginURL;
+
+    $directive = array('archive','category','guestbook','imageResizer','link','login','logout','pannels','protected','search','tag','trackback','rss','atom','ientry','sync','m');
+
+    if(in_array(str_replace('/','', $suri['directive']), $directive)) return $target;
+
+
 	requireComponent('Textcube.Function.misc');
 	$data = misc::fetchConfigVal($configVal);
 	$attachResponses = (isset($data['attachResponses']) && $data['attachResponses']==1) ? true : false;
@@ -25,14 +31,14 @@ function myPlurk_ResponseStyle($target) {
 }
 
 function myPlurk_ResponseJscript($target) {
-	global $configVal, $pluginURL;
+	global $suri, $configVal, $pluginURL;
 	requireComponent('Textcube.Function.misc');
 	$data = misc::fetchConfigVal($configVal);
 	$attachResponses = (isset($data['attachResponses']) && $data['attachResponses']==1) ? true : false;
 	
-	if (!$attachResponses) {
-		return $target;
-	}
+    $directive = array('archive','category','guestbook','imageResizer','link','login','logout','pannels','protected','search','tag','trackback','rss','atom','ientry','sync','m');
+
+    if(in_array(str_replace('/','', $suri['directive']), $directive) || !$attachResponses) return $target;
 
     $target .= '<script type="text/javascript">
 //<![CDDA[
@@ -40,35 +46,30 @@ function myPlurk_ResponseJscript($target) {
         // I don\'t care.
     } else {
         if(typeof jQuery === "undefined") {
-            var CodeHighlighterjQscript = document.createElement("script");
-            CodeHighlighterjQscript.src = "http://www.google.com/jsapi";
-            CodeHighlighterjQscript.type = "text/javascript";
-            document.getElementsByTagName("head")[0].appendChild(CodeHighlighterjQscript);
+            var plurkInTextCubejQscript = document.createElement("script");
+            plurkInTextCubejQscript.src = "http://www.google.com/jsapi";
+            plurkInTextCubejQscript.type = "text/javascript";
+            document.getElementsByTagName("head")[0].appendChild(plurkInTextCubejQscript);
 
-            if (CodeHighlighterjQscript.readyState) {
-                CodeHighlighterjQscript.onreadystatechange = function () {
-                    if (CodeHighlighterjQscript.readyState == "loaded" || CodeHighlighterjQscript.readyState == "complete") {
+            if (plurkInTextCubejQscript.readyState) {
+                plurkInTextCubejQscript.onreadystatechange = function () {
+                    if (plurkInTextCubejQscript.readyState == "loaded" || plurkInTextCubejQscript.readyState == "complete") {
                         finalInitjQuery();
                     }
                     return;
                 };
             } else {
-                CodeHighlighterjQscript.onload = function() {
-                    finalInitjQuery();
-                    return;
+                plurkInTextCubejQscript.onload = function() {
+                    google.load("jquery", "1.4.2");
+                    google.setOnLoadCallback(function() {
+                        jQuery.noConflict();
+                        finalPlurkResponseAnimate();
+                    });
                 };
             }
         } else {
             finalPlurkResponseAnimate();
         }
-    }
-
-    function finalInitjQuery() {
-        google.load("jquery", "1.4.2");
-        google.setOnLoadCallback(function() {
-            jQuery.noConflict();
-            finalPlurkResponseAnimate();
-        });
     }
 
     function finalPlurkResponseAnimate() {

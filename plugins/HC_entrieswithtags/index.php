@@ -7,6 +7,12 @@ Author URI: http://hina.ushiisland.net/blog/hinablue/
 */ 
 
 function EntriesWithTags_Style($target) {
+    global $suri;
+
+    $directive = array('archive','category','guestbook','imageResizer','link','login','logout','pannels','protected','search','tag','trackback','rss','atom','ientry','sync','m');
+
+    if(in_array(str_replace('/','', $suri['directive']), $directive)) return $target;
+
 	ob_start();
 ?>
 <style type="text/css">

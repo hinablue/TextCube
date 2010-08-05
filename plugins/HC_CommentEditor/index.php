@@ -1,8 +1,12 @@
 <?php
 
 function BBCode_Style($target) {
-	global $pluginURL;
+	global $suri, $pluginURL;
 	
+    $directive = array('archive','category','imageResizer','link','login','logout','pannels','protected','search','tag','trackback','rss','atom','ientry','sync','m');
+
+    if(in_array(str_replace('/','', $suri['directive']), $directive)) return $target;
+
 	ob_start();
 ?>
 <!-- markItUp! skin -->
@@ -17,7 +21,11 @@ function BBCode_Style($target) {
 }
 
 function BBCode_footerScript($target) {
-	global $pluginURL;
+	global $suri, $pluginURL;
+
+    $directive = array('archive','category','imageResizer','link','login','logout','pannels','protected','search','tag','trackback','rss','atom','ientry','sync','m');
+
+    if(in_array(str_replace('/','', $suri['directive']), $directive)) return $target;
 
 	$target .= '<script type="text/javascript">
 //<![CDDA[
@@ -63,21 +71,16 @@ function BBCode_footerScript($target) {
                 };
             } else {
                 BBCodejQscript.onload = function() {
-                    finalInitjQuery();
-                    return;
+                    google.load("jquery", "1.4.2");
+                    google.setOnLoadCallback(function() {
+                        jQuery.noConflict();
+                        finalBBCode();
+                    });
                 };
             }
         } else {
             finalBBCode();
         }
-    }
-
-    function finalInitjQuery() {
-        google.load("jquery", "1.4.2");
-        google.setOnLoadCallback(function() {
-            jQuery.noConflict();
-            finalBBCode();
-        });
     }
 
     function finalBBCode() {

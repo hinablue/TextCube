@@ -1,7 +1,11 @@
 <?php
 
 function reCAPTCHAScript($target) {
-	global $pluginURL;
+	global $suri, $pluginURL;
+    
+    $directive = array('archive','category','imageResizer','link','login','logout','pannels','protected','search','tag','trackback','rss','atom','ientry','sync','m');
+
+    if(in_array(str_replace('/','', $suri['directive']), $directive)) return $target;
 
     if (!doesHaveOwnership() && !doesHaveMembership())
     {
