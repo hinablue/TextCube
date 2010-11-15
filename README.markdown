@@ -1,3 +1,7 @@
+# UPDATE #
+
+更新到 TextCube 1.8.5
+
 # TextCube #
 
 TextCube 是韓國的開放原始碼的部落格平台，詳細的資訊可以到 [韓國官方網站] [1] 查詢。

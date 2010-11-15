@@ -5,17 +5,17 @@
 
 function printIphoneEntryContentView($blogid, $entry, $keywords = array()) {
 	global $blogURL;
-	if (doesHaveOwnership() || ($entry['visibility'] >= 2) || (isset($_COOKIE['GUEST_PASSWORD']) && (trim($_COOKIE['GUEST_PASSWORD']) == trim($entry['password']))))
-		print '<div class="entry_body">'.(getEntryContentView($blogid, $entry['id'], $entry['content'], $entry['contentformatter'], $keywords)).'</div>';
-	else
-	{
+	if (doesHaveOwnership() || ($entry['visibility'] >= 2) || (isset($_COOKIE['GUEST_PASSWORD']) && (trim($_COOKIE['GUEST_PASSWORD']) == trim($entry['password'])))) {
+		$content = getEntryContentView($blogid, $entry['id'], $entry['content'], $entry['contentformatter'], $keywords, 'Post', false);
+		print '<div class="entry_body">' . printIphoneFreeImageResizer($content) . '</div>';
+	} else {
 	?>
-	<p><b><?php echo _t('Protected post!');?></b></p>
+	<p><b><?php echo _text('Protected post!');?></b></p>
 	<form id="passwordForm" class="dialog" method="post" action="<?php echo $blogURL;?>/protected/<?php echo $entry['id'];?>">
 		<fieldset>
-			<label for="password"><?php echo _t('Password:');?></label>
+			<label for="password"><?php echo _text('Password:');?></label>
 			<input type="password" id="password" name="password" />
-			<a href="#" class="whiteButton margin-top10" type="submit"><?php echo _t('View Post');?></a>
+			<a href="#" class="whiteButton margin-top10" type="submit"><?php echo _text('View Post');?></a>
         </fieldset>
 	</form>
 	<?php
@@ -217,14 +217,14 @@ function printIphoneHtmlHeader($title = '') {
 	<div class="toolbar">
 		<h1 id="pageTitle"><?php echo htmlspecialchars($context->getProperty('blog.title'));?></h1>
 		<a id="backButton" class="button" href="#"></a>
-		<a class="button" href="#searchForm" id="searchButton" onclick="searchAction(true);"><?php echo _t('검색');?></a>
+		<a class="button" href="#searchForm" id="searchButton" onclick="searchAction(true);"><?php echo _text('검색');?></a>
 	</div>
 	<div class="toolbar shortcut">
 	<ul>
-		<li><a href="<?php echo $context->getProperty('uri.blog');?>" onclick="window.location.href='<?php echo $context->getProperty('uri.blog');?>'"><?php echo _t('글목록');?></a></li>
-		<li><a href="<?php echo $context->getProperty('uri.blog');?>/comment"><?php echo _t('댓글');?></a></li>
-		<li><a href="<?php echo $context->getProperty('uri.blog');?>/trackback"><?php echo _t('트랙백');?></a></li>
-		<li><a href="<?php echo $context->getProperty('uri.blog');?>/guestbook"><?php echo _t('방명록');?></a></li>
+		<li><a href="<?php echo $context->getProperty('uri.blog');?>" onclick="window.location.href='<?php echo $context->getProperty('uri.blog');?>'"><?php echo _text('글목록');?></a></li>
+		<li><a href="<?php echo $context->getProperty('uri.blog');?>/comment"><?php echo _text('댓글');?></a></li>
+		<li><a href="<?php echo $context->getProperty('uri.blog');?>/trackback"><?php echo _text('트랙백');?></a></li>
+		<li><a href="<?php echo $context->getProperty('uri.blog');?>/guestbook"><?php echo _text('방명록');?></a></li>
 	</ul>
 	</div>
 
@@ -232,16 +232,43 @@ function printIphoneHtmlHeader($title = '') {
 }
 
 function printIphoneAttachmentExtract($content){
+	global $service;
+	$blogid = getBlogId();
 	$result = null;
+
 	if(preg_match_all('/\[##_(1R|1L|1C|2C|3C|iMazing|Gallery)\|[^|]*\.(gif|jpg|jpeg|png|bmp|GIF|JPG|JPEG|PNG|BMP)\|.*_##\]/si', $content, $matches)) {
 		$split = explode("|", $matches[0][0]);
 		$result = $split[1];
-	}else if(preg_match_all('/<img[^>]+?src=("|\')?([^\'">]*?)("|\')/si', $content, $matches)) {
-		if(stristr($matches[2][0], 'http://') ){
+	} else if(preg_match_all('/<img[^>]+?src=("|\')?([^\'">]*?)("|\')/si', $content, $matches)) {
+		$pattern1 = $service['path'] . "/attach/{$blogid}/";
+		$pattern2 = "[##_ATTACH_PATH_##]";
+
+		if ((strpos($matches[2][0], $pattern1) === 0) || (strpos($matches[2][0], $pattern2) === 0)) {
+			$result = basename($matches[2][0]);
+		} else {
 			$result = $matches[2][0];
 		}
 	}
 	return $result;
+}
+
+function printIphoneFreeImageResizer($content) {
+	global $service, $blogURL;
+	$blogid = getBlogId();
+	$pattern1 = "@<img.+src=['\"](.+)['\"].*>@Usi";
+	$pattern2 = $service['path'] . "/attach/{$blogid}/";
+
+	if (preg_match_all($pattern1, $content, $matches)) {
+		foreach($matches[0] as $imageTag) {
+			preg_match($pattern1, $imageTag, $matche);
+			if (strpos($matche[1], $pattern2) === 0) {
+				$filename = basename($matche[1]);
+				$replaceTag = preg_replace($pattern1 , "<img src=\"{$blogURL}/imageResizer/?f={$filename}\" alt=\"\" />", $matche[0]);
+				$content = str_replace($matche[0], $replaceTag, $content);
+			}
+		}
+	}
+	return $content;
 }
 
 function printIphoneImageResizer($blogid, $filename, $cropSize){
@@ -294,10 +321,9 @@ function printIphoneCropProcess($blogid, $filename, $cropSize) {
 
 	$thumbnailSrc = ROOT . "/cache/thumbnail/{$blogid}/iphoneThumbnail/th_{$filename}";
 	if (file_exists($originSrc)) {
-		requireComponent('Textcube.Function.Image');
 		$imageInfo = getimagesize($originSrc);
 
-		$objThumbnail = new Image();
+		$objThumbnail = new Utils_Image();
 		if ($imageInfo[0] > $imageInfo[1])
 			list($tempWidth, $tempHeight) = $objThumbnail->calcOptimizedImageSize($imageInfo[0], $imageInfo[1], NULL, $cropSize);
 		else
@@ -376,32 +402,32 @@ function printIphoneNavigation($entry, $jumpToComment = true, $jumpToTrackback =
 		<?php
 	if (isset($paging['prev'])) {
 ?>
-		<li><a href="<?php echo $blogURL.'/'.$mode;?>/<?php echo $paging['prefix'].$paging['prev'];?>" accesskey="1"><?php echo _t('이전 페이지');?></a></li>
+		<li><a href="<?php echo $blogURL.'/'.$mode;?>/<?php echo $paging['prefix'].$paging['prev'];?>" accesskey="1"><?php echo _text('이전 페이지');?></a></li>
 		<?php
 	}
 	if (isset($paging['next'])) {
 ?>
-		<li><a href="<?php echo $blogURL.'/'.$mode;?>/<?php echo $paging['prefix'].$paging['next'];?>" accesskey="2"><?php echo _t('다음 페이지');?></a></li>
+		<li><a href="<?php echo $blogURL.'/'.$mode;?>/<?php echo $paging['prefix'].$paging['next'];?>" accesskey="2"><?php echo _text('다음 페이지');?></a></li>
 		<?php
 	}
 	if (!isset($paging)) {
 ?>	
-		<li><a href="<?php echo $blogURL.'/'.$mode;?>/<?php echo $entry['id'];?>" accesskey="3"><?php echo _t('글 보기');?></a></li>
+		<li><a href="<?php echo $blogURL.'/'.$mode;?>/<?php echo $entry['id'];?>" accesskey="3"><?php echo _text('글 보기');?></a></li>
 		<?php
 	}
 	if ($jumpToComment) {
 ?>
-		<li><a href="<?php echo $blogURL;?>/comment/<?php echo $entry['id'];?>" accesskey="4"><?php echo _t('댓글 보기');?> (<?php echo $entry['comments'];?>)</a></li>
+		<li><a href="<?php echo $blogURL;?>/comment/<?php echo $entry['id'];?>" accesskey="4"><?php echo _text('댓글 보기');?> (<?php echo $entry['comments'];?>)</a></li>
 		<?php
 	}
 	if ($jumpToTrackback) {
 ?>
-		<li><a href="<?php echo $blogURL;?>/trackback/<?php echo $entry['id'];?>" accesskey="5"><?php echo _t('트랙백 보기');?> (<?php echo $entry['trackbacks'];?>)</a></li>
+		<li><a href="<?php echo $blogURL;?>/trackback/<?php echo $entry['id'];?>" accesskey="5"><?php echo _text('트랙백 보기');?> (<?php echo $entry['trackbacks'];?>)</a></li>
 		<?php
 	}
 	if ($suri['directive'] != '/i') {
 ?>
-		<li class="last_no_line"><a href="<?php echo $blogURL;?>" onclick="window.location.href='<?php echo $blogURL;?>';" accesskey="6"><?php echo _t('첫화면으로 돌아가기');?></a></li>
+		<li class="last_no_line"><a href="<?php echo $blogURL;?>" onclick="window.location.href='<?php echo $blogURL;?>';" accesskey="6"><?php echo _text('첫화면으로 돌아가기');?></a></li>
 		<?php
 	}
 ?>
@@ -418,7 +444,7 @@ function printIphoneTrackbackView($entryId, $page, $mode = null) {
 	}
 	if (count($trackbacks) == 0) {
 ?>
-		<p>&nbsp;<?php echo _t('트랙백이 없습니다');?></p>
+		<p>&nbsp;<?php echo _text('트랙백이 없습니다');?></p>
 		<?php
 	} else {
 		foreach ($trackbacks as $trackback) {
@@ -429,7 +455,7 @@ function printIphoneTrackbackView($entryId, $page, $mode = null) {
 					<?php echo htmlspecialchars($trackback['subject']);?>
 				</span>
 				<span class="right">
-					<a href="<?php echo $blogURL;?>/i/entry/<?php echo $trackback['entry'];?>"><?php echo  _t('글보기');?></a>
+					<a href="<?php echo $blogURL;?>/i/entry/<?php echo $trackback['entry'];?>"><?php echo  _text('글보기');?></a>
 				</span>
 			</li>
 			<li class="body">
@@ -453,7 +479,7 @@ function printIphoneCommentView($entryId, $page = null, $mode = null) {
 	}
 	if (count($comments) == 0) {
 ?>
-		<p>&nbsp;<?php echo ($entryId == 0 ? _t('방명록이 없습니다') : _t('댓글이 없습니다'));?></p>
+		<p>&nbsp;<?php echo ($entryId == 0 ? _text('방명록이 없습니다') : _text('댓글이 없습니다'));?></p>
 		<?php
 	} else {
 		foreach ($comments as $commentItem) {
@@ -465,12 +491,12 @@ function printIphoneCommentView($entryId, $page = null, $mode = null) {
 					(<?php echo Timestamp::format5($commentItem['written']);?>)
 				</span>
 				<span class="right">
-					<a href="<?php echo $blogURL;?>/comment/comment/<?php echo $commentItem['id'];?>"><?php echo ($entryId == 0 ? _t('방명록에 댓글 달기') : _t('댓글에 댓글 달기'));?></a> :
-					<a href="<?php echo $blogURL;?>/comment/delete/<?php echo $commentItem['id'];?>"><?php echo _t('지우기');?></a>
+					<a href="<?php echo $blogURL;?>/comment/comment/<?php echo $commentItem['id'];?>"><?php echo ($entryId == 0 ? _text('방명록에 댓글 달기') : _text('댓글에 댓글 달기'));?></a> :
+					<a href="<?php echo $blogURL;?>/comment/delete/<?php echo $commentItem['id'];?>"><?php echo _text('지우기');?></a>
 				</span>
 			</li>
 			<li class="body">
-				<?php echo ($commentItem['secret'] && doesHaveOwnership() ? '<div class="hiddenComment" style="font-weight: bold; color: #e11">'.($entryId == 0 ? _t('비밀 방명록') : _t('비밀 댓글')).' &gt;&gt;</div>' : '').nl2br(addLinkSense(htmlspecialchars($commentItem['comment'])));?>
+				<?php echo ($commentItem['secret'] && doesHaveOwnership() ? '<div class="hiddenComment" style="font-weight: bold; color: #e11">'.($entryId == 0 ? _text('비밀 방명록') : _text('비밀 댓글')).' &gt;&gt;</div>' : '').nl2br(addLinkSense(htmlspecialchars($commentItem['comment'])));?>
 			</li>
 			<?php
 			foreach (getCommentComments($commentItem['id']) as $commentSubItem) {
@@ -495,7 +521,7 @@ function printIphoneCommentView($entryId, $page = null, $mode = null) {
 		}
 	}
 	if($mode != 'recent') {	
-		printIphoneCommentFormView($entryId, ($entryId == 0 ? _t('방명록 쓰기') : _t('댓글 쓰기')), 'comment');
+		printIphoneCommentFormView($entryId, ($entryId == 0 ? _text('방명록 쓰기') : _text('댓글 쓰기')), 'comment');
 	}
 }
 
@@ -524,19 +550,19 @@ function printIphoneCommentFormView($entryId, $title, $actionURL) {
 		<input type="hidden" name="id" value="<?php echo $entryId;?>" />
 		<input type="hidden" id="secret_<?php echo $entryId;?>" name="secret_<?php echo $entryId;?>" value="0" />
 		<div class="row">
-			<label><?php echo _t('비밀 댓글');?></label>
+			<label><?php echo _text('비밀 댓글');?></label>
 			<div class="toggle" onclick="secretToggleCheck(this, <?php echo $entryId;?>);"><span class="thumb"></span><span class="toggleOn">|</span><span class="toggleOff">O</span></div>
 		</div>
 		<div class="row">
-			<label for="name_<?php echo $entryId;?>"><?php echo _t('이름');?></label>
+			<label for="name_<?php echo $entryId;?>"><?php echo _text('이름');?></label>
 			<input type="text" id="name_<?php echo $entryId;?>" name="name_<?php echo $entryId;?>" value="<?php echo isset($_COOKIE['guestName']) ? htmlspecialchars($_COOKIE['guestName']) : '';?>" />
 		</div>
 		<div class="row">
-			<label for="password_<?php echo $entryId;?>"><?php echo _t('비밀번호');?></label>
+			<label for="password_<?php echo $entryId;?>"><?php echo _text('비밀번호');?></label>
 			<input type="password" id="password_<?php echo $entryId;?>" name="password_<?php echo $entryId;?>" />
 		</div>
 		<div class="row">
-			<label for="homepage_<?php echo $entryId;?>"><?php echo _t('홈페이지');?></label>
+			<label for="homepage_<?php echo $entryId;?>"><?php echo _text('홈페이지');?></label>
 			<input type="text" id="homepage_<?php echo $entryId;?>" name="homepage_<?php echo $entryId;?>"  value="<?php echo (isset($_COOKIE['guestHomepage']) && $_COOKIE['guestHomepage'] != 'http://') ? htmlspecialchars($_COOKIE['guestHomepage']) : 'http://';?>" />
 		</div>
 		<?php
@@ -545,7 +571,7 @@ function printIphoneCommentFormView($entryId, $title, $actionURL) {
 		<div class="row">
 			<textarea cols="40" rows="6" id="comment_<?php echo $entryId;?>" name="comment_<?php echo $entryId;?>"></textarea>
 		</div>
-		<a href="#" class="whiteButton margin-top10" type="submit"><?php echo _t('작성');?></a>
+		<a href="#" class="whiteButton margin-top10" type="submit"><?php echo _text('작성');?></a>
 	</fieldset>
 	</form>
 	
@@ -559,7 +585,7 @@ function printIphoneErrorPage($messageTitle, $messageBody, $redirectURL) {
 		<div class="content">
 			<?php echo htmlspecialchars($messageBody);?>
 		</div>
-		<a href="<?php echo $redirectURL;?>" class="whiteButton margin-top10"><?php echo _t('이전 페이지로 돌아가기');?></a>
+		<a href="<?php echo $redirectURL;?>" class="whiteButton margin-top10"><?php echo _text('이전 페이지로 돌아가기');?></a>
 	</div>
 <?php
 }

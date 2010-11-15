@@ -200,7 +200,6 @@ function getCategoriesSkin() {
 }
 
 function getParentCategoryId($blogid, $id) {
-	requireComponent('Needlworks.Cache.PageCache');
 	global $__gCacheCategoryRaw;
 
 	if(empty($__gCacheCategoryRaw)) getCategories($blogid, 'raw'); //To cache category information.
@@ -210,7 +209,6 @@ function getParentCategoryId($blogid, $id) {
 }
 
 function getChildCategoryId($blogid, $id) {
-	requireComponent('Needlworks.Cache.PageCache');
 	global $__gCacheCategoryRaw;
 
 	if(empty($__gCacheCategoryRaw)) getCategories($blogid, 'raw'); //To cache category information.
@@ -356,8 +354,8 @@ function updateCategoryByEntryId($blogid, $entryId, $action = 'add',$parameters 
 
 	$entry = getEntry($blogid, $entryId);
 	// for deleteEntry
-	if(is_null($entry) and isset($parameters['target']))
-		$entry = $parameters['target'];
+	if(is_null($entry) and isset($parameters['entry']))
+		$entry = $parameters['entry'];
 	$categoryId = $entry['category'];
 
 	$parent       = getParentCategoryId($blogid, $categoryId);

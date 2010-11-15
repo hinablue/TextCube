@@ -14,9 +14,9 @@ function login($loginid, $password, $preKnownPassword = null) {
 	}
 
 	if (empty($_POST['save'])) {
-		setcookie('TSSESSION_LOGINID', '', time() - 31536000, $ctx->getProperty('service.path') . '/', $ctx->getProperty('service.domain'));
+		setcookie('TSSESSION_LOGINID', '', $_SERVER['REQUEST_TIME'] - 31536000, $ctx->getProperty('service.path') . '/', $ctx->getProperty('service.domain'));
 	} else {
-		setcookie('TSSESSION_LOGINID', $loginid, time() + 31536000, $ctx->getProperty('service.path') . '/', $ctx->getProperty('service.domain'));
+		setcookie('TSSESSION_LOGINID', $loginid, $_SERVER['REQUEST_TIME'] + 31536000, $ctx->getProperty('service.path') . '/', $ctx->getProperty('service.domain'));
 	}
 
 	if( in_array( "group.writers", Acl::getCurrentPrivilege() ) ) {

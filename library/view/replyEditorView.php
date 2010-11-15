@@ -4,7 +4,6 @@
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
 $confirmString = '';
-
 if (empty($comment['name']) ) {
 	if( isset($_SESSION['openid']['nickname'])) {
 		$comment['name'] = $_SESSION['openid']['nickname'];
@@ -45,30 +44,30 @@ if( Acl::getIdentity('openid') ) {
 			function submitComment() {
 				var oForm = document.commentToComment;
 				var oButton = document.getElementById('commentSubmit');
-				oButton.value = '<?php echo escapeJSInCData(_t('저장중'));?>';
+				oButton.value = '<?php echo escapeJSInCData(_text('저장중'));?>';
 				var tempOnClick = oButton.onclick;
 				oButton.onclick = 'return false;';
 				trimAll(oForm);
 <?php 
 if (!doesHaveMembership()) {
 ?>
-				if (!checkValue(oForm.name, '<?php echo escapeJSInCData(_t('이름을 입력해 주십시오.'));?>')) {
-					oButton.value = '<?php echo _t('완료');?>';
+				if (!checkValue(oForm.name, '<?php echo escapeJSInCData(_text('이름을 입력해 주십시오.'));?>')) {
+					oButton.value = '<?php echo _text('완료');?>';
 					oButton.onclick = tempOnClick; 
 					return false;
 				}
 <?php 
 }
 ?>
-				if (!checkValue(oForm.comment, '<?php echo escapeJSInCData(_t('댓글을 입력해 주십시오.'));?>')) {
-					oButton.value = '<?php echo _t('완료');?>';
+				if (!checkValue(oForm.comment, '<?php echo escapeJSInCData(_text('댓글을 입력해 주십시오.'));?>')) {
+					oButton.value = '<?php echo _text('완료');?>';
 					oButton.onclick = tempOnClick; 
 					return false;
 				}
 				oForm.submit();
 			}
 			function confirmOverwrite() {
-				return confirm("<?php echo escapeJSInCData(_t('관리자가 방문객의 댓글을 수정하시면 작성자 이름을 관리자 아이디로 덮어 쓰게 됩니다.')).escapeJSInCData(_t('계속 하시겠습니까?'));?>");
+				return confirm("<?php echo escapeJSInCData(_text('관리자가 방문객의 댓글을 수정하시면 작성자 이름을 관리자 아이디로 덮어 쓰게 됩니다.')).escapeJSInCData('계속 하시겠습니까?');?>");
 			}
 		//]]>
 	</script>
@@ -94,7 +93,7 @@ if (!doesHaveMembership()) {
 		<input type="hidden" name="oldPassword" value="<?php echo isset($_POST['password']) ? $_POST['password'] : '';?>" />
 		
 		<div id="comment-reply-box">
-			<img src="<?php echo $service['path'] . $adminSkinSetting['skin'];?>/image/img_comment_popup_logo.gif" alt="<?php echo _t('텍스트큐브 로고');?>" />
+			<img src="<?php echo $service['path'] . $adminSkinSetting['skin'];?>/image/img_comment_popup_logo.gif" alt="<?php echo _text('텍스트큐브 로고');?>" />
 			
 			<div class="title"><span class="text" id="title"><?php echo $pageTitle ;?></span></div>
 <?php
@@ -145,18 +144,18 @@ if (!doesHaveOwnership()) {
 	if (!doesHaveMembership()) {
 ?>
 				<dl class="name-line">
-					<dt><label for="name"><?php echo _t('이름');?></label></dt>
+					<dt><label for="name"><?php echo _text('이름');?></label></dt>
 					<dd><input type="text" id="name" class="input-text" name="name" value="<?php echo htmlspecialchars($comment['name']);?>" /></dd>
 				</dl>
 <?php 
 if( !Acl::getIdentity('openid') ) { ?>
 				<dl class="password-line">
-					<dt><label for="password"><?php echo _t('비밀번호');?></label></dt>
+					<dt><label for="password"><?php echo _text('비밀번호');?></label></dt>
 					<dd><input type="password" class="input-text" id="password" name="password" value="<?php echo isset($_POST['password']) ? $_POST['password'] : '';?>" /></dd>
 				</dl>
 <?php } ?>
     			<dl class="homepage-line">
-					<dt><label for="homepage"><?php echo _t('홈페이지');?></label></dt>
+					<dt><label for="homepage"><?php echo _text('홈페이지');?></label></dt>
 					<dd><input type="text" class="input-text" id="homepage" name="homepage" value="<?php echo (empty($comment['homepage']) ? 'http://' : htmlspecialchars($comment['homepage']));?>" /></dd>
 				</dl>
 <?php 
@@ -165,7 +164,7 @@ if( !Acl::getIdentity('openid') ) { ?>
 				<dl class="secret-line">
 					<dd>
 						<input type="checkbox" class="checkbox" id="secret" name="secret"<?php echo ($comment['secret'] ? ' checked="checked"' : false);?> />
-						<label for="secret"><?php echo _t('비밀글로 등록');?></label>
+						<label for="secret"><?php echo _text('비밀글로 등록');?></label>
 					</dd>
 				</dl>
 	<?php 
@@ -176,12 +175,12 @@ if (doesHaveOwnership() && array_key_exists('replier', $comment) && (is_null($co
 }
 ?>			
 				<dl class="content-line">
-					<dt><label for="comment"><?php echo _t('내용');?></label></dt>
+					<dt><label for="comment"><?php echo _text('내용');?></label></dt>
 					<dd><textarea id="comment" name="comment" cols="45" rows="9" style="height: <?php echo (!doesHaveOwnership() && !doesHaveOwnership()) ? 150 : 242;?>px;"><?php echo htmlspecialchars($comment['comment']);?></textarea></dd>
 				</dl>
 				
 				<div class="button-box">
-					<input type="button" class="input-button" id="commentSubmit" value="<?php echo _t('완료');?>" onclick="<?php echo $confirmString;?> submitComment()" />
+					<input type="button" class="input-button" id="commentSubmit" value="<?php echo _text('완료');?>" onclick="<?php echo $confirmString;?> submitComment()" />
 				</div>
 			</div>
 		</div>

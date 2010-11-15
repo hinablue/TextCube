@@ -260,7 +260,6 @@ class Acl {
 		$data->setQualifier('userid','equals',intval($userid));
 		$data->setAttribute('lastLogin',Timestamp::getUNIXtime());
 		$data->update();
-//		POD::execute("UPDATE {$this->context->getProperty('database.prefix')}Privileges SET lastLogin = ".Timestamp::getUNIXtime()." WHERE blogid = $blogid AND userid = $userid");
 		return;
 	}
 
@@ -359,6 +358,7 @@ class Acl {
 class Auth {
 	function login($loginid, $password) {
 		global $blogid;
+
 		if( Auth::authenticate($blogid,$loginid,$password,true) === false ) {
 			return false;
 		}
