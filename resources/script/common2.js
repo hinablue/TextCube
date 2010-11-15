@@ -229,6 +229,22 @@ function toggleLayer(id) {
 	}
 	return true;
 }
+
+function focusLayer(id, others) {
+	try {
+		var obj = document.getElementById(id);
+		obj.style.display = "block";
+		for (x in others) {
+			if(others[x] != id) {
+				var obj = document.getElementById(others[x]);
+				obj.style.display = "none";
+			}
+		}
+	} catch (e) {
+	}
+	return true;
+}
+
 function showLayer(id) {
 	document.getElementById(id).style.display = "block";
 	return true;
@@ -743,7 +759,7 @@ function getEmbedCode(movie,width,height,id,bg,FlashVars,menu, transparent, qual
 		if(STD.isIE) {
 			return '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version='+version+'" width="'+width+'" height="'+height+'" '+_id+' align="middle"><param name="movie" value="'+movie+'" />'+_allowScriptAccess_object+_FlashVars_object+_menu_object+_quality_object+_bgcolor_object+_transparent_object+'</object>';
 		} else {
-			return '<embed '+_id+' type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" src="'+movie+'"'+' width="'+width+'"'+' height="'+height+'"'+_allowScriptAccess_embed+_FlashVars_embed+_menu_embed+_quality_embed+_bgcolor_embed+_transparent_embed+'></embed>'
+			return '<embed '+_id+' type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" src="'+movie+'"'+' width="'+width+'"'+' height="'+height+'"'+_allowScriptAccess_embed+_FlashVars_embed+_menu_embed+_quality_embed+_bgcolor_embed+_transparent_embed+'/>'
 		}
 	} catch(e) {
 		return false;
@@ -1014,6 +1030,7 @@ function addComment(caller, entryId) {
 	}
 	var request = new HTTPRequest("POST", oForm.action);
 	request.onSuccess = function () {
+		PM.removeRequest(this);
 		commentSavingNow = false;
 		document.getElementById("entry" + entryId + "Comment").innerHTML = this.getText("/response/commentBlock");
 		if(getObject("recentComments") != null)
@@ -1022,16 +1039,9 @@ function addComment(caller, entryId) {
 			document.getElementById("commentCount" + entryId).innerHTML = this.getText("/response/commentView");
 		if(getObject("commentCountOnRecentEntries" + entryId) != null)
 			document.getElementById("commentCountOnRecentEntries" + entryId).innerHTML = "(" + this.getText("/response/commentCount") + ")";
-
-        /* Modified by Hina, Cain Chen. */
-        if (typeof addCommentCallback === "object" || typeof addCommentCallback === "array") {
-			for(var i=0; i < addCommentCallback.length; i++)
-			{
-				if (typeof addCommentCallback[i] === "function" ) addCommentCallback[i].call(this, caller, entryId);
-			}
-		}
 	}
 	request.onError = function() {
+		PM.removeRequest(this);
 		commentSavingNow = false;
 		alert(this.getText("/response/description"));
 	}
@@ -1110,6 +1120,7 @@ function addComment(caller, entryId) {
 		}
 	}
 	commentSavingNow = true;
+	PM.addRequest(request,"Saving Comments...");
 	request.send(queryString);
 }
 
@@ -1242,29 +1253,28 @@ function recallLastComment(caller,entryId) {
 	}
 }
 
-function loadComment(entryId, page, force) {
+function loadComment(entryId, page, force, listOnly) {
+	var listView;
+	if(listOnly == true) {
+		listView = 1;
+		var o = document.getElementById("entry" + entryId + "CommentList");
+	} else {
+		listView = 0;
+		var o = document.getElementById("entry" + entryId + "Comment");
+	}
 	var request = new HTTPRequest("POST", blogURL + '/comment/load/' + entryId);
-	var o = document.getElementById("entry" + entryId + "Comment");
 	if ((!force && o.style.display == 'none') || force) {
 		request.onSuccess = function () {
 			PM.removeRequest(this);
 			o.innerHTML = this.getText("/response/commentBlock");
 //			window.location.href = '#entry' + entryId + 'Comment';
-
-            /* Modified by Hina, Cain Chen. */
-			if (typeof loadCommentCallback === "object" || typeof loadCommentCallback === "array") {
-				for(var i=0; i<loadCommentCallback.length; i++)
-				{
-					if (typeof loadCommentCallback[i] === "function" ) loadCommentCallback[i].call(this, entryId, page, force);
-				}
-			}
 		};
 		request.onError = function() {
 			PM.removeRequest(this);
 			PM.showErrorMessage("Loading Failed.","center","bottom");
 		};
 		PM.addRequest(request,"Loading Comments...");
-		request.send('&page='+page);
+		request.send('&page='+page+'&listOnly='+listView);
 	}
 	if (!force)
 		o.style.display = (o.style.display == 'none') ? 'block' : 'none';
@@ -1297,7 +1307,7 @@ function modifyComment(id) {
 }
 
 function commentComment(parent) {
-	openCenteredWindow(blogURL + "/comment/comment/" + parent, "tatter", 460, 600);
+	openCenteredWindow(blogURL + "/comment/comment/" + parent, "tatter", 460, 550);
 }
 
 function getMoreLineStream(page,lines,mode) {

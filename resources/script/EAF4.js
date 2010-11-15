@@ -137,7 +137,7 @@ PageMaster.prototype.namespace = "Eolin.Application.Framework";
 PageMaster.prototype.name      = "Eolin Page Master";
 PageMaster.prototype.verion    = "1.0";
 PageMaster.prototype.copyright = "Copyright (c) 2005, Tatter & Company / Needlworks / Tatter Network Foundation. All rights reserved.";
-PageMaster.prototype.message   = "Processing...";
+PageMaster.prototype.message   = "아직 처리중인 작업이 있습니다.";
 
 function PageMaster() {
 	this._status = null;
