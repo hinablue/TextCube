@@ -199,7 +199,7 @@ function editorAddObject(editor, mode) {
 	case 'Imazing': case 'Gallery':
 		try {
 			if (oSelect.selectedIndex < 0) {
-				alert(_t('파일을 선택하십시오'));
+				alert(_t('파일을 선택하십시오.'));
 				return false;
 			}
 			var value = oSelect.options[oSelect.selectedIndex].value.split("|");
