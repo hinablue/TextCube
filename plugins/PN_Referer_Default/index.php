@@ -114,7 +114,7 @@ function PN_Referer_Default()
 										</span>
 									</div>
 									<div class="page-count">
-										<?php echo Misc::getArrayValue(explode('%1', '한 페이지에 목록 %1건 표시'), 0);?>
+										<?php echo Misc::getArrayValue(explode('%1', _t('한 페이지에 목록 %1건 표시')), 0);?>
 										<select name="perPage" onchange="document.getElementById('part-statistics-log').submit()">					
 <?php
 	for ($i = 10; $i <= 30; $i += 5) {
@@ -130,7 +130,7 @@ function PN_Referer_Default()
 	}
 ?>
 										</select>
-										<?php echo Misc::getArrayValue(explode('%1', '한 페이지에 목록 %1건 표시'), 1);?>
+										<?php echo Misc::getArrayValue(explode('%1', _t('한 페이지에 목록 %1건 표시')), 1);?>
 									</div>
 								</div>
 							</div>
