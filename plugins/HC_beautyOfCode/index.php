@@ -38,13 +38,9 @@ function CodeHighLighter_ApplyScripts($mother)
     ob_start();
 ?>
 <script type="text/javascript" src="<?php echo $pluginURL; ?>/scripts/shCore.js"></script>
-<script type="text/javascript" src="<?php echo $pluginURL; ?>/scripts/shLegacy.js"></script>
-<script type="text/javascript" src="<?php echo $pluginURL; ?>/scripts/shBrushXml.js"></script>
-<script type="text/javascript" src="<?php echo $pluginURL; ?>/scripts/shBrushJScript.js"></script>
-<script type="text/javascript" src="<?php echo $pluginURL; ?>/scripts/shBrushCSharp.js"></script>
-<script type="text/javascript" src="<?php echo $pluginURL; ?>/scripts/shBrushPlain.js"></script>
+<script type="text/javascript" src="<?php echo $pluginURL; ?>/scripts/shAutoloader.js"></script>
 <script type="text/javascript">
-//<![CDDA[
+//<![CDATA[
     if(typeof document.getElementsByTagName === "undefined") {
         // I don't care.
     } else {
@@ -75,10 +71,43 @@ function CodeHighLighter_ApplyScripts($mother)
     }
 
     function finalBeautyOfCode() {
-        var brushes = ['Xml', 'JScript', 'CSharp', 'Plain'];
+	function path()
+	{
+		var args = arguments, result = [];
 
+		for(var i = 0; i < args.length; i++) {
+			result.push(args[i].replace('@', '<?php echo $pluginURL; ?>/scripts/'));
+		}
+		return result
+	};
         (function($) {
             $(document).ready(function() {
+		SyntaxHighlighter.autoloader.apply(null, path(
+			'applescript            @shBrushAppleScript.js',
+			'actionscript3 as3      @shBrushAS3.js',
+			'bash shell             @shBrushBash.js',
+			'coldfusion cf          @shBrushColdFusion.js',
+			'cpp c                  @shBrushCpp.js',
+			'c# c-sharp csharp      @shBrushCSharp.js',
+			'css                    @shBrushCss.js',
+			'delphi pascal          @shBrushDelphi.js',
+			'diff patch pas         @shBrushDiff.js',
+			'erl erlang             @shBrushErlang.js',
+			'groovy                 @shBrushGroovy.js',
+			'java                   @shBrushJava.js',
+			'jfx javafx             @shBrushJavaFX.js',
+			'js jscript javascript  @shBrushJScript.js',
+			'perl pl                @shBrushPerl.js',
+			'php                    @shBrushPhp.js',
+			'text plain             @shBrushPlain.js',
+			'py python              @shBrushPython.js',
+			'ruby rails ror rb      @shBrushRuby.js',
+			'sass scss              @shBrushSass.js',
+			'scala                  @shBrushScala.js',
+			'sql                    @shBrushSql.js',
+			'vb vbnet               @shBrushVb.js',
+			'xml xhtml xslt html    @shBrushXml.js'
+		));
                 SyntaxHighlighter.all();
             });
         })(jQuery);
