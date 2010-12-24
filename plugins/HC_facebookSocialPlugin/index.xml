@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.1">
+  <title xml:lang="en">HC FB Social plugin</title>
+  <title xml:lang="zh-TW">HC FB 社群外掛</title>  
+  <title xml:lang="zh-CN">HC FB 社群插件</title>  
+  <link>http://blog.hinablue.me</link>  
+  <version>1.0</version>
+  <description xml:lang="en">Show Facebook Social plugins in the end of the entry.</description>
+  <description xml:lang="zh-TW">在文章顯示 Facebook 的社群外掛功能。</description>
+  <description xml:lang="zh-CN">在文章显示Facebook 的社群插件功能。</description>
+  <license>GPL</license>
+  <author link="http://blog.hinablue.me">Hina, Cain Chen.</author>
+  <safety changeData="no" exposeData="no" accessLocal="yes" accessRemote="no" accessRaw="yes" />
+  <requirements>
+	<textcube>1.8</textcube>
+  </requirements>
+  <binding>
+	<listener event="ViewPostContent">facebookSocialPlugins</listener>
+	<tag name="SKIN_body_start" handler="facebookFBRoot" />
+	<config xml:lang="en" dataValHandler="getSocialPluginsSetting" >
+		<window  width="400" height="360" />
+		<fieldset legend="Use social plugins" >
+			<field title=" " name="soicalplugins" type="checkbox" titledirection="bk">
+				<op name="share" value="1" selected="selected">Share</op>
+				<op name="like_button" value="1">Like Button</op>
+				<op name="live_stream" value="1">Live Stream</op>
+				<op name="comments" value="1">Comments</op>
+				<caption><![CDATA[Select plugin you want to use.]]></caption>
+			</field>
+		</fieldset>
+        <fieldset legend="Width of plugin box" >
+            <field title="Width(px):" name="box_width" type="text" size ="10" value="520" />
+        </fieldset>
+	</config>
+	<config xml:lang="zh-TW" dataValHandler="getSocialPluginsSetting" >
+		<window  width="400" height="360" />
+		<fieldset legend="選擇外掛" >
+			<field title=" " name="soicalplugins" type="checkbox" titledirection="bk">
+				<op name="share" value="1" selected="selected">分享</op>
+				<op name="like_button" value="1">讚</op>
+				<op name="live_stream" value="1">線上討論</op>
+				<op name="comments" value="1">留言板</op>
+				<caption><![CDATA[選擇你要使用的外掛。]]></caption>
+			</field>
+        </fieldset>
+        <fieldset legend="外掛寬度設定" >
+            <field title="寬度(px):" name="box_width" type="text" size ="10" value="520" />
+        </fieldset>
+	</config>
+	<config xml:lang="zh-CN" dataValHandler="getSocialPluginsSetting" >
+		<window  width="400" height="360" />
+		<fieldset legend="选择插件" >
+			<field title=" " name="soicalplugins" type="checkbox" titledirection="bk">
+				<op name="share" value="1" selected="selected">分享</op>
+				<op name="like_button" value="1">赞</op>
+				<op name="live_stream" value="1">网上讨论</op>
+				<op name="comments" value="1">留言板</op>
+				<caption><![CDATA[选择你要使用的插件。]]></caption>
+			</field>
+		</fieldset>
+        <fieldset legend="插件宽度设定" >
+            <field title="宽度(px):" name="box_width" type="text" size ="10" value="520" />
+        </fieldset>
+	</config>
+  </binding>
+</plugin>
