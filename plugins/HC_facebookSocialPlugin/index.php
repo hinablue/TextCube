@@ -20,7 +20,7 @@ function facebookSocialPlugins($target, $mother)
 
 		if($data['comments']) $output .= '<div><fb:comments xid="'.$permalink.'" numposts="10" width="'.$__width.'" publish_feed="true"></fb:comments></div>';
 
-		if($data['live_stream']) $output .= '<div><iframe src="http://www.facebook.com/plugins/live_stream_box.php?app_id=128920980016&amp;width='.$__width.'&amp;hieght=500&amp;via_url&alyays_post_to_friend=true" scrolling="no" frameborder="0" style="border:none;overflow:hidden;width:'.$__width.'px;height:500px;" allowTransparency="true"></iframe></div>';
+        /*if($data['live_stream']) $output .= '<div><iframe src="http://www.facebook.com/plugins/live_stream_box.php?app_id=128920980016&amp;width='.$__width.'&amp;hieght=500&amp;via_url='.$permalink.'&alyays_post_to_friend=true" scrolling="no" frameborder="0" style="border:none;overflow:hidden;width:'.$__width.'px;height:500px;" allowTransparency="true"></iframe></div>';*/
 
 		$output .= '</div><br />';
 	}

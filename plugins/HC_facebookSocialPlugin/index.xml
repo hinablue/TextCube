@@ -23,7 +23,7 @@
 			<field title=" " name="soicalplugins" type="checkbox" titledirection="bk">
 				<op name="share" value="1" selected="selected">Share</op>
 				<op name="like_button" value="1">Like Button</op>
-				<op name="live_stream" value="1">Live Stream</op>
+                <!--<op name="live_stream" value="1">Live Stream</op>-->
 				<op name="comments" value="1">Comments</op>
 				<caption><![CDATA[Select plugin you want to use.]]></caption>
 			</field>
@@ -38,7 +38,7 @@
 			<field title=" " name="soicalplugins" type="checkbox" titledirection="bk">
 				<op name="share" value="1" selected="selected">分享</op>
 				<op name="like_button" value="1">讚</op>
-				<op name="live_stream" value="1">線上討論</op>
+                <!--<op name="live_stream" value="1">線上討論</op>-->
 				<op name="comments" value="1">留言板</op>
 				<caption><![CDATA[選擇你要使用的外掛。]]></caption>
 			</field>
@@ -53,7 +53,7 @@
 			<field title=" " name="soicalplugins" type="checkbox" titledirection="bk">
 				<op name="share" value="1" selected="selected">分享</op>
 				<op name="like_button" value="1">赞</op>
-				<op name="live_stream" value="1">网上讨论</op>
+                <!--<op name="live_stream" value="1">网上讨论</op>-->
 				<op name="comments" value="1">留言板</op>
 				<caption><![CDATA[选择你要使用的插件。]]></caption>
 			</field>
