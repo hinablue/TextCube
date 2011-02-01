@@ -12,45 +12,46 @@ function mailNotifyComment($target, $mother)
 	if ($mother['entry'] == 0) $type = 3; // guestbook
 
 	$notifyType = (isset($data['notifysetting']) && (int)$data['notifysetting']===1) ? true : false;
-	$nofityGuestbook = (isset($data['notifyguestbook']) && (int)$data['notifyguestbook']===1) ? true : false;
+	$notifyGuestbook = (isset($data['notifyguestbook']) && (int)$data['notifyguestbook']===1) ? true : false;
 
 	$userid = getUserId();
-	$mailselfcheck = ($mother['replier']===$userid) ? true : false;
+    if($userid === 0) {
+        $userid = POD::queryCell("SELECT `userid` FROM `{$database['prefix']}Privileges` WHERE `acl`='16' AND `blogid`='{$blogid}' LIMIT 1");
+    }
+
+    $mailselfcheck = ($mother['replier']===$userid) ? true : false;
 
 	$mailercheck = false;
-	if((1 === $type) || (3 === $type && $nofityGuestbook))
-	{
-		if ($notifyType)
-		{
-			if ((1 === $type && !$mailselfcheck) || (3 === $type && $nofityGuestbook))
+	if((1 === $type) || (3 === $type && $notifyGuestbook))
+    {
+		if ($notifyType === true)
+        {
+			if ($mailselfcheck===false)
 			{
-				$email = (isset($data['mail']) && !empty($data['mail'])) ? $data['mail'] : POD::queryCell("SELECT `loginid` FROM `{$database['prefix']}Users` WHERE `userid`=$userid LIMIT 1");
-				$name = POD::queryCell("SELECT `name` FROM `{$database['prefix']}Users` WHERE `userid`=$userid LIMIT 1");
-				if($mail->ValidateAddress($email)) {
-					$mail->AddAddress( $email, $name );
-					$mailercheck = true;
-				}
+				$email = (isset($data['mail']) && !empty($data['mail'])) ? $data['mail'] : POD::queryCell("SELECT `loginid` FROM `{$database['prefix']}Users` WHERE `userid`='{$userid}' LIMIT 1");
+                $name = POD::queryCell("SELECT `name` FROM `{$database['prefix']}Users` WHERE `userid`=$userid LIMIT 1");
+
+                $mail->AddAddress( $email, $name );
+                $mailercheck = true;
 			}
 		} else {
-			$result = POD::query("SELECT `u`.`userid`, `u`.`loginid` AS email, `u`.`name` FROM `{$database['prefix']}TeamUserSettings` AS t
-					LEFT JOIN `{$database['prefix']}Users` AS u ON `u`.`userid`=`t`.`userid` WHERE `t`.`blogid`={$blogid}");
+            $result = POD::query("SELECT `u`.`userid`, `u`.`loginid` AS email, `u`.`name` FROM `{$database['prefix']}Users` AS u
+                LEFT JOIN `{$database['prefix']}Privileges` AS p ON `p`.`userid` = `u`.`userid` WHERE `p`.`blogid`='{$blogid}'");
 			if(POD::num_rows($result)>0) {
 				while($row = POD::fetch($result, 'array'))
 				{
-					if($mail->ValidateAddress($row['email'])) {
-						if ($row['userid']===$userid || $row['userid']===$mother['replier'])
-						{
-							$mail->AddAddress( $row['email'], $row['name'] );
-						} else {
-							$mail->AddCC( $row['email'], $row['name'] );
-						}
-						$mailercheck = true;
-					}
+                    if ($row['userid']===$userid || $row['userid']===$mother['replier'])
+                    {
+                        $mail->AddAddress( $row['email'], $row['name'] );
+                    } else {
+                        $mail->AddCC( $row['email'], $row['name'] );
+                    }
+                    $mailercheck = true;
 				}
 			}
-		}
+        }
 	}
-	if($mailercheck) {
+	if($mailercheck===true) {
 		$link = ($type===1) ? "$hostURL$blogURL/{$mother['entry']}" : ((!is_null($mother['parent']) && $mother['parent']>0) ? "$hostURL$blogURL/guestbook/".$mother['parent']."#guestbook".$mother['entry'] : "$hostURL$blogURL/guestbook/".$mother['entry']);
 
 		$message = "<html xmlns=\"http://www.w3.org/1999/xhtml\">
@@ -90,10 +91,10 @@ function mailNotifyComment($target, $mother)
 		$mail->Send();
 		$mail->ClearAddresses();
 		$mail->ClearCCs();
-		ob_end_clean();
+        ob_end_clean();
 	}
 
-	return $target && true;
+	return $target;
 }
 function MailNotificationDataSet($DATA){
 	requireComponent('Textcube.Function.misc');
