@@ -29,7 +29,31 @@ function facebookSocialPlugins($target, $mother)
 }
 
 function facebookFBRoot($target, $mother) {
-	return '<div id="fb-root"></div><script src="http://connect.facebook.net/zh_TW/all.js#appId=128920980016&amp;xfbml=1"></script>' . $target;
+    global $blog, $service;
+    if (!isset($blog['blogLanguage'])) {
+        $blog['blogLanguage'] = $service['language'];
+    }
+    $locate = 'en_US';
+    switch($blog['blogLanguage']) {
+        case 'zh-TW':
+            $locate = 'zh_TW';
+        break;
+        case 'zh-CN':
+            $locate = 'zh_CN';
+        break;
+        case 'ko':
+            $locate = 'ko_KR';
+        break;
+        case 'jp':
+            $locate = 'ja_JP';
+        break;
+        case 'vi':
+            $locate = 'vi_VN';
+        break;
+        default:
+            $locate = 'en_US';
+    }
+    return '<div id="fb-root"></div><script src="http://connect.facebook.net/'.$locate.'/all.js#appId=128920980016&amp;xfbml=1"></script>' . $target;
 }
 
 function getSocialPluginsSetting($DATA) {
