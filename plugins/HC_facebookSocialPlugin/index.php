@@ -44,7 +44,7 @@ function facebookFBRoot($target, $mother) {
         case 'ko':
             $locate = 'ko_KR';
         break;
-        case 'jp':
+        case 'ja':
             $locate = 'ja_JP';
         break;
         case 'vi':
