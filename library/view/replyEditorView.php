@@ -71,6 +71,12 @@ if (!doesHaveMembership()) {
 			}
 		//]]>
 	</script>
+<?php
+/* Modified by Hina, Cain Chen. */
+$replyViewHeader = "[##_SKIN_head_start_##]\n[##_SKIN_head_end_##]\n";
+handleTags($replyViewHeader);
+echo $replyViewHeader;
+?>
 </head>
 <?php
  if (doesHaveOwnership())
@@ -87,6 +93,12 @@ if (!doesHaveMembership()) {
 <body<?php echo $writerClass;?> onload="document.commentToComment.comment.focus()">
 <?php 
 }
+
+/* Modified by Hina, Cain Chen. */
+$replyViewBodyStart = "[##_SKIN_body_start_##]\n";
+handleTags($replyViewBodyStart);
+echo $replyViewBodyStart;
+
 ?>
 	<form name="commentToComment" method="post" action="<?php echo ($_POST['mode'] == 'edit' ? $blogURL . '/comment/delete/' . $suri['id'] : $suri['url']);?>">
 		<input type="hidden" name="mode" value="commit" />
@@ -188,5 +200,12 @@ if (doesHaveOwnership() && array_key_exists('replier', $comment) && (is_null($co
 		<input name="openidedit" type="hidden" value="1" />
 <?php } ?>
 	</form>
+<?php
+/* Modified by Hina, Cain Chen. */
+$replyViewBodyEnd = "[##_SKIN_body_end_##]\n";
+handleTags($replyViewBodyEnd);
+echo $replyViewBodyEnd;
+
+?>
 </body>
 </html>
