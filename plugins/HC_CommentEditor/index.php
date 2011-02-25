@@ -53,58 +53,29 @@ function BBCode_footerScript($target) {
     loadCommentCallback.push(BBCodeloadCommentCallback);
     addCommentCallback.push(BBCodeaddCommentCallback);
 
-    if(typeof document.getElementsByTagName === "undefined") {
-        // I don\'t care.
-    } else {
-        if(typeof jQuery === "undefined") {
-            var BBCodejQscript = document.createElement("script");
-            BBCodejQscript.src = "http://www.google.com/jsapi";
-            BBCodejQscript.type = "text/javascript";
-            document.getElementsByTagName("head")[0].appendChild(BBCodejQscript);
+    //script.js
+    (function(c,j){var h=j.getElementsByTagName("script")[0],e={},a={},d=false,k=function(){},l="string",b=function(){return Array.every||function(f,p,o){for(var n=0,m=f.length;n<m;++n){if(!p(f[n],n,f)){return d}}return 1}}(),i=function(f,n,m){b(f,function(q,p,o){n(q,p,o);return true},m)};if(j.readyState==null&&j.addEventListener){j.addEventListener("DOMContentLoaded",function g(){j.removeEventListener("DOMContentLoaded",g,d);j.readyState="complete"},d);j.readyState="loading"}c.$script=function(p,m,o){var n=typeof m=="function"?m:(o||k),p=typeof p==l?[p]:p,r=typeof m==l?m:p.join(""),f=p.length,q=function(){if(!--f){e[r]=1;n();for(dset in a){b(dset.split("|"),function(s){return(s in e)})&&b(a[dset],function(s){s();a[dset].shift()})}}};b(p,function(s){setTimeout(function(){var u=j.createElement("script"),t=d;u.onload=u.onreadystatechange=function(){if((u.readyState&&u.readyState!=="complete"&&u.readyState!=="loaded")||t){return d}u.onload=u.onreadystatechange=null;t=true;q()};u.async=true;u.src=s;h.insertBefore(u,h.firstChild)},0);return true});return c};$script.ready=function(o,m,n){n=n||k;o=(typeof o==l)?[o]:o;var f=[];i(o,function(p){(p in e)||f.push(p)})&&b(o,function(p){return(p in e)})?m():(function(p){a[p]=a[p]||[];a[p].push(m);n(f)}(o.join("|")));return $script}}(window,document));
 
-            if (BBCodejQscript.readyState) {
-                BBCodejQscript.onreadystatechange = function () {
-                    if (BBCodejQscript.readyState == "loaded" || BBCodejQscript.readyState == "complete") {
-                        finalInitjQuery();
-                    }
-                    return;
-                };
-            } else {
-                BBCodejQscript.onload = function() {
-                    google.load("jquery", "1.4.2");
-                    google.setOnLoadCallback(function() {
-                        jQuery.noConflict();
-                        finalBBCode();
-                    });
-                };
-            }
-        } else {
+    if(typeof jQuery === "undefined") {
+        $script("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js", function() {
+            jQuery.noConflict();
             finalBBCode();
-        }
+        });
+    } else {
+        finalBBCode();
     }
 
     function finalBBCode() {
-        (function($) {
-            $(\'<script />\')
-            .attr(\'type\',\'text/javascript\')
-            .attr(\'src\', \''.$pluginURL.'/markitup/src/jquery.markitup.pack.js\')
-            .appendTo($(\'head\'));
-            $(\'<script />\')
-            .attr(\'type\',\'text/javascript\')
-            .attr(\'src\', \''.$pluginURL.'/markitup/src/sets/bbcode/set.js\')
-            .appendTo($(\'head\'));
-            $(\'<script />\')
-            .attr(\'type\',\'text/javascript\')
-            .attr(\'src\', \''.$pluginURL.'/jquery.expr.regex.js\')
-            .appendTo($(\'head\'));
+        $script(["'.$pluginURL.'/markitup/src/jquery.markitup.pack.js","'.$pluginURL.'/markitup/src/sets/bbcode/set.js","'.$pluginURL.'/jquery.expr.regex.js"], function() {
+            (function($) {
+                $(document).ready(function() {
+                    if (typeof $("form:regex(id, entry[0-9]+WriteComment)") === "object") {
+                        $("textarea", $("form:regex(id, entry[0-9]+WriteComment)")).markItUp(mySettings);
+                    }
+                });
 
-	        $(document).ready(function() {
-                if (typeof $("form:regex(id, entry[0-9]+WriteComment)") === "object") {
-                    $("textarea", $("form:regex(id, entry[0-9]+WriteComment)")).markItUp(mySettings);
-                }
-	        });
-
-        })(jQuery);
+            })(jQuery);
+        });
     }
 //]]>
 </script>';

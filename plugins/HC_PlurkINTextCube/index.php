@@ -12,7 +12,7 @@ define('PLURK_AGENT', 'php-plurk-api agent');
 function myPlurk_ResponseStyle($target) {
 	global $suri, $configVal, $pluginURL;
 
-    $directive = array('archive','category','guestbook','imageResizer','link','login','logout','pannels','protected','search','tag','trackback','rss','atom','ientry','sync','m');
+    $directive = array('archive','category','guestbook','imageResizer','link','login','logout','pannels','protected','search','tag','trackback','rss','atom','ientry','sync','m','commentcomment');
 
     if(in_array(str_replace('/','', $suri['directive']), $directive)) return $target;
 
@@ -36,40 +36,23 @@ function myPlurk_ResponseJscript($target) {
 	$data = misc::fetchConfigVal($configVal);
 	$attachResponses = (isset($data['attachResponses']) && $data['attachResponses']==1) ? true : false;
 	
-    $directive = array('archive','category','guestbook','imageResizer','link','login','logout','pannels','protected','search','tag','trackback','rss','atom','ientry','sync','m');
+    $directive = array('archive','category','guestbook','imageResizer','link','login','logout','pannels','protected','search','tag','trackback','rss','atom','ientry','sync','m','commentcomment');
 
     if(in_array(str_replace('/','', $suri['directive']), $directive) || !$attachResponses) return $target;
 
     $target .= '<script type="text/javascript">
 //<![CDDA[
-    if(typeof document.getElementsByTagName === "undefined") {
-        // I don\'t care.
-    } else {
-        if(typeof jQuery === "undefined") {
-            var plurkInTextCubejQscript = document.createElement("script");
-            plurkInTextCubejQscript.src = "http://www.google.com/jsapi";
-            plurkInTextCubejQscript.type = "text/javascript";
-            document.getElementsByTagName("head")[0].appendChild(plurkInTextCubejQscript);
 
-            if (plurkInTextCubejQscript.readyState) {
-                plurkInTextCubejQscript.onreadystatechange = function () {
-                    if (plurkInTextCubejQscript.readyState == "loaded" || plurkInTextCubejQscript.readyState == "complete") {
-                        finalInitjQuery();
-                    }
-                    return;
-                };
-            } else {
-                plurkInTextCubejQscript.onload = function() {
-                    google.load("jquery", "1.4.2");
-                    google.setOnLoadCallback(function() {
-                        jQuery.noConflict();
-                        finalPlurkResponseAnimate();
-                    });
-                };
-            }
-        } else {
+    // script.js
+    (function(c,j){var h=j.getElementsByTagName("script")[0],e={},a={},d=false,k=function(){},l="string",b=function(){return Array.every||function(f,p,o){for(var n=0,m=f.length;n<m;++n){if(!p(f[n],n,f)){return d}}return 1}}(),i=function(f,n,m){b(f,function(q,p,o){n(q,p,o);return true},m)};if(j.readyState==null&&j.addEventListener){j.addEventListener("DOMContentLoaded",function g(){j.removeEventListener("DOMContentLoaded",g,d);j.readyState="complete"},d);j.readyState="loading"}c.$script=function(p,m,o){var n=typeof m=="function"?m:(o||k),p=typeof p==l?[p]:p,r=typeof m==l?m:p.join(""),f=p.length,q=function(){if(!--f){e[r]=1;n();for(dset in a){b(dset.split("|"),function(s){return(s in e)})&&b(a[dset],function(s){s();a[dset].shift()})}}};b(p,function(s){setTimeout(function(){var u=j.createElement("script"),t=d;u.onload=u.onreadystatechange=function(){if((u.readyState&&u.readyState!=="complete"&&u.readyState!=="loaded")||t){return d}u.onload=u.onreadystatechange=null;t=true;q()};u.async=true;u.src=s;h.insertBefore(u,h.firstChild)},0);return true});return c};$script.ready=function(o,m,n){n=n||k;o=(typeof o==l)?[o]:o;var f=[];i(o,function(p){(p in e)||f.push(p)})&&b(o,function(p){return(p in e)})?m():(function(p){a[p]=a[p]||[];a[p].push(m);n(f)}(o.join("|")));return $script}}(window,document));
+
+    if(typeof jQuery === "undefined") {
+        $script("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js", function() {
+            jQuery.noConflict();
             finalPlurkResponseAnimate();
-        }
+        });
+    } else {
+        finalPlurkResponseAnimate();
     }
 
     function finalPlurkResponseAnimate() {
