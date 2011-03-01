@@ -33,8 +33,8 @@
 			<field title="API Key" name="apikey" type="text" size="66" >
 				<caption xml:lang="en"><![CDATA[If you don't have an API key, you can obtain one for free <br /> at http://defensio.com/signup]]></caption>
                 <caption xml:lang="ko"><![CDATA[<b>http://defensio.com/signup</b>에서 무료 API키를 받을 수 있습니다.]]></caption>
-                <caption xml:lang="en"><![CDATA[如果您沒有 API 金鑰，請在此申請（免費）<br /> at http://defensio.com/signup]]></caption>
-                <caption xml:lang="en"><![CDATA[如果您没有 API 金钥，请在此申请（免费）<br /> at http://defensio.com/signup]]></caption>
+                <caption xml:lang="zh-TW"><![CDATA[如果您沒有 API 金鑰，請在此申請（免費）<br /> at http://defensio.com/signup]]></caption>
+                <caption xml:lang="zh-CN"><![CDATA[如果您没有 API 金钥，请在此申请（免费）<br /> at http://defensio.com/signup]]></caption>
 			</field>
 		</fieldset>
 	</config>
