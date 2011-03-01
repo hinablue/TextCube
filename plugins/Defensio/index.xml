@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.1">
+  <title xml:lang="ko">Defensio Antispam</title>
+  <title xml:lang="en">Defensio Antispam</title>
+  <title xml:lang="zh-TW">Defensio Antispam</title>
+  <title xml:lang="zh-CN">Defensio Antispam</title>
+  <link>http://defensio.com</link>
+  <version>0.2 beta</version>
+  <description xml:lang="ko">Defensio is an advanced spam filtering web service that learns and adapts to your behaviors and those of your readers.</description>
+  <description xml:lang="en">Defensio is an advanced spam filtering web service that learns and adapts to your behaviors and those of your readers.</description>
+  <description xml:lang="zh-TW">Defensio is an advanced spam filtering web service that learns and adapts to your behaviors and those of your readers.</description>
+  <description xml:lang="zh-CN">Defensio is an advanced spam filtering web service that learns and adapts to your behaviors and those of your readers.</description>
+  <license>GPL</license>
+  <author xml:lang="en" link="http://bliss.hanirc.org">bliss</author>
+  <author xml:lang="ko" link="http://bliss.hanirc.org">bliss</author>
+  <author xml:lang="zh-TW" link="http://bliss.hanirc.org">bliss</author>
+  <author xml:lang="zh-CN" link="http://bliss.hanirc.org">bliss</author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="yes" accessRaw="no" />
+  <requirements>
+    <textcube>1.5</textcube>
+  </requirements>
+  <binding>
+	<center handler="DEFENSIO_Notice" />
+    <listener event="AddingTrackback">DEFENSIO_AddingTrackback</listener>
+    <listener event="AddingComment">DEFENSIO_AddingComment</listener>
+	<listener event="/plugin/DEFENSIO/">DEFENSIO_PostAction</listener>
+	<listener event="/plugin/DEFENSIO/delete/">DEFENSIO_DeleteItems</listener>
+	<listener event="/plugin/DEFENSIO/revert/">DEFENSIO_RevertItems</listener>
+	<listener event="/plugin/DEFENSIO/quarantine/">DEFENSIO_Quarantine</listener>
+	<config dataValHandler="DEFENSIO_dataValHandler">
+		<window width="600" height="410" />
+		<fieldset legend="Defensio">
+			<field title="API Key" name="apikey" type="text" size="66" >
+				<caption xml:lang="en"><![CDATA[If you don't have an API key, you can obtain one for free <br /> at http://defensio.com/signup]]></caption>
+                <caption xml:lang="ko"><![CDATA[<b>http://defensio.com/signup</b>에서 무료 API키를 받을 수 있습니다.]]></caption>
+                <caption xml:lang="en"><![CDATA[如果您沒有 API 金鑰，請在此申請（免費）<br /> at http://defensio.com/signup]]></caption>
+                <caption xml:lang="en"><![CDATA[如果您没有 API 金钥，请在此申请（免费）<br /> at http://defensio.com/signup]]></caption>
+			</field>
+		</fieldset>
+	</config>
+    <adminMenu>
+    	<viewMethods>
+			<method>
+				<title xml:lang="en">Defensio</title>
+                <title xml:lang="ko">Defensio</title>
+                <title xml:lang="zh-TW">Defensio</title>
+                <title xml:lang="zh-CN">Defensio</title>
+				<topMenu>communication</topMenu>
+				<contentMenuOrder>0</contentMenuOrder>
+				<handler>DEFENSIO</handler>
+				<params>
+					<param>
+						<name>t</name>
+						<type>string</type>
+						<default>C</default>
+					</param>
+					<param>
+						<name>page</name>
+						<type>int</type>
+						<default>1</default>
+					</param>
+				</params>
+			</method>
+    	</viewMethods>
+	</adminMenu>
+  </binding>
+</plugin>
