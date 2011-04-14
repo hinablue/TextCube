@@ -281,7 +281,7 @@ class HC_XMLSitemap
         while($row = POD::fetch($entries, 'array')) {
             $permalink = ($blog['useSloganOnPost'])? urlencode($row['slogan']) : $row['id'];
             echo '<url>', CRLF;
-    		echo '  <loc>', $userBlogUrl, '/', $permalink, '</loc>', CRLF;
+    		echo '  <loc>', $userBlogUrl, '/', ($blog['useSloganOnPost'] ? 'entry/' : ''), $permalink, '</loc>', CRLF;
     		echo '  <priority>0.5</priority>', CRLF;
     		echo '  <changefreq>daily</changefreq>', CRLF;
     		echo '</url>', CRLF;
