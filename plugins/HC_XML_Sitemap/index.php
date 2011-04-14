@@ -161,7 +161,7 @@ class HC_XMLSitemap
 
 	public function buildSitemapRootIndex()
     {
-        global $database, $blog, $service;
+        global $database, $blog, $service, $hostURL;
 
         $blogids = POD::query("SELECT `blogid` FROM `{$database['prefix']}BlogSettings` GROUP BY `blogid`");
 
