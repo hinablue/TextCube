@@ -1,4 +1,4 @@
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 function initHelperPage(){alert("sss"),helperDlg=dojo.widget.createWidget("helperWindow",{},document.getElementById("temp-wrap").firstChild,"after"),helperDlg.domNode.className="ajax-popup-window",alert("xxx")}djConfig.parseWidgets=!1,dojo.require("dojo.widget.Dialog");var helperDlg;dojo.widget.defineWidget("dojo.widget.helperWindow",dojo.widget.Dialog,{templatePath:"",loadContents:function(){this.containerNode=this.domNode;return},setContent:function(a){this.domNode.innerHTML=a},placeModalDialog:function(){var scroll_offset=dojo.html.getScroll().offset,viewport_size=dojo.html.getViewport(),mb=dojo.html.getMarginBox(this.containerNode);mb.width<200&&(mb.width=200),mb.height<200&&(mb.height=200);var x=scroll_offset.x+(viewport_size.width-mb.width)/2,y=scroll_offset.y+(viewport_size.height-mb.height)/2;with(this.domNode.style)left=x+"px",top=y+"px"}})
