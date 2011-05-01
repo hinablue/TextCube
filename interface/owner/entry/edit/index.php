@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -757,7 +757,7 @@ if (count($templateLists) == 0) {
 									//]]>
 									</script>
 									<div id="upload-section" class="section">
-										<h3><a href="#void" onclick="toggleLayer('upload-container',settingMenus);return false;"><?php echo _t('업로드');?></a></h3>
+										<h3><a href="#void" onclick="focusLayer('upload-container',settingMenus);return false;"><?php echo _t('업로드');?></a></h3>
 										<div id="upload-container">
 											<div id="attachment-container" class="container">
 <?php
@@ -793,7 +793,7 @@ printEntryFileUploadButton($entry['id']);
 									<hr class="hidden" />
 									
 									<div id="taglocal-section" class="section">
-										<h3><a href="#void" onclick="toggleLayer('tag-location-container',settingMenus);return false;"><?php echo _t('태그 &amp; 위치');?></a></h3>
+										<h3><a href="#void" onclick="focusLayer('tag-location-container',settingMenus);return false;"><?php echo _t('태그 &amp; 위치');?></a></h3>
 												
 										<div id="tag-location-container" class="container">
 											<dl id="tag-line">
@@ -840,7 +840,7 @@ printEntryFileUploadButton($entry['id']);
 									<hr class="hidden" />
 
 									<div id="power-section" class="section">
-										<h3><a href="#void" onclick="toggleLayer('power-container',settingMenus);return false;"><?php echo _t('기타 설정');?></a></h3>
+										<h3><a href="#void" onclick="focusLayer('power-container',settingMenus);return false;"><?php echo _t('기타 설정');?></a></h3>
 										
 										<div id="power-container" class="container">
 											<dl id="permalink-line" class="line"<?php if($isKeyword) echo ' style="display: none"';?>>

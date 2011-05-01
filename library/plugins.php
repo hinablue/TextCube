@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 		
@@ -9,8 +9,8 @@ $tagMappings          = array();
 $sidebarMappings      = array();
 $coverpageMappings    = array();
 $centerMappings       = array();
-$storageMappings      = array();
-$storageKeymappings   = array();
+//$storageMappings      = array();
+//$storageKeymappings   = array();
 $adminMenuMappings    = array();
 $adminHandlerMappings = array();
 $configMappings       = array();
@@ -39,7 +39,7 @@ if (getBlogId()) {
 	$pluginSettings = $pageCache->contents;	
 
 	$storageList = array('activePlugins','eventMappings','tagMappings',
-		'sidebarMappings','coverpageMappings','centerMappings','storageMappings','storageKeymappings',
+		'sidebarMappings','coverpageMappings','centerMappings',//'storageMappings','storageKeymappings',
 		'adminMenuMappings','adminHandlerMappings','configMappings','editorMappings','formatterMappings',
 		'editorCount','formatterCount');
 

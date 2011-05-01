@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -9,7 +9,9 @@ $IV = array(
 		'publishEolinSyncOnRSS' => array('int', 0, 1, 'default' => 0),
 		'entriesOnRSS' => array('int', 'default' => 5),
 		'commentsOnRSS' => array('int', 'default' => 5),
-		'useFeedViewOnCategory' => array('int',0,1,'default'=> 1)
+		'useFeedViewOnCategory' => array('int',0,1,'default'=> 1),
+		'rssURL' => array('url','mandatory'=>false),
+		'atomURL' => array('url','mandatory'=>false)
 		)
 	);
 require ROOT . '/library/preprocessor.php';
@@ -23,7 +25,9 @@ Setting::setBlogSettingGlobal('publishEolinSyncOnRSS',$_POST['publishEolinSyncOn
 
 // Category Feed
 Setting::setBlogSettingGlobal('useFeedViewOnCategory',$_POST['useFeedViewOnCategory']);
-
+Setting::setBlogSettingGlobal('atomURL',$_POST['atomURL']);
+Setting::setBlogSettingGlobal('rssURL',$_POST['rssURL']);
 clearFeed();
+CacheControl::flushSkin();
 Respond::ResultPage(0);
 ?>

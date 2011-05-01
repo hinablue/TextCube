@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -50,6 +50,10 @@ if(isset($_SERVER['HTTP_CLIENT_IP'])) {
 } else if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 	$firstIP = explode(',',$_SERVER['HTTP_X_FORWARDED_FOR']);
 	$_SERVER['REMOTE_ADDR'] = $firstIP[0];
+}
+/* Workaround for REMOTE_ADDR Handling of IPv6 */
+if(in_array($_SERVER['REMOTE_ADDR'],array('fe80::1','::1'))) {
+	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 }
 /* Workaround for iconv-absent environment. (contributed by Papacha) */
 if (!function_exists('iconv')) {

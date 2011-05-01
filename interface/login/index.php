@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -191,6 +191,9 @@ if (!file_exists(ROOT . '/cache/CHECKUP')) {
 							
 							<div class="button-box">
 								<input type="submit" class="login-button input-button" name="button_login" value="<?php echo _text('로그인');?>" />
+							</div>
+							<div class="return-box">
+								<a href="<?php echo $context->getProperty('uri.blog');?>"><?php echo _text('블로그로 돌아가기');?></a>
 							</div>
 						</div>
 					</form>

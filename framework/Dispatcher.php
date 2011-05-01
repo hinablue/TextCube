@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -146,10 +146,12 @@ final class Dispatcher {
 							$interfacePath = 'interface/blog/'.$pathPart.'.php';
 							break;
 						case 'rss': case 'atom':
-							if(isset($uri['fragment'][1]) && in_array($uri['fragment'][1],array('category','tag','search'))) {
+							if(isset($uri['fragment'][1]) && in_array($uri['fragment'][1],array('archive','author','category','comment','line','notifyComment','response','search','tag','trackback'))) {
 								$pathPart = $uri['fragment'][0].'/'.$uri['fragment'][1];
 								$interfacePath = 'interface/'.$pathPart.'/index.php';							
 							}
+							break;
+						case 'login': case 'owner': case 'control':
 							break;
 						case 'comment': case 'trackback':
 							$pathPart = implode("/",$uri['fragment']);

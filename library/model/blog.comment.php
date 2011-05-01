@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -221,7 +221,7 @@ function getCommentCommentsNotified($parent) {
 	return $comments;
 }
 
-function getCommentsWithPagingByEntryId($blogid, $entryId, $page, $count, $url = null, $prefix = '?page=', $postfix = '', $countItem = null) {
+function getCommentsWithPagingByEntryId($blogid, $entryId, $page, $count, $url = null, $prefix = '?page=', $postfix = '', $countItem = null, $order = 'ASC') {
 	global $database;
 	$comments = array();
 	if($entryId != -1) {
@@ -231,7 +231,7 @@ function getCommentsWithPagingByEntryId($blogid, $entryId, $page, $count, $url =
 		WHERE blogid = $blogid $filter
 			AND parent IS NULL
 			AND isfiltered = 0
-		ORDER BY written DESC";
+		ORDER BY written ".($order == 'DESC' ? "DESC" : "ASC");
 	list($comments, $paging) = Paging::fetch($sql, $page, $count, $url, $prefix, $countItem);
 	$paging['postfix'] = $postfix;
 	$comments = coverComments($comments);
@@ -257,7 +257,7 @@ function getCommentsWithPaging($blogid, $page, $count, $url = null, $prefix = '?
 	return array($comments, $paging);
 }
 function getCommentsWithPagingForGuestbook($blogid, $page, $count) {
-	return getCommentsWithPagingByEntryId($blogid, 0, $page, $count);
+	return getCommentsWithPagingByEntryId($blogid, 0, $page, $count, null, '?page=','',null, 'DESC');
 }
 
 function getCommentAttributes($blogid, $id, $attributeNames) {
@@ -265,10 +265,10 @@ function getCommentAttributes($blogid, $id, $attributeNames) {
 	return POD::queryRow("SELECT $attributeNames FROM {$database['prefix']}Comments WHERE blogid = $blogid AND id = $id");
 }
 
-function getComments($entry) {
+function getComments($entry,$order = 'ASC') {
 	global $database;
 	$comments = array();
-	$aux = ($entry == 0 ? 'ORDER BY written DESC' : 'ORDER BY id ASC');
+	$aux = ($entry == 0 ? 'ORDER BY written DESC' : 'ORDER BY id '.($order == 'DESC' ? 'DESC' : 'ASC'));
 	$sql = "SELECT *
 		FROM {$database['prefix']}Comments
 		WHERE blogid = ".getBlogId()."

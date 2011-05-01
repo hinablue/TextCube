@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 if (isset($_POST['page']))
@@ -47,7 +47,8 @@ if (!empty($_POST['mode']) && $_POST['mode'] == 'fb') {
 require ROOT . '/library/preprocessor.php';
 
 // Redirect for ipod touch / iPhone
-if(Setting::getBlogSettingGlobal('useiPhoneUI',true) && (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'],'iPod') || strpos($_SERVER['HTTP_USER_AGENT'],'iPhone')))){
+$browserUtil = Utils_Browser::getInstance();
+if(Setting::getBlogSettingGlobal('useiPhoneUI',true) && ($browserUtil->isMobile() == true)){
 	if(isset($suri['id'])) {
 		$slogan = getSloganById($blogid, $suri['id']);
 		if(!empty($slogan)) {
@@ -81,6 +82,7 @@ if(empty($suri['id'])) {  // Without id.
 			dress('article_rep', '', $view);
 			dress('paging', '', $view);
 			require ROOT . '/interface/common/blog/cover.php';
+			require ROOT . '/interface/common/blog/end.php';
 		} else if ($frontpage == 'line' && isset($skin->line)) {
 			define('__TEXTCUBE_LINE__',true);
 			$lineobj = Model_Line::getInstance();
@@ -91,14 +93,17 @@ if(empty($suri['id'])) {  // Without id.
 			$lines = $lineobj->get();
 			require ROOT . '/interface/common/blog/begin.php';
 			require ROOT . '/interface/common/blog/line.php';
+			require ROOT . '/interface/common/blog/end.php';
+		} else {
+			require ROOT . '/interface/common/blog/begin.php';
+			require ROOT . '/interface/common/blog/end.php';
 		}
 	} else {
 		list($entries, $paging) = getEntriesWithPaging($blogid, $suri['page'], $blog['entriesOnPage']);
 		require ROOT . '/interface/common/blog/begin.php';
 		require ROOT . '/interface/common/blog/entries.php';
+		require ROOT . '/interface/common/blog/end.php';
 	}
-	
-	require ROOT . '/interface/common/blog/end.php';
 } else {  // With id.
 	if(isset($_GET['category'])) { // category exists
 		if(Validator::isInteger($_GET['category'], 0)) {

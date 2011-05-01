@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -17,10 +17,15 @@ if (version_compare(PHP_VERSION,'5.2.0', '<')) {
 		exit;
 	}
 }
-
+$bootFiles = array();
 foreach (new DirectoryIterator(ROOT.'/framework/boot') as $fileInfo) {
-	if($fileInfo->isFile()) require_once($fileInfo->getPathname());
+	if($fileInfo->isFile()) array_push($bootFiles, $fileInfo->getPathname());
 }
+sort($bootFiles);
+foreach ($bootFiles as $bf) {
+	require_once($bf);
+}			    
+unset($bootFiles);
 
 if (get_magic_quotes_gpc()) {
     foreach ($_GET as $key => $value)

@@ -1,4 +1,4 @@
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -199,7 +199,7 @@ function editorAddObject(editor, mode) {
 	case 'Imazing': case 'Gallery':
 		try {
 			if (oSelect.selectedIndex < 0) {
-				alert(_t('파일을 선택하십시오.'));
+				alert(_t('파일을 선택하십시오'));
 				return false;
 			}
 			var value = oSelect.options[oSelect.selectedIndex].value.split("|");

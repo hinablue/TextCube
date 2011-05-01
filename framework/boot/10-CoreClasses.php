@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -406,7 +406,6 @@ final class Timezone {
 	static function set($timezone) {
 		if ( isset( $_ENV['OS'] ) && strncmp($_ENV['OS'], 'Windows', 7) == 0)
 			$timezone = Timezone::getAlternative($timezone);
-        if(empty($timezone)) $timezone = date_default_timezone_get();
 		date_default_timezone_set($timezone);
 		return putenv('TZ=' . $timezone);
 	}

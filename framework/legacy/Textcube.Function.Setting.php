@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -379,6 +379,7 @@ class Setting {
 				'trackbacksOnRecent' => 5, 
 				'expandComment' => 1, 
 				'expandTrackback' => 1, 
+				'sortCommentsBy' => 'ASC', 
 				'recentNoticeLength' => 25, 
 				'recentEntryLength' => 30, 
 				'recentCommentLength' => 30, 
@@ -430,12 +431,12 @@ class Setting {
 	
 	function setSkinSetting($name, $value, $blogid = null) {
 		global $database;
-		global $__gCacheSkinSettings;
+		global $__gCacheSkinSettings, $__gCacheBlogSettings;
 		global $gCacheStorage;
-	
 		if (is_null($blogid)) $blogid = getBlogId();
 		if (!is_numeric($blogid)) return null;
 	
+		if(empty($__gCacheBlogSettings)) Setting::getBlogSettingsGlobal($blogid);
 		if (!array_key_exists($blogid, $__gCacheSkinSettings)) {
 			// force loading
 			Setting::getSkinSettings($blogid,false);

@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -10,9 +10,15 @@
     * Initialization
     * Checks privilege 
 */
+$bootFiles = array();	// From PHP 5.3, DirectoryIterator does not gurantee the order.
 foreach (new DirectoryIterator(ROOT.'/framework/boot') as $fileInfo) {
-	if($fileInfo->isFile()) require_once($fileInfo->getPathname());
+	if($fileInfo->isFile() && substr($fileInfo->getBasename(),-3) == 'php') array_push($bootFiles, $fileInfo->getPathname());
 }
+sort($bootFiles);
+foreach ($bootFiles as $bf) {
+	require_once($bf);
+}
+unset($bootFiles);
 
 /** CHECK : Basic POST/GET variable validation. 
     -------------------------------------------
