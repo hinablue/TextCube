@@ -1,7 +1,8 @@
-<?php // 正體中文
-/* contributed by Hina (http://blog.hinablue.me)    */
+<?php //正體中文
 
-/* Timezones */
+// Hina, Cain Chen. Modified: 2011-05-04
+
+//Timezone
 $__text['Asia/Seoul'] = '韓國';
 $__text['Asia/Tokyo'] = '日本';
 $__text['Asia/Shanghai'] = '中國';
@@ -20,7 +21,6 @@ $__text['Australia/Melbourne'] = '墨爾本(澳大利亞)';
 $__text['Australia/Adelaide'] = '阿德萊德(澳大利亞)';
 $__text['Australia/Darwin'] = '達爾文(澳大利亞)';
 $__text['Australia/Perth'] = '珀斯(澳大利亞)';
-
 
 $__text['다시 설정하시려면 config.php를 먼저 삭제하셔야 합니다.'] = '若要重新設定要先刪除config.php文件。';
 $__text['%1단계'] = '第%1步';
@@ -59,6 +59,8 @@ $__text['운영체제'] = '系統';
 $__text['웹서버'] = '伺服器';
 $__text['PHP 버전'] = 'PHP 版本';
 $__text['데이터베이스 종류'] = '資料庫類別';
+$__text['%1 버전'] = '%1 版本';
+$__text['PHP 버전이 낮습니다. 설치를 위해서는 최소한 %1 이상의 버전이 필요합니다.'] = 'PHP 版本過低，您必須要使用 %1 以上的版本。';
 $__text['함수가 설치되어야 합니다.'] = '要安裝此函數。';
 $__text['UTF8 미지원 (경고: 한글 지원이 불완전할 수 있습니다.)'] = '不支持 UTF8（警告：警告：對中文的支持可能會受限）';
 $__text['UTF8 General 미지원 (경고: 한글 지원이 불완전할 수 있습니다.)'] = '不支持 UTF8 General （警告：對中文的支持可能會受限）';
@@ -69,6 +71,7 @@ $__text['테이블이 이미 존재합니다.'] = '已經存在資料表。';
 $__text['데이터베이스 테이블 확인'] = '確認資料庫表';
 $__text['테이블이 존재하지 않습니다.'] = '資料表不存在。';
 $__text['파일 시스템 권한'] = '文件夾屬性';
+$__text['설정 파일: OK (경고: "%1" 파일을 덮어 쓰게 됩니다.)'] = '配置文件: OK (警告: 將覆蓋"%1" 文件。)';
 $__text['웹 설정 파일'] = '伺服器設定文件';
 $__text['"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.'] = '無法設定 "%1"，請把屬性修改為 %2。';
 $__text['FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다 : %1'] = 'FTP 文件傳送是否使用 Terminal 方式連接，請輸入連接命令: %1';
@@ -79,14 +82,14 @@ $__text['"%1"에 %2 디렉토리를 생성할 수 없습니다. "%1"의 퍼미�
 $__text['캐시 디렉토리'] = '緩存目錄';
 $__text['원격 설치 디렉토리'] = '遠端製作文件';
 $__text['스킨 디렉토리'] = '模板目錄';
-$__text['IIS Rewrite Module'] = '';
+$__text['IIS Rewrite Module'] = 'ISS Rewrite Module';
 $__text['현재 IIS에서의 설치는 실험적으로만 지원하고 있으며 별도의 Rewrite 모듈을 사용해야 합니다.'] = '在 IIS 伺服器中，您只能選用啟用 Rewrite 模組或是關閉該模組的方式進行安裝。';
 $__text['만약 이 페이지를 보고 계시다면 Apache mod_rewrite와 호환되지 않는 Rewrite 모듈을 사용 중이거나 아예 모듈이 없는 경우입니다.'] = '如果您看到這個頁面，表示您不使用 Apache mod_rewrite 模組，或是關閉了 Rewrite 模組的使用。';
 $__text['IIS 7.0을 사용하시는 경우 공식 URL Rewrite Module을 사용하려면 <a href="http://www.iis.net/extensions/URLRewrite">이곳에서 다운로드</a>받아 설치하시고, 계속 진행·설치 후 생성되는 <b>.htaccess</b> 파일 내용을 그대로 import해주시면 됩니다.'] = '如果您要使用 IIS 7.0 官方預設選用的 URL Rewrite 模組，您可以 <a href="http://www.iis.net/extensions/URLRewrite">在此下載</a> 並安裝。繼續安裝完成後，請複製 <b>.htaccess</b> 檔案內容，並 import 至模組中。';
 $__text['IIS 6.0 이전 버전을 사용하시는 경우 Rewrite 모듈을 설치하려면, 오픈스소 무료 모듈을 제공하고 있는 <a href="http://www.codeplex.com/IIRF" target="_blank">Ionics Isapi Rewrite Filter 홈페이지</a>를 방문하여 설치하신 후, 계속 진행·설치 후 생성되는 <b>.htaccess</b> 파일의 내용을 위 모듈의 설정파일(<b>IsapiRewrite4.ini</b>)에 복사하시기 바랍니다.'] = '如果您使用 IIS 6.0 等較早期的 Rewrite 模組安裝，我們建議您安裝開放原始碼的 <a href="http://www.codeplex.com/IIRF" target="_blank">Ionics Isapi Rewrite Filter 模組</a>。並於安裝此模組之後在返回安裝程序。繼續安裝完成後，請複製所產生的 <b>.htaccess</b> 內容，並寫入該模組（<b>IsapiRewrite4.ini</b>）中。';
 $__text['IIS 7.0용 공식 URL Rewrite 모듈을 사용합니다.'] = 'IIS 7.0 是官方預設選用的 URL Rewrite 模組。';
 $__text['IIS 6.0 및 그 이전 버전을 위한 오픈소스 Rewrite 모듈을 사용합니다.'] = 'IIS 6.0 所使用的 Rewrite 為較早期的版本。';
-$__text['Apache Rewrite Engine'] = '';
+$__text['Apache Rewrite Engine'] = 'Apache Rewrite Engine';
 $__text['Rewrite를 사용할 수 없습니다.'] = '無法使用Rewrite。';
 $__text['다음 항목을 확인하십시오.'] = '請確認以下項目。';
 $__text['rewrite 모듈을 사용하지 않습니다.'] = '解除使用 rewrite。';
@@ -135,11 +138,7 @@ $__text['버전'] = '版本';
 $__text['테이블'] = '資料表';
 $__text['삭제하시겠습니까?'] = '確定刪除嗎？';
 $__text['정말 삭제하시겠습니까?'] = '確定刪除嗎？';
+$__text['선택된 테이블을 삭제하고 있습니다.'] = '正在刪除選擇的資料表。';
 $__text['삭제하였습니다.'] = '成功刪除。';
 $__text['삭제하지 못했습니다.'] = '未能刪除。';
-$__text['%1 버전'] = '%1 版本';
-$__text['PHP 버전이 낮습니다. 설치를 위해서는 최소한 %1 이상의 버전이 필요합니다.'] = 'PHP 版本過低，您必須要使用 %1 以上的版本。';
-$__text['설정 파일: OK (경고: "%1" 파일을 덮어 쓰게 됩니다.)'] = '配置文件: OK (警告: 將覆蓋"%1" 文件。)';
-$__text['선택된 테이블을 삭제하고 있습니다.'] = '正在刪除選擇的資料表。';
-
 ?>
