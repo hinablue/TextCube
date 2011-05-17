@@ -180,8 +180,8 @@ function getFlickrPhotos($target) {
 	$pagingTemplate = '[##_paging_rep_##]';
 	$pagingItemTemplate = '<a [##_paging_rep_link_##] class="num">[##_paging_rep_link_num_##]</a>';
 	
-	$prev_page = isset($paging['prev']) ? " href='{$pageLink}page={$paging['prev']}' " : '';
-	$next_page = isset($paging['next']) ? " href='{$pageLink}page={$paging['next']}' " : '';
+	$prev_page = isset($paging['prev']) ? " href='{$pageLink}&page={$paging['prev']}' " : '';
+	$next_page = isset($paging['next']) ? " href='{$pageLink}&page={$paging['next']}' " : '';
 	$no_more_prev = isset($paging['prev']) ? '' : 'no-more-prev';
 	$no_more_next = isset($paging['next']) ? '' : 'no-more-next';
 
