@@ -29,8 +29,12 @@ function import () {
 class Autoload {
 	static function load($className) {
 		$pos =strrpos($className,'_');
-		if($pos!==false) {
-			require_once ROOT.'/framework/'.str_replace('_','/',strtolower(substr($className,0,$pos))).'/'.substr($className,$pos+1).'.php';
+        if($pos!==false) {
+            if (file_exists(ROOT.'/framework/'.str_replace('_','/',strtolower(substr($className,0,$pos))).'/'.substr($className,$pos+1).'.php')) {
+			    require_once ROOT.'/framework/'.str_replace('_','/',strtolower(substr($className,0,$pos))).'/'.substr($className,$pos+1).'.php';
+            } else {
+                // TODO : WTF! If do not check, it will crash some plugins.
+            }
 		} else {
 			// Original structure (NAF2)
 			if (file_exists(ROOT.'/framework/alias/'.$className.'.php')) {
