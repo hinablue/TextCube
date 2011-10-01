@@ -18,11 +18,9 @@ function facebookSocialPlugins($target, $mother)
 
     $__width = (!isset($data['content_width']) || (int) $data['content_width'] <=0 ) ? 520 : $data['content_width'];
 
-    if($data['share']) $output .= '<div class="fb-send" data-href="'.$permalink.'"></div>';
-
-    if($data['like_button'] && !$data['comments']) $output .= '<div class="fb-like" data-href="'.$permalink.'" data-send="true" data-width="'.$__width.'" data-show-faces="true"></div>';        
-        
+    if($data['like_button']) $output .= '<div class="fb-like" data-href="'.$permalink.'" data-send="true" data-width="'.$__width.'" data-show-faces="true"></div>';        
     if($data['comments']) $output .= '<div class="fb-comments" data-href="'.$permalink.'" data-num-posts="2" data-width="'.$__width.'"></div>';
+    if($data['share']) $output .= '<div class="fb-send" data-href="'.$permalink.'"></div>';
 
     $output .= '</div><br />';
 
