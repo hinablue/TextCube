@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.1">
+  <title xml:lang="en">HC Beauty Of Code</title>
+  <title xml:lang="ko">HC Beauty Of Code</title>
+  <title xml:lang="zh-TW">HC 原始碼美化</title>
+  <title xml:lang="zh-CN">HC 原始码美化</title>
+  <link>http://blog.hinablue.me</link>
+  <version>0.1</version>
+  <description xml:lang="ko">
+  	<![CDATA[[CODE]~[/CODE]영역을 이쁘게 만들어 줍니다.
+  	beautyOfCode 를 사용합니다.
+  	참고 : http://plugins.jquery.com/project/beautyOfCode
+  	]]></description>
+  <description xml:lang="en">
+  <![CDATA[Apply Syntax-Highlighting to [CODE]~[/CODE] block
+  	This plug-in uses beautyOfCode.
+  	WebSite : http://plugins.jquery.com/project/beautyOfCode
+  	]]></description>
+  <description xml:lang="zh-TW">
+  <![CDATA[將原始碼加入 [code]~[/code] 之中即可.
+  	此插件使用 beautyOfCode.
+  	網址: http://plugins.jquery.com/project/beautyOfCode
+  	]]></description>
+  <description xml:lang="zh-CN">
+  <![CDATA[将原始码加入 [code]~[/code] 之中即可.
+  	此插件使用 beautyOfCode.
+  	网址: http://plugins.jquery.com/project/beautyOfCode
+  	]]></description>
+  <license>GPL</license>
+  <author link="http://blog.hinablue.me">Hina, Cain Chen.</author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
+  <requirements>
+    <textcube>1.8</textcube>
+  </requirements>
+  <UserProperties>
+  	<up>blog</up>
+  </UserProperties>
+  <binding>
+    <listener event="ViewPostContent">CodeHighLighter_DressContent</listener>
+    <listener event="ViewNoticeContent">CodeHighLighter_DressContent</listener>
+    <tag name="SKIN_head_end" handler="CodeHighLighter_ApplyStyles" />
+	<tag name="SKIN_body_end" handler="CodeHighLighter_ApplyScripts" />
+  </binding>
+</plugin>

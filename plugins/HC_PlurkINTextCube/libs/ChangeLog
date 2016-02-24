@@ -1,0 +1,193 @@
+/**
+ * This is a PHP Plurk API.
+ * @package php-plurk-api
+ *
+ */ 
+
+2010-03-19 17:24:57 CST  roga.lin@gmail.com
+
+	move RLPlurkAPI compatible functions
+	rename CONSTANT files
+	remove unnecessary protected variables
+	add support Plurk RealTime API
+	remove unnecessary common class
+
+2010-03-11 11:43:57 CST  roga.lin@gmail.com
+
+	modify constants for the latest API spec.
+	
+2010-02-26 11:49:46 CST  appleboy.tw@gmail.com
+
+	fixed syntax error on 213 line in plurk_api.php file
+
+2010-02-24 16:15:46 CST  roga.lin@gmail.com
+
+	move two methods from class "common" to "plurk_api", re-define the config file, and error handling.
+
+2010-02-19 21:36:04 CST  appleboy.tw
+
+	fixed word count error, add second parameter of mb_strlen function.
+	
+2010-02-04 17:31:29 CST  roga.lin@gmail.com
+
+	re-pack, and fix update_image() variable problem.
+	
+2010-01-29 16:12:55 CST  appleboy.tw
+
+	edit return type of update_picture function, and remove "exit();" from  function login().
+	
+2010-01-27 12:04:35 CST  appleboy.tw
+
+	add proxy setting for php-plurk-api by Issue 10
+	http://code.google.com/p/php-plurk-api/issues/detail?id=10	
+	
+2010-01-26 23:14:51 CST  appleboy.tw
+
+	fixed error /API/Profile/getOwnProfile
+
+2010-01-26 23:11:28 CST  appleboy.tw
+
+	edit /API/Profile/getOwnProfile, set user_info with return object
+
+2010-01-26 22:41:02 CST  appleboy.tw
+
+	fixed /API/Users/update Privacy
+		
+2010-01-26 22:38:10 CST  appleboy.tw
+
+	change empty space to tab
+
+2010-01-26 22:33:52 CST  appleboy.tw
+
+	add some error message form plurk web.
+	
+2010-01-26 22:22:17 CST  appleboy.tw
+
+	remove some error message form plurk_api.php, and write plurk error message to file.
+	
+2010-01-24 13:41:58 CST  appleboy.tw
+
+	fix improve add_plurk() , edit_plurk() , and add_response() function by issue 9
+	http://code.google.com/p/php-plurk-api/issues/detail?id=9&can=1
+
+2010-01-20 13:52:58 CST  roga.lin@gmail.com
+
+	fix for issue 8
+
+2010-01-14 13:17:02 CST  roga.lin@gmail.com
+
+	php-plurk-api 1.4 release
+
+2010-01-12 23:25:49 CST  chrisliuqq
+
+	Add logout function according to /API/Users/logout
+
+2010-01-05 11:49:05 CST  limit.tsai
+
+	fixed add_plurk qualifier
+
+2009-12-28 13:16:02 CST  chrisliuqq
+
+	Add the optional parameter 'limit' for get_plurks_polling
+	@see /API/Polling/getPlurks
+
+2009-12-27 00:58:30 CST  roga.lin@gmail.com
+
+	urlencode problem
+
+2009-12-18 18:00:42 CST  limit.tsai
+
+	fix method get_plurks_polling
+	
+2009-12-18 12:22:30 CST  roga.lin@gmail.com
+
+	php-plurk-api 1.3 Beta (phpDoc, Example)
+
+2009-12-18 10:40:33 CST  limit.tsai
+
+	modified example.php
+	fix method getActive
+	
+2009-12-17 20:09:13 CST  roga.lin@gmail.com
+
+	change default $is_login value to FALSE
+
+2009-12-17 13:44:20 CST  chrisliuqq
+
+	fix issue 3
+
+2009-12-17 12:28:04 CST  chrisliuqq
+
+	add some alias function for Compatible with RLPlurkAPI
+
+2009-12-17 10:54:15 CST  chrisliuqq
+
+	add function documentation
+
+2009-12-14 09:56:57 CST  roga.lin@gmail.com
+
+	write some comments, adjust coding style. 
+
+2009-12-12 22:01:43 CST  whatup.tw
+
+	fixed for get emotes 
+	
+2009-12-12 19:15:24 CST  appleboy.tw
+
+	edit some comment and function
+	
+2009-12-12 17:54:00 CST  roga.lin@gmail.com
+
+	Prepare release for beta 1 (buggy...XD)
+
+2009-12-12 15:46:02 CST  appleboy.tw
+
+	edit get_plurks_polling function 	
+
+2009-12-12 15:39:17 CST  appleboy.tw
+
+	add define "PLURK_FIELD_NOT_EMPTY", edit some function plurk_api.php
+	
+2009-12-12 11:19:31 CST  whatup.tw
+
+	implement get_unread_plurks() / mute_plurks() / unmute_plurks() / mark_plurk_as_read()	
+
+2009-12-11 22:49:10 CST  whatup.tw
+
+	add add_to_clique() & remove_from_clique() 	
+
+2009-12-10 21:39:48 CST  appleboy.tw
+
+	edit some changes in plurk_api.php	
+
+2009-12-10 21:32:15 CST  appleboy.tw
+
+	add get_following(), become_friend(), remove_Friend(), become_fan(), set_following(), get_completion() function. 
+	
+2009-12-10 14:22:01 CST  appleboy.tw
+
+	add get_own_profile(), get_public_profile(), get_friends() function, and edit get_fans() function.
+	
+2009-12-10 13:55:29 CST  appleboy.tw
+
+	add get_responses(), add_response(), delete_response() function.
+	
+2009-12-10 12:58:47 CST  appleboy.tw
+
+	add delete_plurk, edit_plurk function
+			
+2009-12-10 01:28:11 CST  roga.lin@gmail.com
+
+	repack project and add all methods.
+
+2009-12-09 23:50:09 CST  whatup.tw
+
+	manage clique
+
+2009-12-09 20:54:53 CST  roga.lin@gmail.com
+
+	change file name for common uses.
+	
+2009-12-09 20:49:36 CST  roga.lin@gmail.com
+
+	init commit	

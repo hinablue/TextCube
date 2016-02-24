@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">HC TC Plurk</title>
+  <title xml:lang="zh-TW">HC 部落格噗浪</title>
+  <title xml:lang="zh-CN">HC 博客噗浪</title>
+  <version>1.0</version>
+  <description xml:lang="en"><![CDATA[Plurk in your TextCube.]]></description>
+  <description xml:lang="zh-TW"><![CDATA[在 TextCube 裡噗浪。]]></description>
+  <description xml:lang="zh-CN"><![CDATA[在 TextCube 里噗浪。]]></description>
+  <license>GPL</license>
+  <link>http://blog.hinablue.me/</link>
+  <author link="http://blog.hinablue.me/"><![CDATA[Hina, Cain Chen.]]></author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="yes" accessRaw="yes" />
+  <requirements>
+    <textcube>1.8</textcube>
+  </requirements>
+  <binding>
+	<tag name="SKIN_head_end" handler="myPlurk_ResponseStyle" />
+    <tag name="SKIN_body_end" handler="myPlurk_ResponseJscript" />
+  	<listener event="AddPost">myPlurk_UpdatePlurk</listener>
+  	<listener event="UpdatePost">myPlurk_UpdatePlurk</listener>
+	<listener event="ChangeVisibility">myPlurk_UpdatePlurk</listener>
+	<listener event="ViewPostContent">myPlurk_AddPlurkIcon</listener>
+
+	<config xml:lang="en" dataValHandler="getPlurkDataSet" >
+		<window  width="500" height="460" />
+		<fieldset legend="Plurk user information" >
+			<field title="My Plurk nickname:" name="plurknickname" type="text" size ="20" value="" />
+			<field title="My Plurk password:" name="plurkpassword" type="text" size ="20" value="" />
+		</fieldset>
+        <fieldset legend="Plurk with entries" >
+            <field title="Auto plurk with entries" type="select" name="autoPlurkEntries">
+				<op value="0"><![CDATA[No, thanks.]]></op>
+				<op value="1"><![CDATA[Yes, please, all the "Public" entries will be send to plurk.]]></op>
+                <op value="2" selected="selected"><![CDATA[Yes, only the entry setting in the "Publish".]]></op>
+			</field>
+            <field title="Plurk url with entry slogan" type="select" name="plurkwithslogan">
+                <op value="0"><![CDATA[No, use my blog title.]]></op>
+                <op value="1" selected="selected"><![CDATA[Yes, use my entry slogan.]]></op>
+            </field>
+        </fieldset>
+		<fieldset legend="Plurk responses" >
+			<field title="Add in the end of entry" type="select" name="attachResponses">
+				<op value="0"><![CDATA[No, thanks.]]></op>
+				<op value="1" selected="selected"><![CDATA[Yes.]]></op>
+			</field>
+		</fieldset>
+	</config>
+	<config xml:lang="zh-TW" dataValHandler="getPlurkDataSet" >
+		<window  width="500" height="460" />
+		<fieldset legend="噗浪使用者資訊" >
+			<field title="噗浪暱稱:" name="plurknickname" type="text" size ="20" value="" />
+			<field title="噗浪密碼:" name="plurkpassword" type="text" size ="20" value="" />
+		</fieldset>
+        <fieldset legend="噗浪文章發表" >
+            <field title="自動將文章轉到噗浪" type="select" name="autoPlurkEntries">
+				<op value="0"><![CDATA[否]]></op>
+				<op value="1"><![CDATA[是，將所有 "公開" 的文章轉到噗浪。]]></op>
+                <op value="2" selected="selected"><![CDATA[是，將設定為 "發行" 狀態的文章轉到噗浪。]]></op>
+			</field>
+            <field title="噗浪鍊結使用文章標題" type="select" name="plurkwithslogan">
+                <op value="0"><![CDATA[使用我的部落格名稱]]></op>
+                <op value="1" selected="selected"><![CDATA[使用我的文章標題]]></op>
+            </field>
+        </fieldset>
+		<fieldset legend="噗浪回應" >
+			<field title="將回應加入文章" type="select" name="attachResponses">
+				<op value="0" selected="selected"><![CDATA[否]]></op>
+				<op value="1"><![CDATA[是]]></op>
+			</field>
+		</fieldset>
+	</config>
+	<config xml:lang="zh-CN" dataValHandler="getPlurkDataSet" >
+		<window  width="500" height="460" />
+		<fieldset legend="噗浪使用者信息" >
+			<field title="噗浪昵称:" name="plurknickname" type="text" size ="20" value="" />
+			<field title="噗浪密码:" name="plurkpassword" type="text" size ="20" value="" />
+		</fieldset>
+        <fieldset legend="噗浪文章发表" >
+            <field title="自动将文章转到噗浪" type="select" name="autoPlurkEntries">
+				<op value="0"><![CDATA[否]]></op>
+				<op value="1"><![CDATA[是，将所有 "公开" 文章自动转到噗浪。]]></op>
+                <op value="2" selected="selected"><![CDATA[是，将设置为 "发行" 状态的文章转到噗浪。]]></op>
+			</field>
+            <field title="噗浪链结使用文章标题" type="select" name="plurkwithslogan">
+                <op value="0"><![CDATA[使用我的部落格名称]]></op>
+                <op value="1" selected="selected"><![CDATA[使用我的文章标题]]></op>
+            </field>
+        </fieldset>
+		<fieldset legend="噗浪回应" >
+			<field title="将回应加入文章" type="select" name="attachResponses">
+				<op value="0" selected="selected"><![CDATA[否]]></op>
+				<op value="1"><![CDATA[是]]></op>
+			</field>
+		</fieldset>
+	</config>
+  </binding>
+  <storage>
+    <table>
+      <name>PlurkEntries</name>
+      <fields>
+          <field>
+            <name>id</name>
+            <attribute>int</attribute>
+            <length>11</length>
+			<isnull>0</isnull>
+          </field>
+          <field>
+            <name>plurkid</name>
+            <attribute>int</attribute>
+            <length>11</length>
+            <isnull>0</isnull>
+			<default>0</default>
+          </field>
+          <field>
+            <name>lastaccess</name>
+            <attribute>int</attribute>
+            <length>11</length>
+            <isnull>0</isnull>
+            <default>0</default>
+          </field>
+      </fields>
+      <key>id</key>
+    </table>
+  </storage>
+</plugin>

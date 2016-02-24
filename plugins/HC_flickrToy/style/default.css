@@ -1,0 +1,88 @@
+@charset "utf-8";
+
+body {
+	font-size: 0.82em;
+}
+
+a {
+	margin: 1px 1px;
+}
+
+.paging-list
+{
+	margin: 0 !important;
+	clear:both;
+	padding:5px 5px;
+	text-align:center;
+	font-size:11px;
+	color:#999;
+}
+.paging-list .numbox   
+{ 
+	border-left:1px solid #ccc;
+	padding-left:0px;
+	margin:0px 6px 0px 3px;
+	font:0.95em verdana;
+	letter-spacing:-1px;
+}
+.paging-list a.num      
+{
+	border-right:1px solid #ccc;
+	padding:0px 3px 0px 3px; 
+	margin:0px;
+}
+.paging-list .prev			
+{
+	padding-left:8px;
+	margin-right:0px; 
+}
+.paging-list .next			
+{
+	padding-right:8px;
+	margin-left:0px; 
+}
+.paging-list a.no-more-prev
+{
+	text-decoration:none;
+	color:#999;
+}
+.paging-list a.no-more-next
+{
+	text-decoration:none;
+	color:#999;
+}
+.paging-list a
+{
+	text-decoration:none;
+	color:#555;
+}
+.paging-list a:hover
+{
+	text-decoration:none;
+	color:#000;
+}
+.paging-list span.selected
+{
+	color:#996A66;
+	font-weight:bold;
+	text-decoration:none;
+	margin-bottom:1px;
+}
+.paging-list a.selected
+{
+	color:#996A66;
+	font-weight:bold;
+	text-decoration:none;
+	margin-bottom:1px;
+	border-right:1px solid #ccc;
+	padding:0px 3px 0px 3px; 
+}
+.paging-list .interword
+{
+	font:7pt tahoma;
+	border-right:1px solid #ccc; padding:0px 4px 0px 1px; margin-right:0px;
+}
+.paging-list .totalResults
+{
+	margin-top:5px;
+}
