@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 ini_set('display_errors', 'off');
@@ -16,11 +16,11 @@ $IV = array(
 require ROOT . '/library/preprocessor.php';
 requireStrictRoute();
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<!DOCTYPE html>
+<html>
 <head>
+	<meta charset="utf-8">
 	<title>Textcube Data Importing</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript">
 		//<![CDATA[
 			var pi = window.parent.document.getElementById("progressIndicator");
@@ -54,7 +54,7 @@ function finish($error = null) {
 			window.parent.document.getElementById("progressTextSub").innerHTML = "";
 		//]]>
 	</script>
-<?php 
+<?php
 	$activeEditors = POD::queryColumn("SELECT DISTINCT contenteditor FROM {$database}Entries WHERE blogid = $blogid");
 	$activeFormatters = POD::queryColumn("SELECT DISTINCT contentformatter FROM {$database}Entries WHERE blogid = $blogid");
 	if(!empty($activeEditors)) {foreach($activeEditors as $editor) activatePlugin($editor);}
@@ -106,7 +106,7 @@ switch (@$_POST['importFrom']) {
 		finish(_t('잘못된 요청입니다.'));
 		break;
 	case 'server':
-		$backup = ROOT . "/cache/backup/$blogid.xml";
+		$backup = __TEXTCUBE_CACHE_DIR__."/backup/$blogid.xml";
 		break;
 	case 'uploaded':
 		if (@$_FILES['backupPath']['error'] !== 0)
@@ -114,15 +114,15 @@ switch (@$_POST['importFrom']) {
 		$backup = $_FILES['backupPath']['tmp_name'];
 		break;
 	case 'web':
-		if (!file_exists(ROOT . '/cache/import')) {
-			mkdir(ROOT . '/cache/import');
-			@chmod(ROOT . '/cache/import', 0777);
+		if (!file_exists(__TEXTCUBE_CACHE_DIR__.'/import')) {
+			mkdir(__TEXTCUBE_CACHE_DIR__.'/import');
+			@chmod(__TEXTCUBE_CACHE_DIR__.'/import', 0777);
 		}
-		if (!is_dir(ROOT . '/cache/import')) {
+		if (!is_dir(__TEXTCUBE_CACHE_DIR__.'/import')) {
 			finish(_t('백업파일을 저장할 공간에 권한이 없습니다.'));
 		}
 		$request = new HTTPRequest($_POST['backupURL']);
-		$backup = ROOT . "/cache/import/$blogid.xml";
+		$backup = __TEXTCUBE_CACHE_DIR__."/import/$blogid.xml";
 		$request->pathToSave = $backup;
 		if (!$request->send()) {
 			finish(_t('백업파일이 손상되었거나 가져올 수 없습니다.'));
@@ -157,8 +157,8 @@ if (!$xmls->openFile($backup, Validator::getBool(@$_POST['correctData']))) {
 }
 
 $xmls->close();
-if (file_exists(ROOT . "/cache/import/$blogid.xml"))
-	@unlink(ROOT . "/cache/import/$blogid.xml");
+if (file_exists(__TEXTCUBE_CACHE_DIR__."/import/$blogid.xml"))
+	@unlink(__TEXTCUBE_CACHE_DIR__."/import/$blogid.xml");
 setProgress(100, _t('완료되었습니다.'));
 finish();
 
@@ -198,6 +198,7 @@ function scanner($path, $node, $line) {
 		case '/blog/guestbook/comment':
 		case '/blog/filter':
 		case '/blog/feed':
+		case '/blog/line':
 			$items++;
 			if (!strpos($path, 'referer'))
 				setProgress(null, _t('백업파일을 확인하고 있습니다.'), $line);
@@ -244,7 +245,7 @@ function importer($path, $node, $line) {
 				user_error(__LINE__ . $setting->error);
 			if (!empty($setting->banner) && !empty($node['banner'][0]['content'][0]['.stream'])) {
 				Attachment::confirmFolder();
-				Base64Stream::decode($node['banner'][0]['content'][0]['.stream'], Path::combine(ROOT, 'attach', $blogid, $setting->banner));
+				Utils_Base64Stream::decode($node['banner'][0]['content'][0]['.stream'], Path::combine(ROOT, 'attach', $blogid, $setting->banner));
 				Attachment::adjustPermission(Path::combine(ROOT, 'attach', $blogid, $setting->banner));
 				fclose($node['banner'][0]['content'][0]['.stream']);
 				unset($node['banner'][0]['content'][0]['.stream']);
@@ -277,13 +278,13 @@ function importer($path, $node, $line) {
 			$post->id = $node['id'][0]['.value'];
 			$post->slogan = @$node['.attributes']['slogan'];
 			$post->visibility = $node['visibility'][0]['.value'];
-			if(isset($node['starred'][0]['.value'])) 
+			if(isset($node['starred'][0]['.value']))
 				$post->starred = $node['starred'][0]['.value'];
 			else $post->starred = 0;
 			$post->title = $node['title'][0]['.value'];
 			$post->content = $node['content'][0]['.value'];
-			$post->contentformatter = isset($node['content']['.attributes']['formatter']) ? $node['content']['.attributes']['formatter'] : 'ttml';
-			$post->contenteditor = isset($node['content']['.attributes']['editor']) ? $node['content']['.attributes']['editor'] : 'modern';
+			$post->contentformatter = isset($node['content'][0]['.attributes']['formatter']) ? $node['content'][0]['.attributes']['formatter'] : 'ttml';
+			$post->contenteditor = isset($node['content'][0]['.attributes']['editor']) ? $node['content'][0]['.attributes']['editor'] : 'modern';
 			$post->location = $node['location'][0]['.value'];
 			$post->password = isset($node['password'][0]['.value']) ? $node['password'][0]['.value'] : null;
 			$post->acceptcomment = $node['acceptComment'][0]['.value'];
@@ -308,7 +309,7 @@ function importer($path, $node, $line) {
 						array_push($post->tags, $node['tag'][$i]['.value']);
 				}
 			}
-			if (floatval(getServiceSetting('newlineStyle')) >= 1.1 && floatval(@$node['.attributes']['format']) < 1.1)
+			if (floatval(Setting::getServiceSettingGlobal('newlineStyle')) >= 1.1 && floatval(@$node['.attributes']['format']) < 1.1)
 				$post->content = nl2brWithHTML($post->content);
 			if (!$post->add())
 				user_error(__LINE__ . $post->error);
@@ -339,7 +340,7 @@ function importer($path, $node, $line) {
 						unset($post2);
 					}
 					if (!empty($cursor['content'][0]['.stream'])) {
-						Base64Stream::decode($cursor['content'][0]['.stream'], Path::combine(ROOT, 'attach', $blogid, $attachment->name));
+						Utils_Base64Stream::decode($cursor['content'][0]['.stream'], Path::combine(ROOT, 'attach', $blogid, $attachment->name));
 						Attachment::adjustPermission(Path::combine(ROOT, 'attach', $blogid, $attachment->name));
 						fclose($cursor['content'][0]['.stream']);
 						unset($cursor['content'][0]['.stream']);
@@ -439,23 +440,80 @@ function importer($path, $node, $line) {
 				}
 			}
 			return true;
+		case '/blog/page':
+			setProgress($item++ / $items * 100, _t('페이지를 복원하고 있습니다.'));
+			$page = new Page();
+			$page->id = $node['id'][0]['.value'];
+			$page->slogan = @$node['.attributes']['slogan'];
+			$page->visibility = $node['visibility'][0]['.value'];
+			if(isset($node['starred'][0]['.value']))
+				$page->starred = $node['starred'][0]['.value'];
+			else $page->starred = 0;
+			$page->title = $node['title'][0]['.value'];
+			$page->content = $node['content'][0]['.value'];
+			$page->contentformatter = isset($node['content']['.attributes']['formatter']) ? $node['content']['.attributes']['formatter'] : getDefaultFormatter();
+			$page->contenteditor = isset($node['content']['.attributes']['editor']) ? $node['content']['.attributes']['editor'] : getDefaultEditor();
+			$page->published = $node['published'][0]['.value'];
+			$page->created = @$node['created'][0]['.value'];
+			$page->modified = @$node['modified'][0]['.value'];
+			if (floatval(Setting::getServiceSettingGlobal('newlineStyle')) >= 1.1 && floatval(@$node['.attributes']['format']) < 1.1)
+				$page->content = nl2brWithHTML($page->content);
+			if (!$page->add())
+				user_error(__LINE__ . $page->error);
+			if (isset($node['attachment'])) {
+				for ($i = 0; $i < count($node['attachment']); $i++) {
+					$attachment = new Attachment();
+					$attachment->parent = $page->id;
+					$cursor = & $node['attachment'][$i];
+					$attachment->name = $cursor['name'][0]['.value'];
+					$attachment->label = $cursor['label'][0]['.value'];
+					$attachment->mime = @$cursor['.attributes']['mime'];
+					$attachment->size = $cursor['.attributes']['size'];
+					$attachment->width = $cursor['.attributes']['width'];
+					$attachment->height = $cursor['.attributes']['height'];
+					$attachment->enclosure = @$cursor['enclosure'][0]['.value'];
+					$attachment->attached = $cursor['attached'][0]['.value'];
+					$attachment->downloads = @$cursor['downloads'][0]['.value'];
+					if (Attachment::doesExist($attachment->name)) {
+						if (!$attachment->add())
+							user_error(__LINE__ . $attachment->error);
+						$page2 = new Page();
+						if ($page2->open($page->id, 'id, content')) {
+							$page2->content = str_replace($cursor['name'][0]['.value'], $attachment->name, $page2->content);
+							$page2->update();
+							$page2->close();
+						}
+						unset($page2);
+					} else {
+						if (!$attachment->add())
+							user_error(__LINE__ . $attachment->error);
+					}
+					if (!empty($cursor['content'][0]['.stream'])) {
+						Utils_Base64Stream::decode($cursor['content'][0]['.stream'], Path::combine(ROOT, 'attach', $blogid, $attachment->name));
+						Attachment::adjustPermission(Path::combine(ROOT, 'attach', $blogid, $attachment->name));
+						fclose($cursor['content'][0]['.stream']);
+						unset($cursor['content'][0]['.stream']);
+					}
+				}
+			}
+			return true;
 		case '/blog/notice':
 			setProgress($item++ / $items * 100, _t('공지를 복원하고 있습니다.'));
 			$notice = new Notice();
 			$notice->id = $node['id'][0]['.value'];
 			$notice->slogan = @$node['.attributes']['slogan'];
 			$notice->visibility = $node['visibility'][0]['.value'];
-			if(isset($node['starred'][0]['.value'])) 
+			if(isset($node['starred'][0]['.value']))
 				$notice->starred = $node['starred'][0]['.value'];
 			else $notice->starred = 0;
 			$notice->title = $node['title'][0]['.value'];
 			$notice->content = $node['content'][0]['.value'];
-			$notice->contentformatter = isset($node['content']['.attributes']['formatter']) ? $node['content']['.attributes']['formatter'] : getDefaultFormatter();
-			$notice->contenteditor = isset($node['content']['.attributes']['editor']) ? $node['content']['.attributes']['editor'] : getDefaultEditor();
-			$notice->published = $node['published'][0]['.value'];
+			$notice->contentformatter = isset($node['content'][0]['.attributes']['formatter']) ? $node['content'][0]['.attributes']['formatter'] : getDefaultFormatter();
+			$notice->contenteditor = isset($node['content'][0]['.attributes']['editor']) ? $node['content'][0]['.attributes']['editor'] : getDefaultEditor();
+			$notice->published = intval($node['published'][0]['.value']);
 			$notice->created = @$node['created'][0]['.value'];
 			$notice->modified = @$node['modified'][0]['.value'];
-			if (floatval(getServiceSetting('newlineStyle')) >= 1.1 && floatval(@$node['.attributes']['format']) < 1.1)
+			if (floatval(Setting::getServiceSettingGlobal('newlineStyle')) >= 1.1 && floatval(@$node['.attributes']['format']) < 1.1)
 				$notice->content = nl2brWithHTML($notice->content);
 			if (!$notice->add())
 				user_error(__LINE__ . $notice->error);
@@ -488,7 +546,7 @@ function importer($path, $node, $line) {
 							user_error(__LINE__ . $attachment->error);
 					}
 					if (!empty($cursor['content'][0]['.stream'])) {
-						Base64Stream::decode($cursor['content'][0]['.stream'], Path::combine(ROOT, 'attach', $blogid, $attachment->name));
+						Utils_Base64Stream::decode($cursor['content'][0]['.stream'], Path::combine(ROOT, 'attach', $blogid, $attachment->name));
 						Attachment::adjustPermission(Path::combine(ROOT, 'attach', $blogid, $attachment->name));
 						fclose($cursor['content'][0]['.stream']);
 						unset($cursor['content'][0]['.stream']);
@@ -501,17 +559,17 @@ function importer($path, $node, $line) {
 			$keyword = new Keyword();
 			$keyword->id = $node['id'][0]['.value'];
 			$keyword->visibility = $node['visibility'][0]['.value'];
-			if(isset($node['starred'][0]['.value'])) 
+			if(isset($node['starred'][0]['.value']))
 				$keyword->starred = $node['starred'][0]['.value'];
 			else $keyword->starred = 0;
 			$keyword->name = $node['name'][0]['.value'];
 			$keyword->description = $node['description'][0]['.value'];
-			$keyword->descriptionEditor = isset($node['description']['.attributes']['editor']) ? $node['description']['.attributes']['editor'] : getDefaultEditor();
-			$keyword->descriptionFormatter = isset($node['description']['.attributes']['formatter']) ? $node['description']['.attributes']['formatter'] : getDefaultFormatter();
-			$keyword->published = $node['published'][0]['.value'];
+			$keyword->descriptionEditor = isset($node['description'][0]['.attributes']['editor']) ? $node['description'][0]['.attributes']['editor'] : getDefaultEditor();
+			$keyword->descriptionFormatter = isset($node['description'][0]['.attributes']['formatter']) ? $node['description'][0]['.attributes']['formatter'] : getDefaultFormatter();
+			$keyword->published = intval($node['published'][0]['.value']);
 			$keyword->created = @$node['created'][0]['.value'];
 			$keyword->modified = @$node['modified'][0]['.value'];
-			if (floatval(getServiceSetting('newlineStyle')) >= 1.1 && floatval(@$node['.attributes']['format']) < 1.1)
+			if (floatval(Setting::getServiceSettingGlobal('newlineStyle')) >= 1.1 && floatval(@$node['.attributes']['format']) < 1.1)
 				$keyword->description = nl2brWithHTML($keyword->description);
 			if (!$keyword->add())
 				user_error(__LINE__ . $keyword->error);
@@ -544,7 +602,7 @@ function importer($path, $node, $line) {
 							user_error(__LINE__ . $attachment->error);
 					}
 					if (!empty($cursor['content'][0]['.stream'])) {
-						Base64Stream::decode($cursor['content'][0]['.stream'], Path::combine(ROOT, 'attach', $blogid, $attachment->name));
+						Utils_Base64Stream::decode($cursor['content'][0]['.stream'], Path::combine(ROOT, 'attach', $blogid, $attachment->name));
 						Attachment::adjustPermission(Path::combine(ROOT, 'attach', $blogid, $attachment->name));
 						fclose($cursor['content'][0]['.stream']);
 						unset($cursor['content'][0]['.stream']);
@@ -557,9 +615,10 @@ function importer($path, $node, $line) {
 			$linkCategory = new LinkCategories();
 			$linkCategory->name = $node['name'][0]['.value'];
 			$linkCategory->priority = $node['priority'][0]['.value'];
-			$linkCategory->visibility = !isset($node['visibility'][0]['.value']) || empty($node['visibility'][0]['.value']) 
+			$linkCategory->visibility = !isset($node['visibility'][0]['.value']) || empty($node['visibility'][0]['.value'])
 				? 2 : $node['visibility'][0]['.value'];
-			$linkCategory->id = LinkCategories::getId($linkCategory->name); 
+
+			$linkCategory->id = LinkCategories::getId($linkCategory->name);
 			if ($linkCategory->id) {
 				if (!$linkCategory->update())
 					user_error(__LINE__ . $linkCategory->error);
@@ -811,6 +870,27 @@ function importer($path, $node, $line) {
 			if (!$feed->add())
 				user_error(__LINE__ . $feed->error);
 			return true;
+		case '/blog/line':
+			setProgress($item++ / $items * 100, _t('라인을 복원하고 있습니다.'));
+			$line = Model_Line::getInstance();
+			$line->reset();
+			if (!empty($node['author'][0]['.value']))
+				$line->author = $node['author'][0]['.value'];
+			if (!empty($node['category'][0]['.value']))
+				$line->category = $node['category'][0]['.value'];
+			if (!empty($node['root'][0]['.value']))
+				$line->root = $node['root'][0]['.value'];
+			if (!empty($node['permalink'][0]['.value']))
+				$line->permalink = $node['permalink'][0]['.value'];
+			if (!empty($node['content'][0]['.value']))
+				$line->content = $node['content'][0]['.value'];
+			if (!empty($node['created'][0]['.value']))
+				$line->created = intval($node['created'][0]['.value']);
+			if ($line->add()) {
+				return true;
+			} else {
+				user_error(__LINE__ . $line->_error);
+			}
 	}
 }
 

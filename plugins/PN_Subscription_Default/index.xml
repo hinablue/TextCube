@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">Feed Subscription Log</title>
+  <title xml:lang="ko">피드 구독 통계</title>
+  <title xml:lang="ja">RSSフィード統計</title>
+  <link>http://needlworks.org/</link>
+  <version>2.6</version>
+  <description xml:lang="en">Shows Feed Subscription Log using Textcube Components.</description>
+  <description xml:lang="ko">텍스트큐브 컴포넌트를 이용하여 피드 구독 통계를 보여줍니다.</description>
+  <description xml:lang="ja">Textcubeの構成要素を利用して、RSSフィード購読情報を表示します。</description>
+  <license>GPL</license>
+  <author xml:lang="en" link="http://forest.nubimaru.com">Jeongkyu Shin (inureyes / Needlworks)</author>
+  <author xml:lang="ko" link="http://forest.nubimaru.com"><![CDATA[신정규 (inureyes / Needlworks)]]></author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="yes" />
+  <requirements>
+	  <textcube>
+		  <minVersion>1.10</minVersion>
+	  </textcube>
+  </requirements>
+  <binding>
+	  <listener event="refreshRSS" handler="PN_Subscription_setTime" />
+	  <listener event="ViewRSS" handler="updateSubscriptionStatistics" />
+	<sidebar title="SubscriptionStatistics" handler="PN_Subscription_Sidebar" />
+	<adminMenu>
+      <viewMethods>
+        <method>
+          <title xml:lang="en">Feed Subscription</title>
+          <title xml:lang="ko">피드 통계</title>
+          <title xml:lang="ja">RSSフィード統計</title>
+          <handler>PN_Subscription_Default</handler>
+	      <topMenu>center</topMenu>
+	      <contentMenuOrder>4</contentMenuOrder>
+        </method>
+      </viewMethods>
+    </adminMenu>
+  </binding>
+  <storage>
+    <table>
+      <name>SubscriptionLogs</name>
+      <fields>
+        <field>
+          <name>ip</name>
+            <attribute>varchar</attribute>
+            <length>16</length>
+            <isnull>0</isnull>
+          </field>
+          <field>
+            <name>host</name>
+            <attribute>varchar</attribute>
+            <length>64</length>
+          </field>
+          <field>
+            <name>useragent</name>
+            <attribute>varchar</attribute>
+            <length>128</length>
+            <isnull>0</isnull>
+          </field>
+          <field>
+            <name>referred</name>
+            <attribute>integer</attribute>
+            <length>11</length>
+            <isnull>0</isnull>
+            <default>0</default>
+          </field>
+      </fields>
+      <key>useragent</key>
+    </table>
+    <table>
+      <name>SubscriptionStatistics</name>
+      <fields>
+          <field>
+            <name>ip</name>
+            <attribute>varchar</attribute>
+            <length>16</length>
+            <isnull>0</isnull>
+          </field>
+          <field>
+            <name>host</name>
+            <attribute>varchar</attribute>
+            <length>64</length>
+            <isnull>0</isnull>
+          </field>
+          <field>
+            <name>useragent</name>
+            <attribute>varchar</attribute>
+            <length>128</length>
+            <isnull>0</isnull>
+          </field>
+          <field>
+            <name>subscribed</name>
+            <attribute>integer</attribute>
+            <length>11</length>
+            <isnull>0</isnull>
+            <default>0</default>
+          </field>
+          <field>
+            <name>referred</name>
+            <attribute>integer</attribute>
+            <length>11</length>
+            <isnull>0</isnull>
+            <default>0</default>
+          </field>
+      </fields>
+      <key>useragent</key>
+     </table>
+  </storage>
+</plugin>

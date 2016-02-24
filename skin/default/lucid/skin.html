@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>[##_title_##] <s_page_title> :: [##_page_post_title_##]</s_page_title></title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+	<meta http-equiv="Keywords" content="[##_meta_http_equiv_keywords_##]" />
+	<link rel="shortcut icon" href="[##_blog_link_##]favicon.ico" />
+
+	<link rel="alternate" type="application/rss+xml" title="[##_title_##]" href="[##_rss_url_##]" />
+	<link rel="alternate" type="application/rss+xml" title="[##_title_##] : responses" href="[##_response_rss_url_##]" />
+	<link rel="alternate" type="application/atom+xml" title="[##_title_##]" href="[##_atom_url_##]" />
+	<link rel="alternate" type="application/atom+xml" title="[##_title_##] : responses" href="[##_response_atom_url_##]" />
+
+	<link rel="stylesheet" media="screen" type="text/css" href="./style.css" />
+	<!--<link rel="stylesheet" media="print" type="text/css" href="./print.css" /> -->
+</head>
+
+<body id="[##_body_id_##]">
+	<nav id="menu" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="[##_blog_link_##]">[##_title_##]</a>
+			</div>
+			<div class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-left">
+				<li class="tab_notice"><a href="[##_blog_link_##]notice"><i class="fa fa-fw fa-bullhorn"></i> Notice</a></li>
+				<li class="tab_page"><a href="[##_blog_link_##]page"><i class="fa fa-fw fa-file-o"></i> Page</a></li>
+				<li class="sidebar"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-fw fa-archive"></i> Sidebar</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="[##_owner_url_##]"><i class="fa fa-fw fa-gears"></i> Control Panel</a></li>
+				<li><a href="[##_owner_url_##]/entry/post"><i class="fa fa-fw fa-edit"></i> Write a Post</a></li>
+			</ul>
+			</div><!-- end of navbar-collapse -->
+		</div>
+	</nav>
+
+	<div id="content" class="container">
+	<header class="page-header">
+		<h1><a href="[##_blog_link_##]">[##_title_##]</a> <small>[##_desc_##]</small></h1>
+	</header>
+
+	<div id="contentbody" class="row">
+
+	<!-- This code is for sidebar-enabled UI. Tablet UI support will be added in the next version.
+	<div id="sections" class="col-md-9 col-md-push-3">-->
+	<div id="sections" class="col-md-12">
+
+	<s_list>  <!-- List section ................................................................. -->
+	<section class="list search">
+		<header>
+			<h2>Results for '[##_list_conform_##]'</h2>
+			<a href="[##_list_atom_url_##]"><img src="./images/atom_12.png" alt="ATOM Icon" /></a>
+			<h3>[##_list_count_##] entries</h3>
+		</header>
+		<article>
+			<s_list_rep>
+			<dl class="list-group panel panel-default">
+				<dt class="title panel-heading"><a href="[##_list_rep_link_##]">[##_list_rep_title_##]</a></dt>
+				<dd class="regdate panel-body"><i class="glyphicon glyph   icon-calendar"></i><time>[##_list_rep_regdate_##]</time>  <cite>by  [##_list_rep_author_##]</cite>   <cite class="count badge">[##_list_rep_rp_cnt_##]</cite></dd>
+			</dl>
+			</s_list_rep>
+		</article>
+	</section>
+	</s_list>
+	<s_rplist> <!-- Replies List section ........................................................ -->
+	<section class="list comment">
+		<header>
+			<h2>[##_rplist_count_##] Comments</h2>
+		</header>
+		<article>
+			<s_rplist_rep>
+			<dl class="list-group panel panel-default">
+				<dt class="content panel-heading"><a href="[##_rplist_rep_link_##]">[##_rplist_rep_body_##]</a></dt>
+				<dd class="regdate panel-body"><time>[##_rplist_rep_regdate_##]</time>  <cite>by [##_rplist_rep_name_##]</cite></dd>
+			</dl>
+			</s_rplist_rep>
+		</article>
+	</section>
+	</s_rplist>
+	<s_tblist> <!-- Trackbacks/Pingbacks List section ............................................ -->
+	<section class="list trackback">
+		<header>
+			<h2>[##_tblist_count_##] Trackbacks about '[##_tblist_conform_##]'</h2>
+		</header>
+		<article>
+			<s_tblist_rep>
+			<dl class="list-group panel panel-default">
+				<dt class="content panel-heading"><a href="[##_tblist_rep_link_##]">[##_tblist_rep_subject_##]</a></dt>
+				<dd class="title panel-body">[##_tblist_rep_subject_##]</dd>
+				<dd class="regdate panel-body"><time>[##_tblist_rep_regdate_##]</time>  <cite>by [##_tblist_rep_name_##]</cite></dd>
+				<dd class="content panel-body">[##_tblist_rep_body_##]</dd>
+			</dl>
+			</s_tblist_rep>
+		</article>
+	</section>
+	</s_tblist>
+	<s_line> <!-- Line List section .............................................................. -->
+	<section class="line">
+		<header>
+			<hgroup>
+				<h1>Lines</h1>
+				<h2>Instant myself</h2>
+			</hgroup>
+			<a href="[##_line_rssurl_##]"><img src="./images/rss_12.png" alt="RSS Icon" /></a>
+			<a href="[##_line_atomurl_##]"><img src="./images/atom_12.png" alt="ATOM Icon" /></a>
+		</header>
+		<article>
+			<s_line_rep>
+			<dl>
+				<dt class="regdate"><time datetime="[##_line_rep_regdate_##]">[##_line_rep_regdate_##]</time></dt>
+				<dd class="content">[##_line_rep_content_##]</dd>
+				<dd class="author">[##_line_rep_author_##]. </dd>
+				<dd class="source">Streamed from [##_line_rep_source_##].</dd>
+				<dd class="permalink"><a href="[##_line_rep_permalink_##]">Permalink</a></dd>
+			</dl>
+			</s_line_rep>
+			<s_line_button>
+				<input type="submit" class="more-button input-button" value="More" onclick="[##_line_onclick_more_##]" />
+			</s_line_button>
+		</article>
+	</section>
+	</s_line>
+	<s_local> <!-- Location Log section .......................................................... -->
+	<section class="location">
+		<header>
+			<hgroup>
+				<h1>Log via location</a></h1>
+				<h2>Where posts are related to</h2>
+			</hgroup>
+		</header>
+		<article>
+			<dl>
+			<s_local_spot_rep>
+				<dt class="[##_local_spot_depth_##]">[##_local_spot_##]</dt>
+			</s_local_spot_rep>
+			<s_local_info_rep>
+				<dd class="[##_local_info_depth_##]">
+					<a href="[##_local_info_link_##]">[##_local_info_title_##]</a>
+					<cite>by [##_local_info_author_##]</cite>
+				</dd>
+			</s_local_info_rep>
+			</dl>
+		</article>
+	</section>
+	</s_local>
+	<s_tag> <!-- Tag list section ................................................................ -->
+	<section class="tag">
+		<header>
+			<hgroup>
+				<h1>Tag Cloud</h1>
+			</hgroup>
+		</header>
+		<article>
+			<ul class="tags">
+			<s_tag_rep>
+				<li><a href="[##_tag_link_##]" class="[##_tag_class_##]">[##_tag_name_##]</a></li>					</s_tag_rep>
+			</ul>
+		</article>
+	</section>
+	</s_tag>
+	<s_guest> <!-- Guestbook section .............................................................-->
+	<section class="guestbook write">
+		<header>
+			<hgroup>
+				<h1>Guestbook</h1>
+				<p>Leave your greetings</p>
+			</hgroup>
+		</header>
+		<article>
+			<s_guest_input_form>
+			<fieldset>
+			<s_guest_member>
+				<s_guest_form>
+				<input type="text" id="[##_guest_input_name_##]" name="[##_guest_input_name_##]" value="[##_guest_name_##]" maxlength="20" required="required" />
+				<label for="[##_guest_input_name_##]">Your Name <em>(required)</em></label>
+
+				<input type="password" id="[##_guest_input_password_##]" name="[##_guest_input_password_##]" value="[##_guest_password_##]" required="required" />
+				<label for="[##_guest_input_password_##]">Password <em>(required)</em></label>
+
+				<input type="url" id="[##_guest_input_homepage_##]" name="[##_guest_input_homepage_##]" value="[##_guest_homepage_##]" />
+				<label for="[##_guest_input_homepage_##]">Your Website Address</label>
+				</s_guest_form>
+				<input type="checkbox" id="[##_guest_input_is_secret_##]" name="[##_guest_input_is_secret_##]" class="checkbox" value="1" />
+				<label for="[##_guest_input_is_secret_##]">Leave as secret</label>
+			</s_guest_member>
+				<textarea name="[##_guest_textarea_body_##]" rows="10" cols="50" required="required"></textarea>
+
+				<button type="submit" class="submit button" value="Submit" onclick="[##_guest_onclick_submit_##]">Submit</button>
+			</fieldset>
+			</s_guest_input_form>
+		</article>
+	</section>
+	<section class="guestbook logs">
+	<s_guest_container>
+		<article class="guestbook logs">
+			<dl>
+			<s_guest_rep>
+				<dt id="[##_guest_rep_id_##]" class="[##_guest_rep_class_##]">
+					[##_guest_rep_name_##]
+				</dt>
+				<dd><time>[##_guest_rep_date_##]</time></dd>
+				<dd><command onclick="[##_guest_rep_onclick_delete_##]" label="Modify/Delete"><abbr title="Modify or Delete">M/D</abbr></command></dd>
+				<dd><command onclick="[##_guest_rep_onclick_reply_##]" label="Reply">Reply</command></dd>
+				<dd><a href="[##_guest_rep_link_##]" title="Permalink">Permalink</a></dd>
+				<dd><p>[##_guest_rep_desc_##]</p></dd>
+				<s_guest_reply_container>
+				<s_guest_reply_rep>
+				<dd class="reply">
+					<dt id="[##_guest_rep_id_##]" class="[##_guest_rep_class_##]" label="Reply">
+						[##_guest_rep_name_##]
+					</dt>
+					<dd><time>[##_guest_rep_date_##]</time></dd>
+					<dd><command onclick="[##_guest_rep_onclick_delete_##]" label="Modify/Delete" ><abbr title="Modify or Delete">M/D</abbr></command></dd>
+					<dd><a href="[##_guest_rep_link_##]" title="Permalink">Permalink</a></dd>
+					<dd>
+						<p>[##_guest_rep_desc_##]</p>
+					</dd>
+				</dd>
+				</s_guest_reply_rep>
+				</s_guest_reply_container>
+			</s_guest_rep>
+			</dl>
+		</article>
+	</s_guest_container>
+	</section>
+	</s_guest>
+	<s_keyword> <!-- Keyword list .......................................................... -->
+	<section class="keyword">
+		<header>
+			<hgroup>
+				<h1>Keywords</h1>
+				<h2>My keywords</h2>
+			</hgroup>
+		</header>
+		<article>
+			<ul>
+			<s_keyword_rep>
+				<li><a href="#void" onclick="[##_onclick_keyword_##]">[##_keyword_label_##]</a></li>
+			</s_keyword_rep>
+			</ul>
+		</article>
+	</section>
+	</s_keyword>
+	<s_keylog_rep> <!-- Keylog post section (for tag description, etc..) ...................  -->
+	<section class="keylog post">
+		<header>
+			<h2>[##_keylog_rep_title_##]</h2>
+		</header>
+		<article>
+			[##_keylog_rep_desc_##]
+		</article>
+	</section>
+	</s_keylog_rep>
+	<s_notice_rep> <!-- Notice and pages section ............................................ -->
+	<section class="notice pages post">
+		<header>
+			<h2><a href="[##_notice_rep_link_##]">[##_notice_rep_title_##]</a></h2>
+		</header>
+		<article>
+			<ul>
+				<li class="date"><dfn>Posted</dfn> at <time>[##_notice_rep_date_##]</time></li>
+				<li class="author"><dfn>Posted</dfn> by <cite><a href="[##_article_rep_author_link_##]">[##_article_rep_author_##]</a></cite></li>
+				<li class="category"><dfn>Filed</dfn> under <a href="[##_blog_link_##]notice">Notice</a></li>
+			</ul>
+			[##_notice_rep_desc_##]
+		</article>
+	</section>
+	</s_notice_rep>
+	<s_page_rep> <!-- Notice and pages section ............................................ -->
+	<section class="page pages post">
+		<header>
+			<h2><a href="[##_page_rep_link_##]">[##_page_rep_title_##]</a></h2>
+		</header>
+		<article>
+			<ul>
+				<li class="date"><dfn>Posted</dfn> at <time>[##_page_rep_date_##]</time></li>
+				<li class="author"><dfn>Posted</dfn> by <cite><a href="[##_article_rep_author_link_##]">[##_article_rep_author_##]</a></cite></li>
+			</ul>
+			[##_page_rep_desc_##]
+		</article>
+	</section>
+	</s_page_rep>
+
+	<s_article_protected> <!-- Protected Posts section ...................................... -->
+	<section class="protected post">
+		<header>
+			<h2><a href="[##_article_rep_link_##]">[##_article_rep_title_##]</a></h2>
+			<ul>
+				<li class="date"><dfn>Posted</dfn> at <time>[##_article_rep_date_##]</time></li>
+				<li class="author"><dfn>Posted</dfn> by <cite><a href="[##_article_rep_author_link_##]">[##_article_rep_author_##]</a></cite></li>
+				<li class="category"><dfn>Filed</dfn> under <a href="[##_article_rep_category_link_##]">[##_article_rep_category_##]</a></li>
+			</ul>
+		</header>
+		<article>
+			<p>Please type the <em>correct password</em> to view this content.</p>
+			<input id="[##_article_password_##]" name="[##_article_password_##]" type="password" onkeydown="if (event.keyCode == 13) [##_article_dissolve_##]" />
+			<button type="button" class="submit button" value="Submit" onclick="[##_article_dissolve_##]" />
+		</article>
+	</section>
+	</s_article_protected>
+
+	<s_article_rep> <!-- Post section ....................................................... -->
+	<section class="post [##_article_rep_category_body_id_##]">
+		<header>
+			<h2><a href="[##_article_rep_link_##]">[##_article_rep_title_##]</a></h2>
+		</header>
+		<article class="post [##_article_rep_category_body_id_##]">
+			<s_ad_div> <!-- Administration-only menus for post .................................. -->
+			<div class="row">
+			<div class="col-md-3">
+				Status: <strong>[##_s_ad_s1_label_##]</strong>
+			</div>
+			<div class="col-md-9 text-right">
+				<div class="btn-group">
+					<button type="button" class="btn btn-info btn-xs" onclick="[##_s_ad_s2_onclick_##]" label="[##_s_ad_s2_label_##]" class="button"><i class="fa fa-retweet"></i> Change Status</button>
+					<a class="btn btn-default btn-xs" href="[##_s_ad_m_link_##]" class="button"><i class="fa fa-edit"></i> Edit</a></button>
+					<button type="button" class="btn btn-default btn-xs" onclick="[##_s_ad_m_onclick_##]" class="button"><i class="fa fa-edit"></i> Edit (New window)</button>
+					<button type="button" class="btn btn-default btn-xs" onclick="[##_s_ad_t_onclick_##]" class="button"><i class="fa fa-reply"></i> Send trackback</button>
+					<button type="button" class="btn btn-danger btn-xs" onclick="[##_s_ad_d_onclick_##]" class="button"><i class="fa fa-trash-o"></i> Delete</button>
+				</div>
+			</div>
+			</div>
+			</s_ad_div>
+			<div class="article-body">
+			[##_article_rep_desc_##]
+			</div>
+		</article>
+	</section>
+	<section class="summary">
+		<article>
+			<dl class="dl-horizontal information">
+			    <dt>Posted at</dt>
+			    <dd class="posted date"><i class="glyphicon glyphicon-pencil"></i> <time>[##_article_rep_date_##]</time></dd>
+			    <dt>Last updated</dt>
+			    <dd class="modified date"><i class="glyphicon glyphicon-time"></i> <time>[##_article_rep_date_modified_##]</time></dd>
+			    <dt>Author</dt>
+			    <dd class="author"><i class="glyphicon glyphicon-user"></i> <cite><a href="[##_article_rep_author_link_##]">[##_article_rep_author_##]</a></cite></dd>
+			    <dt>Category</dt>
+			    <dd class="category"><i class="glyphicon glyphicon-list"></i>  <a href="[##_article_rep_category_link_##]">[##_article_rep_category_##]</a></dd>
+			    <dt>Track category via</dt>
+			    <dd class="category rss feed">
+				<a href="[##_article_rep_category_rssurl_##]" onclick="window.open(this.href); return false"><i class="fa fa-rss-square"></i> RSS 2.0 feed</a>
+				<a href="[##_article_rep_category_atomurl_##]" onclick="window.open(this.href); return false"><i class="fa fa-rss-square"></i> ATOM 1.0 feed</a>
+			    </dd>
+			    <s_tag_label>
+			    <dt>Tags</dt>
+			    <dd class="tag"><i class="glyphicon glyphicon-tags"></i> [##_tag_label_rep_##]</dd>
+			    </s_tag_label>
+			</dl>
+			<dl class="dl-horizontal response">
+				<dt class="response">Leave Responses</dt>
+				<dd class="response">
+					<div class="btn-group">
+					<a id="[##_article_rep_tb_cnt_id_##]" href="#tb" onclick="[##_article_rep_tb_link_##]" label="Show/hide responses" class="btn btn-default">
+					<s_tb_count><em>[##_article_rep_tb_cnt_##]</em> Trackbacks</s_tb_count>
+					</a>
+					<a id="[##_article_rep_rp_cnt_id_##]" href="#rp" onclick="[##_article_rep_rp_link_##]" title="Show/hide commments" class="btn btn-default">
+					<s_rp_count><em>[##_article_rep_rp_cnt_##]</em> Comments</s_rp_count>
+					</a>
+					</div>
+				</dd>
+				<dt class="feed">Track responses via</dt>
+				<dd class="feed">
+				    <a href="[##_article_rep_response_rssurl_##]" onclick="window.open(this.href); return false" class="rss feed"><i class="fa fa-rss-square"></i> RSS 2.0 feed</a>
+				    <a href="[##_article_rep_response_atomurl_##]" onclick="window.open(this.href); return false" class="atom feed"><i class="fa fa-rss-square"></i> ATOM 1.0 feed</a>
+				</dd>
+			</dl>
+		</article>
+	</section>
+
+	<s_tb> <!-- Trackback lists ....................................................... -->
+	<s_tb_container> <!-- Trackback list container …................................. -->
+	<section class="trackbacks list">
+		<header>
+			<h3>Trackbacks List</h3>
+		</header>
+		<article>
+			<dl class="panel panel-default">
+		<s_tb_rep>
+			<dt id="[##_tb_rep_id_##]" class="panel-heading">
+				<h4><a href="[##_tb_rep_url_##]" onclick="window.open(this.href); return false" rel="external nofollow">[##_tb_rep_title_##]</a></h4>
+			</dt>
+			<dd class="trackbacked url panel-body"><dfn>Tracked</dfn> from <cite>[##_tb_rep_site_##]</cite></dd>
+			<dd class="regdate panel-body"><time>[##_tb_rep_date_##]</time></dd>
+			<dd class="content panel-body"><p>[##_tb_rep_desc_##]</p></dd>
+		</s_tb_rep>
+			</dl>
+		</article>
+	</section>
+	</s_tb_container>
+	</s_tb>
+	<s_rp> <!-- Comments  ............................................................. -->
+	<s_rp_container>
+	<section class="comments">
+		<header>
+			<hgroup>
+				<h1>Comments</h1>
+				<h2>ATOM Feed : [##_article_rep_rp_atomurl_##]</h2>
+			</hgroup>
+		</header>
+		<article>
+		<dl class="comments">
+		<s_rp_rep>
+			<dt id="[##_rp_rep_id_##]" class="[##_rp_rep_class_##]">
+				<cite><strong>[##_rp_rep_name_##]</strong></cite>
+			</dt>
+			<dd class="regdate"><time>[##_rp_rep_date_##]</time></dd>
+			<dd class="permalink"><a href="[##_rp_rep_link_##]" title="Permanent link" class="button">Permalink</a></dd>
+<!--			<dd class="delete"><command onclick="[##_rp_rep_onclick_delete_##]" label="Modify/Delete" class="button"><abbr title="Modify or Delete">M/D</abbr></command></dd> -->
+			<dd class="delete"><a href="#" onclick="[##_rp_rep_onclick_delete_##]" label="Modify/Delete" class="button"><abbr title="Modify or Delete">M/D</abbr></a></dd>
+<!--			<dd class="write"><command onclick="[##_rp_rep_onclick_reply_##]" label="Write reply" class="button">Reply</command></dd>-->
+			<dd class="write"><a href="#" onclick="[##_rp_rep_onclick_reply_##]" label="Write reply" class="button">Reply</a></dd>
+			<dd class="content"><p>[##_rp_rep_desc_##]</p></dd>
+			<s_rp2_container>
+			<dd class="reply">
+				<s_rp2_rep>
+				<dl class="reply">
+					<dt id="[##_rp_rep_id_##]" class="[##_rp_rep_class_##]">
+						<cite><strong>[##_rp_rep_name_##]</strong></cite>
+					</dt>
+					<dd class="regdate"><time>[##_rp_rep_date_##]</time></dd>
+					<dd class="permalink"><a href="[##_rp_rep_link_##]" title="Permanent link" class="button">Permalink</a></dd>
+<!--					<dd class="delete"><command onclick="[##_rp_rep_onclick_delete_##]" title="Modify/Delete" class="button"><abbr title="Modify or Delete">M/D</abbr></command></dd>-->
+					<dd class="delete"><a href="#" onclick="[##_rp_rep_onclick_delete_##]" title="Modify/Delete" class="button"><abbr title="Modify or Delete">M/D</abbr></a></dd>
+					<dd class="content"><p>[##_rp_rep_desc_##]</p></dd>
+				</dl>
+				</s_rp2_rep>
+			</dd>
+			</s_rp2_container>
+		</s_rp_rep>
+		</dl>
+		</article>
+	</section>
+	</s_rp_container>
+	<s_rp_input_form> <!-- Write form for comments	...................................... -->
+	<section class="write comments">
+		<header>
+			<hgroup>
+				<h1>Comments</h1>
+				<h2>Leave your comment</h2>
+			</hgroup>
+		</header>
+		<article>
+		<fieldset>
+		<s_rp_member>
+			<s_rp_guest>
+			<div class="form-group form-group-lg">
+				<label class="control-label col-sm-3" for="[##_rp_input_name_##]_[##_article_rep_id_##]">Your Name <em>(required)</em></label>
+				<div class="col-sm-9">
+					<input class="form-control" type="text" id="[##_rp_input_name_##]_[##_article_rep_id_##]" name="[##_rp_input_name_##]" value="[##_guest_name_##]" maxlength="20" required="required" placeholder="Name (required)"/>
+				</div>
+			</div>
+			<div class="clearfix visible-xs-block"></div>
+			<div class="form-group form-group-lg">
+				<label class="control-label col-sm-3" for="[##_rp_input_password_##]_[##_article_rep_id_##]">Password <em>(required)</em></label>
+				<div class="col-sm-9">
+					<input class="form-control" type="password" id="[##_rp_input_password_##]_[##_article_rep_id_##]" name="[##_rp_input_password_##]" value="[##_rp_admin_check_##]" required="required" placeholder="Password (required)" />
+				</div>
+			</div>
+			<div class="clearfix visible-xs-block"></div>
+			<div class="form-group form-group-lg">
+				<label class="control-label col-sm-3" for="[##_rp_input_homepage_##]_[##_article_rep_id_##]">Your Website Address</label>
+				<div class="col-sm-9">
+					<input class="form-control" type="url" id="[##_rp_input_homepage_##]_[##_article_rep_id_##]" name="[##_rp_input_homepage_##]" value="[##_guest_homepage_##]" placeholder="Your Website Address" />
+				</div>
+			</div>
+			<div class="clearfix visible-xs-block"></div>
+			</s_rp_guest>
+			<div class="form-group form-group-lg checkbox">
+				<label>
+					<input type="checkbox" class="checkbox" id="[##_rp_input_is_secret_##]_[##_article_rep_id_##]" name="[##_rp_input_is_secret_##]" value="1" />Leave as secret
+				</label>
+			</div>
+			<div class="clearfix visible-xs-block"></div>
+		</s_rp_member>
+			<div class="form-group form-group-lg">
+				<textarea class="form-control" name="[##_rp_input_comment_##]" rows="10" cols="65"></textarea>
+				<button type="submit" class="btn btn-success btn-block submit button" value="Submit" onclick="[##_rp_onclick_submit_##]">Submit</button>
+			</div>
+		</fieldset>
+		</article>
+	</section>
+	</s_rp_input_form>
+	</s_rp>
+	</s_article_rep>
+	<s_paging>
+	<div class="text-center">
+	<ul class="pagination pagination-sm">
+		<li [##_no_more_prev_##] class="previous"><a [##_prev_page_##] title="Previous page">&laquo;</a></li>
+		<s_paging_rep>
+		<li [##_paging_rep_item_prop_##]><a [##_paging_rep_link_##]>[##_paging_rep_link_num_##]</a></li>
+		</s_paging_rep>
+		<li [##_no_more_next_##] class="next"><a [##_next_page_##] title="Next page">&raquo;</a></li>
+	</ul>
+	</div>
+	</s_paging>
+
+	</div><!-- end of sections -->
+
+	<!-- This code is for sidebar. Tablet UI support will be added in the next version.-->
+	<aside id="sidebar" class="col-md-3 col-md-pull-9">
+	<!-- Sidebar (first) -->
+	<s_sidebar>
+	<s_sidebar_element>
+	<!-- Name card widget -->
+		<section id="namecardWidget" class="widget text-center">
+			<div class="thumbnail">
+				<img src="[##_image_##]" alt="Namecard image" />
+				<div class="caption">
+					<strong>[##_desc_##]</strong><br>[##_blogger_##]
+				</div>
+			</div>
+		</section>
+	</s_sidebar_element>
+	<s_sidebar_element>
+	<!-- Tag Cloud widget -->
+		<section id="tagcloudWidget" class="widget">
+			<h3>Tag Cloud</h3>
+			<ul class="tags">
+				<s_random_tags>
+				<li><a href="[##_tag_link_##]" class="[##_tag_class_##]"> [##_tag_name_##]</a></li>
+				</s_random_tags>
+			</ul>
+		</section>
+	</s_sidebar_element>
+	<s_sidebar_element>
+	<!-- Notices -->
+	<s_rct_notice>
+	<section id="recentNoticeWidget" class="widget">
+		<h3>Notices</h3>
+		<ol class="list-group">
+		<s_rct_notice_rep>
+			<li class="list-group-item">
+				<a href="[##_notice_rep_link_##]">[##_notice_rep_title_##]</a>
+				<cite>By <a href="[##_notice_rep_author_link_##]">[##_notice_rep_author_##]</a></cite>
+			</li>
+		</s_rct_notice_rep>
+		</ol>
+	</section>
+	</s_rct_notice>
+	</s_sidebar_element>
+	<s_sidebar_element>
+	<!-- Search widget -->
+		<section id="searchWidget" class="widget">
+		<s_search>
+			<div class="input-group input-group-sm">
+				<input type="text" placeholder="Search" class="form-control" name="[##_search_name_##]" value="[##_search_text_##]" onkeypress="if (event.keyCode == 13) { [##_search_onclick_submit_##] }" />
+				<span class="input-group-btn">
+					<button type="submit" onclick="[##_search_onclick_submit_##]" alt="Search" class="btn btn-default" value="Submit">Find!</button>
+				</span>
+			</div>
+		</s_search>
+		</section>
+	</s_sidebar_element>
+	<s_sidebar_element>
+	<!-- Categories widget -->
+		<section id="categoryWidget" class="widget">
+			<h3>Categories</h3>
+			[##_category_list_##]
+		</section>
+	</s_sidebar_element>
+	<s_sidebar_element>
+	<!-- Recent posts widget -->
+		<section id="recentPostWidget" class="widget">
+			<s_rctps>
+			<h3>Recent Posts</h3>
+			<ol id="recentEntries" class="list-group">
+				<s_rctps_rep>
+				<li class="list-group-item"><a href="[##_rctps_rep_link_##]">
+						[##_rctps_rep_title_##] <span class="count badge">[##_rctps_rep_rp_cnt_##]</span></a>
+						by <cite><a href="[##_rctps_rep_author_link_##]">[##_rctps_rep_author_##]</a></cite>
+				</li>
+				</s_rctps_rep>
+			</ol>
+			</s_rctps>
+		</section>
+	</s_sidebar_element>
+	</s_sidebar>
+	</aside>
+
+	</div><!-- end of contentbody row -->
+
+	<footer id="footer" class="text-center">
+		<address class="blogger">[##_blogger_##]'s Website</address>
+		<address class="powered">
+			Powered by <a href="http://www.textcube.org" onclick="window.open(this.href); return false">[##_textcube_name_##] [##_textcube_version_##]</a></address>
+		<address class="credit">
+			Lucid HTML5 skin by <a href="http://daybreaker.info">daybreaker</a> / <a href="http://forest.nubimaru.com">inureyes</a>
+		</address>
+	</footer>
+
+	</div><!-- end of content -->
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<!-- Sidebar caller -->
+	<script>
+	//<![CDATA[
+	jQuery("#menu-toggle").click(function(e) {
+		e.preventDefault();
+		jQuery("#content").toggleClass("toggled");
+		jQuery("#TCmobileScreenButton").toggleClass("toggled");
+	});
+	//]]>
+	</script>
+</body>
+</html>

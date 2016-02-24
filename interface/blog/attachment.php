@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 require ROOT . '/library/preprocessor.php';
@@ -7,7 +7,7 @@ if (empty($suri['value']))
 	Respond::NotFoundPage();
 if (!$attachment = getAttachmentByOnlyName($blogid, $suri['value']))
 	Respond::NotFoundPage();
-$fp = fopen(ROOT . "/attach/$blogid/{$attachment['name']}", 'rb');
+$fp = fopen(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$attachment['name']}", 'rb');
 if (!$fp)
 	Respond::NotFoundPage();
 $fstat = fstat($fp);
@@ -22,7 +22,7 @@ if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 }
 
 ini_set('zlib.output_compression', 'off');
-header('Content-Disposition: attachment; filename="' . rawurlencode(UTF8::bring($attachment['label'])) . '"');
+header('Content-Disposition: attachment; filename="' . rawurlencode(Utils_Unicode::bring($attachment['label'])) . '"');
 header('Content-Transfer-Encoding: binary');
 header('Last-Modified: ' . Timestamp::getRFC1123GMT($fstat['mtime']));
 header('Content-Length: ' . $fstat['size']);

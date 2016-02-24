@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -9,14 +9,18 @@ $IV = array(
 	) 
 );
 
-$service['admin_script']='control.js';
 require ROOT . '/library/preprocessor.php';
+
+$pool = DBModel::getInstance();
+$context = Model_Context::getInstance();
+$context->setProperty('service.admin_script','control.js');
 require ROOT . '/interface/common/control/header.php';
 
 requirePrivilege('group.creators');
 
-global $blogURL;
 $page = $_GET['page'];
+
+
 ?>
 	<div id="part-create-newblog" class="part">
 		<h2 class="caption"><span class="main-text"><?php echo _t('새 블로그 만들기'); ?></span></h2>
@@ -25,13 +29,13 @@ $page = $_GET['page'];
 			<fieldset>
 				<dl>
 					<dt><label for="bi-owner-loginid"><?php echo _t('소유자'); ?></label>
-					<dd id="suggestContainer"><input id="bi-owner-loginid" class="input-text" name="location" value="<?php echo getUserEmail(1);?>" /></dd>
+					<dd id="suggestContainer"><input id="bi-owner-loginid" class="input-text" name="location" value="<?php echo User::getEmail(1);?>" /></dd>
 					<dt><label for="bi-identify"><?php echo _t('블로그 구분자'); ?></label></dt>
 					<dd><input type="text" id="bi-identify" name="bi-identify" /></dd>
 				</dl>
 			</fieldset>
 			<div class="button-box">
-				<a class="button" href="#void" onclick="sendBlogAddInfo(ctlUserSuggestObj.getValue(),document.getElementById('bi-identify').value); return false;"><?php echo _t("새 블로그 생성");?></a>
+				<a class="button" href="#void" onclick="sendBlogAddInfo(ctlUserSuggestObj.getValue(),document.getElementById('bi-identify').value); return false;"><?php echo _t('새 블로그 생성');?></a>
 			</div>
 		</form>
 	</div>
@@ -83,7 +87,7 @@ if($bloglist){
 						<?php echo $itemBlogId?>
 					</td>
 					<td>
-						<a href="<?php echo $blogURL?>/control/blog/detail/<?php echo $itemBlogId?>"><?php echo $bsetting['name']?></a>
+						<a href="<?php echo $context->getProperty('uri.blog')?>/control/blog/detail/<?php echo $itemBlogId?>"><?php echo $bsetting['name']?></a>
 					</td>
 					<td>
 						<?php echo $bsetting['title']?>
@@ -92,7 +96,7 @@ if($bloglist){
 						<?php echo User::getName($bsetting['owner'])."(".User::getEmail($bsetting['owner']).")";?>
 					</td><?php if ( $service['type'] != "single" ) {?>
 					<td class="name">
-						<a href="<?php echo getDefaultUrl($itemBlogId);?>"><?php echo _t("보기");?></a>
+						<a href="<?php echo getDefaultUrl($itemBlogId);?>"><?php echo _t('보기');?></a>
 					</td><?php }?>
 				</tr>
 <?php
@@ -107,10 +111,10 @@ $paging = array('url' => "", 'prefix' => '?page=', 'postfix' => '', 'total' => 0
 $paging['pages'] = $pages;
 $paging['page'] = $page ;
 $pagingTemplate = '[##_paging_rep_##]';
-$pagingItemTemplate = '<a [##_paging_rep_link_##]>[[##_paging_rep_link_num_##]]</a>';
+$pagingItemTemplate = '<a [##_paging_rep_link_##]>[##_paging_rep_link_num_##]</a>';
 ?>
 	<div id="page-navigation">
-		<span id="page-list"><?php echo getPagingView($paging, $pagingTemplate, $pagingItemTemplate);?></span>
+		<span id="page-list"><?php echo Paging::getPagingView($paging, $pagingTemplate, $pagingItemTemplate);?></span>
 		<span id="total-count"><?php echo _f('총 %1개의 블로그',$blogcount);?></span>
 	</div>
 <?php 
@@ -121,7 +125,7 @@ require ROOT . '/interface/common/control/footer.php';
 	try {
 		document.getElementById("suggestContainer").innerHTML = '';
 		var ctlUserSuggestObj = new ctlUserSuggest(document.getElementById("suggestContainer"),  false);
-		ctlUserSuggestObj.setValue("<?php echo getUserEmail(1);?>");	
+		ctlUserSuggestObj.setValue("<?php echo User::getEmail(1);?>");	
 	} catch (e) {
 		document.getElementById("suggestContainer").innerHTML = '<input type="text" id="bi-owner-loginid" name="location" value="" />';
 	}

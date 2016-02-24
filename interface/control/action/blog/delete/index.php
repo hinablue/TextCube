@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -12,7 +12,7 @@ require ROOT . '/library/preprocessor.php';
 requireStrictRoute();
 requirePrivilege('group.creators');
 
-$items = split(",",$_GET['item']);
+$items = explode(",",$_GET['item']);
 
 if (in_array(getServiceSetting("defaultBlogId",1),$items)) {
 	$result = _t('대표 블로그는 삭제할 수 없습니다.');

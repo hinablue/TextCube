@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 if(count($_POST) > 0) {
@@ -16,8 +16,9 @@ if(count($_POST) > 0) {
 	);
 }
 require ROOT . '/library/preprocessor.php';
-requireModel('blog.category');
-requireModel('blog.entry');
+$context = Model_Context::getInstance();
+importlib('model.blog.category');
+importlib('model.blog.entry');
 if (!empty($_POST['id']))
 	$selected = $_POST['id'];
 else if (empty($_GET['id']))
@@ -57,8 +58,8 @@ if (empty($_GET['entries']) || $_GET['entries'] == 0)
 else
 	$entries = $_GET['entries'];
 
-if ((!empty($_POST['newCategory']) && Misc::isSpace($_POST['newCategory'])) ||
-			(!empty($_POST['modifyCategoryName']) && Misc::isSpace($_POST['modifyCategoryName']))) {
+if ((!empty($_POST['newCategory']) && Utils_Misc::isSpace($_POST['newCategory'])) ||
+			(!empty($_POST['modifyCategoryName']) && Utils_Misc::isSpace($_POST['modifyCategoryName']))) {
 	$history = '';
 	$errorMessage = _t('공백문자는 카테고리 이름으로 사용할 수 없습니다');
 } elseif ((!empty($_POST['newCategory']) && strpos($_POST['newCategory'], '/') !== false) || (!empty($_POST['modifyCategoryName']) && strpos($_POST['modifyCategoryName'], '/') !== false)) {
@@ -171,7 +172,7 @@ require ROOT . '/interface/common/owner/header.php';
 									</div>
 								</div>
 
-								<form class="section" method="post" action="<?php echo $blogURL;?>/owner/entry/category">
+								<form class="section" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/entry/category">
 									<fieldset id="property-box" class="container">
 										<legend><?php echo _t('분류 관리 및 설정');?></legend>
 
@@ -188,7 +189,7 @@ if ($depth <= 1) {
 ?>
 											<dd>
 												<div class="field-box">
-													<input type="text" id="newCategory" class="input-text" name="newCategory" onkeyup="if (event.keyCode == 13 &amp;&amp; validateText(this.value)) {addCategory()}" />
+													<input type="text" id="newCategory" class="input-text" name="newCategory" onkeyup="if (event.keyCode == 13 &amp;&amp; validateText(this.value)) {addCategory();return false;}" />
 													<input type="button" class="add-button input-button" value="<?php echo _t('추가하기');?>" onclick="addCategory(); return false;" />
 												</div>
 												<p>
@@ -272,7 +273,7 @@ if ($selected == 0) {
 } else {
 ?>
 												<div class="field-box">
-													<input type="button" class="remove-button input-button" value="<?php echo _t('삭제하기');?>" onclick="removeCategory();" />
+													<input type="button" class="remove-button input-button" value="<?php echo _t('삭제하기');?>" onclick="removeCategory();return false;" />
 												</div>
 <?php
 }

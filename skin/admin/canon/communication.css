@@ -41,10 +41,15 @@ table.data-inbox tbody tr .reply
 	border-bottom                    : 1px solid #E3E3DE;
 }
 
+table.data-inbox tbody tr .site
+{
+	max-width                        : 120px;
+}
+
 table.data-inbox tbody tr td.date,
 table.data-inbox tbody tr td.ip
 {
-	font-family                      : Verdana, Tahoma, Arial, "Lucida Grande", sans-serif;
+	font-family                      : inherit;
 	font-size                        : 0.9em;
 }
 
@@ -102,9 +107,12 @@ table.data-inbox tbody tr td
 #part-post-comment table.data-inbox tbody tr td.content
 {
 	text-align                       : left;
+	display                          : block;
+	max-height                       : 50px;
+	overflow                         : hidden;
 }
 
-#part-post-comment table.data-inbox tbody tr td.content div.info 
+#part-post-comment table.data-inbox tbody tr td.content div.info
 {
 	display                          : block;
 	margin-bottom                    : 3px;
@@ -126,10 +134,9 @@ table.data-inbox tbody tr td
 {
 	color                            : #999999;
 	font-size                        : 0.9em;
-	font-family                      : Dotum, sans-serif;
 }
 
-#part-post-comment table.data-inbox tbody tr td.reply span 
+#part-post-comment table.data-inbox tbody tr td.reply span
 {
 	display                          : none;
 }
@@ -306,7 +313,7 @@ table.data-inbox tbody tr td
 {
 	color                            : #999999;
 	font-size                        : 0.9em;
-	font-family                      : 돋움, Dotum, sans-serif;
+	font-family                      : inherit;
 }
 
 #part-post-trash table.data-inbox tbody tr td.revert a

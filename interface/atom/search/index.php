@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 define('NO_SESSION', true);
@@ -17,14 +17,14 @@ $blogid = getBlogId();
 list($entries, $paging) = getEntriesWithPagingBySearch($blogid, $search, 1, 1, 1);
 
 if(empty($entries)) {
-	header ("Location: $hostURL$blogURL/atom");
+	header ("Location: ".$context->getProperty('uri.host').$context->getProperty('uri.blog')."/atom");
 	exit;	
 }
 
 $cache = pageCache::getInstance();
 $cache->reset('searchATOM-'.$search);
 if(!$cache->load()) {
-	requireModel("blog.feed");
+	importlib("model.blog.feed");
 	$result = getSearchFeedByKeyword(getBlogId(),$search,'atom',$search);
 	if($result !== false) {
 		$cache->reset('searchATOM-'.$search);

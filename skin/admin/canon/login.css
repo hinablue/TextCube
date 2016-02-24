@@ -6,6 +6,7 @@ body
 {
 	background-color                 : #FFFFFF;
 	color: #666;
+	font-size:0.8em;
 }
 
 #data-outbox
@@ -114,6 +115,12 @@ hr
 .input-button:hover
 {
 	border                           : 1px solid #444;
+}
+
+.return-box
+{
+	margin-top                       : 20px;
+	text-align                       : right;
 }
 
 #message-box

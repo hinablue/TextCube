@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 require ROOT . '/library/preprocessor.php';
@@ -9,8 +9,8 @@ printFormatterSelectScript();
 ?>
 						<script type="text/javascript">
 							//<![CDATA[
-								var title = "<?php echo escapeJSInCData($blog['title']);?>";
-								var description = "<?php echo escapeJSInCData(trim($blog['description']));?>";
+								var title = "<?php echo escapeJSInCData($context->getProperty('blog.title'));?>";
+								var description = "<?php echo escapeJSInCData(trim($context->getProperty('blog.description')));?>";
 								
 								function setResample() {
 									document.getElementById("resample-form").submit();
@@ -19,7 +19,7 @@ printFormatterSelectScript();
 
 								
 								function setEditorConfig() {
-									var request = new HTTPRequest("GET", "<?php echo $blogURL;?>/owner/setting/entry/editor/?defaultEditor=" + document.getElementById('editor-form').defaultEditor.value + "&defaultFormatter=" + document.getElementById('editor-form').defaultFormatter.value + "&useBlogAPI=" + document.getElementById('editor-form').useBlogAPI.checked + "&blogApiPassword=" + document.getElementById('editor-form').blogApiPassword.value );
+									var request = new HTTPRequest("GET", "<?php echo $context->getProperty('uri.blog');?>/owner/setting/entry/editor/?defaultEditor=" + document.getElementById('editor-form').defaultEditor.value + "&defaultFormatter=" + document.getElementById('editor-form').defaultFormatter.value + "&useBlogAPI=" + document.getElementById('editor-form').useBlogAPI.checked + "&blogApiPassword=" + document.getElementById('editor-form').blogApiPassword.value );
 									request.onSuccess = function() {
 										PM.showMessage("<?php echo _t('저장되었습니다');?>", "center", "bottom");
 									}
@@ -77,12 +77,12 @@ printFormatterSelectScript();
 								}
 								
 								function addLineSearch() {
-									window.external.AddSearchProvider('<?php echo $defaultURL.'/owner/setting/entry/addline';?>');
+									window.external.AddSearchProvider('<?php echo $context->getProperty('uri.default').'/owner/setting/entry/addline';?>');
 									return false;
 								}
 
 								function refreshLineSearch(mode) {
-									var request = new HTTPRequest("POST", "<?php echo $blogURL;?>/owner/setting/entry/refreshLine");
+									var request = new HTTPRequest("POST", "<?php echo $context->getProperty('uri.blog');?>/owner/setting/entry/refreshLine");
 									request.onSuccess = function() {
 										PM.showMessage("<?php echo _t('갱신되었습니다');?>", "center", "bottom");
 									}
@@ -101,7 +101,7 @@ printFormatterSelectScript();
 						<div id="part-setting-editor" class="part">
 							<h2 class="caption"><span class="main-text"><?php echo _t('글 작성 환경을 설정합니다');?></span></h2>
 							
-							<form id="editor-form" class="data-inbox" method="post" action="<?php echo $blogURL;?>/owner/setting/entry/editor">
+							<form id="editor-form" class="data-inbox" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/setting/entry/editor">
 								<div id="editor-section" class="section">
 									<fieldset class="container">
 										<legend><?php echo _t('글 작성 환경을 설정합니다');?></legend>
@@ -173,7 +173,7 @@ foreach (getAllEditors() as $key => $value) {
 												function showapi() {
 													var selectedIndex = document.getElementById('category').selectedIndex;
 													var cid = document.getElementById('category').options[selectedIndex].value;
-													document.getElementById('apientry').innerHTML = "<?php echo $defaultURL?>" + "/api";
+													document.getElementById('apientry').innerHTML = "<?php echo $context->getProperty('uri.default')?>" + "/api";
 													if( cid != "" ) {
 														document.getElementById('apientry').innerHTML += "?category="+cid;
 													}
@@ -207,9 +207,9 @@ foreach (getAllEditors() as $key => $value) {
 											</div>
 											</dd>
 											<dd>
-												<p><label for="apientry"><?php echo _t("외부 편집기가 사용할 수 있는 주소를 만들어 주는 <strong>도우미</strong>입니다.").'<br />'.
-											_t("BlogAPI를 사용하는 편집기들은 이 블로그로 글을 보내기 위하여 'API 주소'를 사용합니다.").' '.
-											_t("편집기에 미리 정한 분류로 글을 보내는 기능이 없거나, 글들을 일괄적으로 하나의 분류로 작성하고자 할 때 이 도우미를 사용해서 주소를 만든 후 복사해서 사용하시기 바랍니다.");?></label></p>
+												<p><label for="apientry"><?php echo _t('외부 편집기가 사용할 수 있는 주소를 만들어 주는 <strong>도우미</strong>입니다.').'<br />'.
+											_t('BlogAPI를 사용하는 편집기들은 이 블로그로 글을 보내기 위하여 API 주소를 사용합니다.').' '.
+											_t('편집기에 미리 정한 분류로 글을 보내는 기능이 없거나, 글들을 일괄적으로 하나의 분류로 작성하고자 할 때 이 도우미를 사용해서 주소를 만든 후 복사해서 사용하시기 바랍니다.');?></label></p>
 											</dd>
 										</dl>
 										</div>
@@ -226,7 +226,7 @@ foreach (getAllEditors() as $key => $value) {
 						<div id="part-setting-line" class="part">
 							<h2 class="caption"><span class="main-text"><?php echo _t('라인 작성 환경을 설정합니다');?></span></h2>
 							
-							<form id="line-form" class="data-inbox" method="post" action="<?php echo $blogURL;?>/owner/setting/entry/line">
+							<form id="line-form" class="data-inbox" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/setting/entry/line">
 								<div id="line-section" class="section">
 									<fieldset class="container">
 										<legend><?php echo _t('라인 작성 환경을 설정합니다');?></legend>
@@ -262,7 +262,7 @@ if (extension_loaded('gd')) {
 							<h2 class="caption"><span class="main-text"><?php echo _t('이미지 리샘플링을 설정합니다');?></span></h2>
 							
 							<div class="data-inbox">
-								<form id="resample-form" class="section" method="post" action="<?php echo $blogURL;?>/owner/setting/entry/resample" enctype="multipart/form-data">
+								<form id="resample-form" class="section" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/setting/entry/resample" enctype="multipart/form-data">
 									<fieldset class="container">
 										<legend><?php echo _t('이미지 리샘플링 정보');?></legend>
 										

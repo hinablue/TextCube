@@ -1,0 +1,79 @@
+@charset "utf-8";
+
+/* Subscribe Statistics ********************************************************************************/
+
+#part-statistics-total
+{
+	float                            : left;
+	width                            : 29%;
+}
+
+#part-statistics-total .caption
+{
+	display                          : none;
+}
+
+#part-statistics-total dl.data-inbox
+{
+	width                            : auto;
+}
+
+#part-statistics-total dl.data-inbox dt
+{
+	background-color                 : #F3F3F1;
+	border                           : 1px solid #D2D2CC;
+	color                            : #333333;
+	height                           : 2.5em;
+	padding                          : 6px 0 0 0;
+	position                         : static;
+	text-align                       : center;
+	text-align                       : center;
+}
+
+#part-statistics-total dl.data-inbox dd
+{
+	border-bottom                    : 1px soliD #E3E3DE;
+	margin                           : 0 0 10px 0;
+	text-align                       : center;
+}
+
+/* Feed Rank *******************************************************************************************/
+
+#part-statistics-rank
+{
+	float                            : right;
+	overflow                         : hidden;
+	width                            : 69%;
+}
+
+#part-statistics-rank table.data-inbox
+{
+	width                            : auto;
+}
+
+#part-statistics-rank table.data-inbox tr th,
+#part-statistics-rank table.data-inbox tr td
+{
+	padding-left                     : 5px;
+	padding-right                    : 5px;
+}
+
+#part-statistics-rank table.data-inbox tr td.rank
+{
+	width                            : 50px;
+}
+
+#part-statistics-rank table.data-inbox tr td.aggregator
+{
+	text-align                       : left;
+}
+
+#part-statistics-rank .data-subbox
+{
+	height                           : 1.8em;
+	width                            : 69% !important;
+}
+
+#part-statistics-rank table.data-inbox tr td.aggregator .robot {
+	font-weight : bold;
+}

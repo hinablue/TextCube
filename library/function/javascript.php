@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -28,15 +28,16 @@ function filterJavaScript($str, $removeScript = true) {
 				$strippedTag = str_replace($attribute, '', $strippedTag);
 			$str = str_replace($tag, $strippedTag, $str);
 		}
-		$str = preg_replace('/&#x0*([0-9ad]{1,2});?/ie', "chr(hexdec('\\1'))", $str);
+		$str = preg_replace_callback('/&#x0*([0-9ad]{1,2});?/i', function($pattern) { return "chr(hexdec('".$pattern[1]."'))";},$str);
 		$patterns = array(
 			'/<\/?iframe.*?>/si',
 			'/<script.*?<\/script>/si',
+			'/<embed.*?<\/embed>/si',
 			'/<object.*?type=["\']?text\/x-scriptlet["\']?.*?>(.*?<\/object>)?/si',
 			'/j\s*?a\s*?v\s*?a\s*?s\s*?c\s*?r\s*?i\s*?p\s*?t\s*?:/si',
 			'/<link.*?>/si'
 		);
-		$str = preg_replace($patterns, '', $str);
+		$str = preg_replace_callback($patterns, function($pattern) { return '';}, $str);
 	} else
 		$str = str_replace('<script', '<script defer="defer"', $str);
 	return $str;
@@ -47,5 +48,5 @@ function checkAjaxRequest() {
 		return true;
 	//else
 	//	return false;
-}	
+}
 ?>

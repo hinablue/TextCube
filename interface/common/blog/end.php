@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -29,8 +29,8 @@ dress('meta_http_equiv_keywords', $totalTagsView, $view);
 $searchView = $skin->search;
 dress('search_name', 'search', $searchView);
 dress('search_text', isset($search) ? htmlspecialchars($search) : '', $searchView);
-dress('search_onclick_submit', 'searchBlog();', $searchView);
-dress('search', '<form id="TTSearchForm" name="TTSearchForm" action="'.$blogURL.'/search/" method="get" onsubmit="return searchBlog();">'.$searchView.'</form>', $view);
+dress('search_onclick_submit', 'searchBlog();return false;', $searchView);
+dress('search', '<form id="TTSearchForm" name="TTSearchForm" action="'.$context->getProperty('uri.blog').'/search/" method="get" onsubmit="return searchBlog();return false;">'.$searchView.'</form>', $view);
 
 $totalPosts = getEntriesTotalCount($blogid);
 $categories = getCategories($blogid);
@@ -50,12 +50,12 @@ if (preg_match("@\\[##_random_tags_##\\]@iU", $view))
 	dress('random_tags', getRandomTagsView(getRandomTags($blogid), $skin->randomTags), $view, false, true);
 
 if (preg_match("@\\[##_rct_notice_##\\]@iU", $view)) {
-	$noticeView = getRecentNoticesView(getRecentNotices($blogid), $skin->recentNotice, $skin->recentNoticeItem, false);
+	$noticeView = getRecentNoticesView(getRecentNotices($blogid), $skin->recentNotice, $skin->recentNoticeItem);
 	dress('rct_notice', $noticeView, $view, false, true);
 }
 if (preg_match("@\\[##_rct_page_##\\]@iU", $view)) {
-	$noticeView = getRecentNoticesView(getNotices($blogid), $skin->recentPage, $skin->recentPageItem, true);
-	dress('rct_page', $noticeView, $view, false, true);
+	$pageView = getRecentPagesView(getPages($blogid), $skin->recentPage, $skin->recentPageItem);
+	dress('rct_page', $pageView, $view, false, true);
 }
 if (preg_match("@\\[##_author_rep_##\\]@iU", $view))
 	dress('author_rep', getAuthorListView(User::getUserNamesOfBlog($blogid), $skin->authorList), $view, false, true);
@@ -88,12 +88,12 @@ if (preg_match("@\\[##_paging_##\\]@iU", $view)) {
 			if($cache->load()) {
 				$pagingView = $cache->contents;
 			} else {
-				$pagingView = getPagingView($paging, $skin->paging, $skin->pagingItem);
+				$pagingView = Paging::getPagingView($paging, $skin->paging, $skin->pagingItem);
 				$cache->contents = $pagingView;
 				$cache->update();
 			}
 		} else {
-			$pagingView = getPagingView($paging, $skin->paging, $skin->pagingItem);
+			$pagingView = Paging::getPagingView($paging, $skin->paging, $skin->pagingItem);
 		}
 		dress('paging_list', $pagingView, $view, false, true);
 		if(!empty($entries) || $suri['directive'] == '/guestbook') dress('paging', $pagingView, $view, false, true);
@@ -112,18 +112,24 @@ if (preg_match("@\\[##_paging_##\\]@iU", $view)) {
 
 // Sidebar dressing
 $sidebarElements = array_keys($skin->sidebarStorage);
+$context = Model_Context::getInstance();
 if(!empty($sidebarElements)) {
 	foreach ($sidebarElements as $element) {
 		$pluginData = $skin->sidebarStorage[$element];
 		$plugin = $pluginData['plugin'];
 		include_once (ROOT . "/plugins/{$plugin}/index.php");
-		$pluginURL = "{$service['path']}/plugins/{$plugin}";
-		$pluginPath = ROOT . "/plugins/{$plugin}";
-		if( !empty( $configMappings[$plugin]['config'] ) ) 				
-			$configVal = getCurrentSetting($plugin);
-		else
+		$pluginURL = $context->getProperty('service.path')."/plugins/{$plugin}"; // LEGACY SUPPORT
+		$pluginPath = ROOT . "/plugins/{$plugin}"; // LEGACY SUPPORT
+		$context->setProperty('plugin.uri', $context->getProperty('service.path')."/plugins/{$plugin}");
+		$context->setProperty('plugin.path', ROOT . "/plugins/{$plugin}");
+		$context->setProperty('plugin.name', ROOT . $plugin);
+		if( !empty( $configMappings[$plugin]['config'] ) ) {	
+			$configVal = getCurrentSetting($plugin); // LEGACY SUPPORT
+			$context->setProperty('plugin.config',Setting::fetchConfigVal($configVal));
+		} else {
 			$configVal ='';
-
+			$context->setProperty('plugin.config',array());
+		}
 		dress($element, call_user_func($pluginData['handler'], $pluginData['parameters']), $view);
 	}
 }

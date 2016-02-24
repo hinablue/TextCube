@@ -3,28 +3,26 @@
   <title xml:lang="ko">블로그 아이콘 표시</title>
   <title xml:lang="en">Blog icon</title>
   <title xml:lang="ja">ブログのアイコン表示</title>
-  <title xml:lang="zh-CN">表示日志个性图标</title>
-  <title xml:lang="zh-TW">表示日誌個性圖示</title>
+  <title xml:lang="zh-CN">表示日志?性??</title>
   <link>http://needlworks.org/</link>
-  <version>1.2</version>
+  <version>2.0</version>
   <description xml:lang="ko">댓글과 방명록의 작성자 홈페이지에 블로그 아이콘(index.gif)이 있으면 같이 표시됩니다.</description>
   <description xml:lang="en">This plugin displays blog icon (index.gif) along with comments or guestbook.</description>
   <description xml:lang="ja">コメントと?示板の作成者ペ?ジにブログのアイコン (index.gif) があったら名前の側に表示します。</description>
-  <description xml:lang="zh-CN">回复或留言的作者的网站若有个性图示(index.gif)，则会在姓名前显示。</description>
-  <description xml:lang="zh-TW">回覆或留言的作者的網站若有個性圖示(index.gif)，則會在姓名前顯示。</description>
+  <description xml:lang="zh-CN">??和留言的作者的?站若有?性??(index.gif),???示.</description>
   <license>GPL</license>
   <author xml:lang="en" link="http://needlworks.org">Needlworks</author>
   <author xml:lang="ko" link="http://needlworks.org">Needlworks</author>
   <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
   <requirements>
-    <textcube>1.8</textcube>
+    <textcube>
+		<minVersion>2.0</minVersion>
+	</textcube>
   </requirements>
   <binding>
-    <listener event="ViewCommenter">BlogIcon_main</listener>
-    <listener event="ViewGuestCommenter">BlogIcon_main</listener>
-    <config xml:lang="ko" dataValHandler="" manifestHandler="BlogIcon_ConfigOut_ko"></config>
-    <config xml:lang="en" dataValHandler="" manifestHandler="BlogIcon_ConfigOut_en"></config>
-    <config xml:lang="zh-TW" dataValHandler="" manifestHandler="BlogIcon_ConfigOut_tw"></config>
-    <config xml:lang="zh-CN" dataValHandler="" manifestHandler="BlogIcon_ConfigOut_cn"></config>
+    <listener event="ViewCommenter" handler="BlogIcon_main" />
+    <listener event="ViewGuestCommenter" handler="BlogIcon_main" />
+    <config xml:lang="ko" dataValHandler="BlogIcon_DataSet" manifestHandler="BlogIcon_ConfigOut_ko"></config>
+    <config xml:lang="en" dataValHandler="BlogIcon_DataSet" manifestHandler="BlogIcon_ConfigOut_en"></config>
   </binding>
 </plugin>

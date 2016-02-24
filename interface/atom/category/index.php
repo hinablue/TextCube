@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 define('NO_SESSION', true);
@@ -7,7 +7,7 @@ define('__TEXTCUBE_LOGIN__',true);
 define('__TEXTCUBE_CUSTOM_HEADER__', true);
 
 require ROOT . '/library/preprocessor.php';
-requireModel("blog.category");
+importlib("model.blog.category");
 
 requireStrictBlogURL();
 
@@ -22,7 +22,7 @@ if(!empty($suri['id'])) {
 	if(in_array($categoryId, getCategoryVisibilityList($blogid, 'private'))) return false;
  	$categoryTitle = $suri['value'];
 } else { 	// If no category is mentioned, redirect it to total atom.
-	header ("Location: $hostURL$blogURL/atom");
+	header ("Location: ".$context->getProperty('uri.host').$context->getProperty('uri.blog')."/atom");
 	exit;
 }
 
@@ -36,7 +36,7 @@ if(!$cache->load()) {
 			$categoryIds = array_merge($categoryIds, $children);
 		}
 	}
-	requireModel("blog.feed");
+	importlib("model.blog.feed");
 	$result = getCategoryFeedByCategoryId(getBlogId(),$categoryIds,'atom',$categoryTitle);
 	if($result !== false) {
 		$cache->reset('categoryATOM-'.$categoryId);

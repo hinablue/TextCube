@@ -3,22 +3,18 @@
   <title xml:lang="en">Visitors</title>
   <title xml:lang="ko">방문자 기록</title>
   <title xml:lang="ja">詳細統計</title>
-  <title xml:lang="zh-TW">訪客統計</title>
-  <title xml:lang="zh-CN">访客统计</title>
   <link>http://needlworks.org/</link>
-  <version>1.7.9</version>
+  <version>1.1.1.1</version>
   <description xml:lang="en">Default Visitor log Plugin</description>
   <description xml:lang="ko">텍스트큐브 컴포넌트를 이용하여 방문자 기록을 보여줍니다.</description>
-  <description xml:lang="ja">テト・ツールズのコンポーネントを利用して、詳細な統計情報を見せます。</description>
-  <description xml:lang="zh-TW">預設的訪客統計插件</description>
-  <description xml:lang="zh-CN">预设的访客统计插件</description>
+  <description xml:lang="ja">Textcubeの構成要素を利用して、詳細な統計情報を表示します。</description>
   <license>GPL</license>
   <author xml:lang="en" link="http://needlworks.org">Needlworks</author>
   <author xml:lang="ko" link="http://needlworks.org">Needlworks</author>
   <author xml:lang="ja" link="http://needlworks.org">Needlworks</author>
   <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="yes" />
   <requirements>
-    <textcube>1.7.9</textcube>
+    <textcube>1.5</textcube>
   </requirements>
   <binding>
     <adminMenu>
@@ -29,8 +25,6 @@
           <title xml:lang="en">Visitors</title>
           <title xml:lang="ko">방문자 기록</title>
           <title xml:lang="ja">詳細統計</title>
-          <title xml:lang="zh-TW">訪客統計</title>
-          <title xml:lang="zh-CN">访客统计</title>
           <handler>PN_Visitor_Default</handler>
           <params>
             <param>

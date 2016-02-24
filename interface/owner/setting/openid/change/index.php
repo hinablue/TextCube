@@ -11,9 +11,9 @@ $IV = array(
 );
 
 require ROOT . '/library/preprocessor.php';
-requireLibrary('blog.skin');
+importlib('blogskin');
 requireStrictRoute();
-requireModel( 'common.plugin' );
+importlib('model.common.plugin' );
 $skin = new Skin($skinSetting['skin']);
 
 if( OpenIDConsumer::setComment( $_POST['openidonlycomment'] ) &&

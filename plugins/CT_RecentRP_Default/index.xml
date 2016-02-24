@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="en">Recent Replies</title>
+  <title xml:lang="ko">최근 댓글</title>
+  <title xml:lang="ja">新着コメント</title>
+  <link>http://needlworks.org/</link>
+  <version>1.10.3</version>
+  <description xml:lang="en">Shows recent replies</description>
+  <description xml:lang="ko">최근에 작성된 댓글들을 보여줍니다</description>
+  <description xml:lang="ja">新着コメントを表示します。</description>
+  <license>GPL</license>
+  <author xml:lang="en" link="http://rsef.net">Peris (Tatter Network Foundation)</author>
+  <author xml:lang="ko" link="http://rsef.net">Peris (Tatter Network Foundation)</author>
+  <author xml:lang="ja" link="http://rsef.net">Peris (Tatter Network Foundation)</author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="yes" />
+  <requirements>
+    <textcube>
+		<minVersion>1.10.3</minVersion>
+	</textcube>
+  </requirements>
+  <binding>
+    <center handler="CT_RecentRP_Default" />
+	<config dataValHandler="CT_RecentRP_Default_DataSet" >
+		<window width="500" height="314" />
+		<fieldset legend="表示設定">
+			<field title="管理者コメント :" name="repliesChk" type="radio"  >
+				<op value="1" checked="checked">表示</op>
+				<op value="2">非表示</op>
+				<caption><![CDATA['<b>非表示</b>'で設定したら管理者のコメントは表示しません。]]></caption>
+			</field>
+			<field title="表示数 :" name="repliesList" type="text" size="4" >
+				<caption><![CDATA['<b>空白</b>'で置いといたら基本設定で表示します。]]></caption>
+			</field>
+		</fieldset>
+	</config>
+  </binding>
+</plugin>

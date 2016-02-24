@@ -1,10 +1,9 @@
-/// Copyright (c) 2005-2011. Tatter & Company / Needlworks
+/// Copyright (c) 2005-2016. Needlworks / Tatter & Company
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
 // Depends on jQuery 1.2.6 or later (from 2008/12/05, r7131)
 
-//<![CDATA[
 function getObject(target) {
 	try {
 		switch(typeof(target)) {
@@ -22,8 +21,8 @@ function getObject(target) {
 
 Standardizer.prototype.namespace = "Eolin.Application.Framework";
 Standardizer.prototype.name      = "Eolin Standardizer";
-Standardizer.prototype.verion    = "1.0";
-Standardizer.prototype.copyright = "Copyright (c) 2005,2008 Needlworks / Tatter & Company. All rights reserved.";
+Standardizer.prototype.verion    = "1.1";
+Standardizer.prototype.copyright = "Copyright (c) 2005,2015 Needlworks / Tatter & Company. All rights reserved.";
 
 function Standardizer(){};
 
@@ -43,8 +42,13 @@ if(Standardizer.prototype.isFirefox) {
 // Webkit / Safari
 webkitIndex = Math.max(ua.indexOf("WebKit"), ua.indexOf("Safari"),0);
 Standardizer.prototype.isSafari = (ua.indexOf("Safari")>=0);
+Standardizer.prototype.isChrome = (ua.indexOf("Chrome")>=0);
 Standardizer.prototype.isWebkit = (webkitIndex > 0);
-if(Standardizer.prototype.isWebkit) {
+if(Standardizer.prototype.isChrome) {
+	chromeIndex = Math.max(ua.indexOf("Webkit"), ua.indexOf("Chrome"),0);
+	Standardizer.prototype.browserVersion  = parseFloat(ua.substr(chromeIndex+7));
+	Standardizer.prototype.engineVersion  = parseFloat(ua.substr(webkitIndex+7));
+} else if(Standardizer.prototype.isWebkit) {
 	Standardizer.prototype.browserVersion  = parseFloat(ua.split("Version/")[1]) || ( ( parseFloat(ua.substr(webkitIndex+7)) >= 419.3 ) ? 3 : 2 ) || 2;
 	Standardizer.prototype.engineVersion  = parseFloat(ua.substr(webkitIndex+7));
 }
@@ -107,7 +111,7 @@ Standardizer.prototype.querySelector = function(selector) {
 	return jQuery(selector)[0];
 	// NOTE: Possible side-effect:
 	//       If you pass a html string as selector, jQuery function will return a new extended DOM node.
-}
+};
 
 Standardizer.prototype.querySelectorAll = function(selector) {
 	//if (document.querySelectorAll) // Firefox 3.1+, IE8+, Webkit x.x+
@@ -117,7 +121,7 @@ Standardizer.prototype.querySelectorAll = function(selector) {
 	return jQuery(selector);
 	// NOTE: Possible side-effect:
 	//       If you pass a html string as selector, jQuery function will return a new extended DOM node.
-}
+};
 
 var STD=new Standardizer();
 STD.addEventListener(window);
@@ -538,8 +542,8 @@ HTTPRequest.prototype.parseURL = function(url) {
 
 HTTPRequest.prototype.setTimeout = function(time) {
 	this.timeout = time;
-};	
-	
+};
+
 FileUploadRequest.prototype.namespace  = "Eolin.Application.Framework";
 FileUploadRequest.prototype.name       = "Eolin File Upload Request";
 FileUploadRequest.prototype.verion     = "1.0";
@@ -644,4 +648,3 @@ PageHolder.prototype.hold = function() {
 PageHolder.prototype.release=function() {
 	this._holding=false;
 };
-//]]>

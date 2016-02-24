@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin version="1.0">
+  <title xml:lang="ko">태터툴즈/텍스트큐브 생일 표시</title>
+  <title xml:lang="en">Tattertools/Textcube birthday</title>
+  <title xml:lang="ja">タッターツールズの誕生日表示</title>
+  <title xml:lang="zh-CN">表示TT生日</title>
+  <link>http://needlworks.org/</link>
+  <version>2.0</version>
+  <description xml:lang="en">This plugin displays Textcube birthday and D-day. To enable this, skin's HTML should contain [##_TextcubeBirthday_##] tag.</description>
+  <description xml:lang="ko"><![CDATA[텍스트큐브의 생일과 D-day를 블로그 페이지에 출력합니다. [##_TextcubeBirthday_##] 태그가 스킨에 있어야 합니다.]]></description>
+  <description xml:lang="ja">タッターツールズの誕生日と D-day をブログのページに出力します。このプラグインを使用中にして [##_TextcubeBirthday_##] タグをスキンに含むと動作が出来ます。</description>
+  <description xml:lang="zh-CN">在网页中显示TT生日和D-day. 模板中要包含 [##_TextcubeBirthday_##] 标签.</description>
+  <license>GPL</license>
+  <author xml:lang="ko" link="http://papacha.net"><![CDATA[장선주 (papacha / TNC)]]></author>
+  <author xml:lang="en" link="http://papacha.net">Sunju Jahng</author>
+  <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
+  <requirements>
+    <textcube>1.5</textcube>
+  </requirements>
+  <binding>
+	  <tag name="TextcubeBirthday" handler="TextcubeBirthday_TextcubeBirthday" />
+	  <config xml:lang="ko" dataValHandler = "TextcubeBirthdayDataSet" >
+		  <window width="500" height="525" />
+		  <fieldset legend="기념일을 넣어주세요" >
+			  <field title="월" name="month" type="select"  titledirection="bk" >
+				  <op value="1">1</op>
+				  <op value="2" >2</op>
+				  <op value="3" checked="checked">3</op>
+				  <op value="4">4</op>
+				  <op value="5">5</op>
+				  <op value="6" >6</op>
+				  <op value="7">7</op>
+				  <op value="8">8</op>
+				  <op value="9">9</op>
+				  <op value="10">10</op>
+				  <op value="11">11</op>
+				  <op value="12">12</op>
+			  </field>			
+			  <field title="일" name="day" type="text"  size ="3" titledirection="bk"  value="13">
+				  <caption > 날짜는 숫자로만 넣어주세요.</caption>
+			  </field>
+		  </fieldset>
+	  </config>
+    <config xml:lang="en" dataValHandler = "TextcubeBirthdayDataSet" >
+      <window width="500" height="525" />
+      <fieldset legend="Select a day of remembrance." >
+        <field title="Month" name="month" type="select"  titledirection="bk" >
+          <op value="1">Jan.</op>
+          <op value="2">Feb.</op>
+          <op value="3" checked="checked">Mar.</op>
+          <op value="4">Apr.</op>
+          <op value="5">May.</op>
+          <op value="6">Jun.</op>
+          <op value="7">Jul.</op>
+          <op value="8">Aug.</op>
+          <op value="9">Sep.</op>
+          <op value="10">Oct.</op>
+          <op value="11">Nov.</op>
+          <op value="12">Dec.</op>
+        </field>
+        <field title="Day" name="day" type="text"  size ="3" titledirection="bk"  value="13">
+          <caption >Specify a day between 1 to 31.</caption>
+        </field>
+      </fieldset>
+    </config>
+  </binding>
+</plugin>

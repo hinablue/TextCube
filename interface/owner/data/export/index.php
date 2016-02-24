@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -10,16 +10,16 @@ $IV = array(
 require ROOT . '/library/preprocessor.php';
 set_time_limit(0);
 $includeFileContents = Validator::getBool(@$_GET['includeFileContents']);
-$writer = new OutputWriter();
+$writer = new Utils_OutputWriter();
 if (defined('__TEXTCUBE_BACKUP__')) {
-	if (!file_exists(ROOT . '/cache/backup')) {
-		mkdir(ROOT . '/cache/backup');
-		@chmod(ROOT . '/cache/backup', 0777);
+	if (!file_exists(__TEXTCUBE_CACHE_DIR__.'/backup')) {
+		mkdir(__TEXTCUBE_CACHE_DIR__.'/backup');
+		@chmod(__TEXTCUBE_CACHE_DIR__.'/backup', 0777);
 	}
-	if (!is_dir(ROOT . '/cache/backup')) {
+	if (!is_dir(__TEXTCUBE_CACHE_DIR__.'/backup')) {
 		exit;
 	}
-	if ($writer->openFile(ROOT . "/cache/backup/$blogid.xml")) {
+	if ($writer->openFile(__TEXTCUBE_CACHE_DIR__."/backup/$blogid.xml")) {
 	} else {
 		exit;
 	}
@@ -33,17 +33,17 @@ if (defined('__TEXTCUBE_BACKUP__')) {
 		exit;
 	}
 }
-$newlineStyle = (!is_null(getServiceSetting('newlineStyle')) ? ' format="'.getServiceSetting('newlineStyle').'"' : '');
+$newlineStyle = (!is_null(Setting::getServiceSettingGlobal('newlineStyle')) ? ' format="'.Setting::getServiceSettingGlobal('newlineStyle').'"' : '');
 $writer->write('<?xml version="1.0" encoding="utf-8" ?>');
-$writer->write('<blog type="tattertools/1.1" migrational="false">');
+$writer->write('<blog type="tattertools/1.1" extension="textcube/2.0" migrational="false">');
 $setting = new BlogSetting();
 if ($setting->load()) {
 	$setting->escape();
-	$writer->write('<setting>' . '<name>' . $setting->name . '</name>' . '<secondaryDomain>' . $setting->secondaryDomain . '</secondaryDomain>' . '<defaultDomain>' . Validator::getBit($setting->defaultDomain) . '</defaultDomain>' . '<title>' . $setting->title . '</title>' . '<description>' . UTF8::correct($setting->description) . '</description>' . '<banner><name>' . $setting->banner . '</name>');
-	if ($includeFileContents && file_exists(ROOT . "/attach/$blogid/{$setting->banner}")) {
+	$writer->write('<setting>' . '<name>' . $setting->name . '</name>' . '<secondaryDomain>' . $setting->secondaryDomain . '</secondaryDomain>' . '<defaultDomain>' . Validator::getBit($setting->defaultDomain) . '</defaultDomain>' . '<title>' . $setting->title . '</title>' . '<description>' . Utils_Unicode::correct($setting->description) . '</description>' . '<banner><name>' . $setting->banner . '</name>');
+	if ($includeFileContents && file_exists(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$setting->banner}")) {
 		$writer->write('<content>');
-		if (!empty($setting->banner) && file_exists(ROOT . "/attach/$blogid/" . $setting->banner))
-			Base64Stream::encode(ROOT . "/attach/$blogid/{$setting->banner}", $writer);
+		if (!empty($setting->banner) && file_exists(__TEXTCUBE_ATTACH_DIR__."/$blogid/" . $setting->banner))
+			Utils_Base64Stream::encode(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$setting->banner}", $writer);
 		$writer->write('</content>');
 	}
 	$writer->write('</banner>' . '<useSloganOnPost>' . Validator::getBit($setting->useSloganOnPost) . '</useSloganOnPost>' . '<postsOnPage>' . $setting->postsOnPage . '</postsOnPage>' . '<postsOnList>' . $setting->postsOnList . '</postsOnList>' . '<postsOnFeed>' . $setting->postsOnFeed . '</postsOnFeed>' . '<publishWholeOnFeed>' . Validator::getBit($setting->publishWholeOnFeed) . '</publishWholeOnFeed>' . '<acceptGuestComment>' . Validator::getBit($setting->acceptGuestComment) . '</acceptGuestComment>' . '<acceptcommentOnGuestComment>' . Validator::getBit($setting->acceptcommentOnGuestComment) . '</acceptcommentOnGuestComment>' . '<language>' . $setting->language . '</language>' . '<timezone>' . $setting->timezone . '</timezone>' . '</setting>');
@@ -77,7 +77,7 @@ if ($category->open()) {
 $post = new Post();
 if ($post->open('', '*', 'published, id')) {
 	do {
-		$writer->write('<post slogan="' . htmlspecialchars($post->slogan) . '"' . $newlineStyle . '>' . 
+		$writer->write('<post slogan="' . htmlspecialchars($post->slogan) . '"' . $newlineStyle . '>' .
 			'<id>' . $post->id . '</id>');
 		if ($post->visibility == 'appointed') { // for backward compatibility
 			$writer->write('<appointed>true</appointed>');
@@ -86,15 +86,15 @@ if ($post->open('', '*', 'published, id')) {
 			$writer->write('<appointed>false</appointed>');
 			$writer->write('<visibility>' . $post->visibility . '</visibility>');
 		}
-		$writer->write('<starred>' . $post->starred . '</starred>' . 
-			'<title>' . htmlspecialchars($post->title) . '</title>' . 
-			'<content formatter="' . htmlspecialchars($post->contentformatter) . '" editor="' . htmlspecialchars($post->contenteditor) .'">' . htmlspecialchars(UTF8::correct($post->content)) . '</content>' . 
-			'<location>' . htmlspecialchars($post->location) . '</location>' . 
-			(!is_null($post->password) ? '<password>' . htmlspecialchars($post->password) . '</password>' : '') . 
-			'<acceptComment>' . $post->acceptcomment . '</acceptComment>' . 
-			'<acceptTrackback>' . $post->accepttrackback . '</acceptTrackback>' . 
-			'<published>' . $post->published . '</published>' . 
-			'<created>' . $post->created . '</created>' . 
+		$writer->write('<starred>' . $post->starred . '</starred>' .
+			'<title>' . htmlspecialchars($post->title) . '</title>' .
+			'<content formatter="' . htmlspecialchars($post->contentformatter) . '" editor="' . htmlspecialchars($post->contenteditor) .'">' . htmlspecialchars(Utils_Unicode::correct($post->content)) . '</content>' .
+			'<location>' . htmlspecialchars($post->location) . '</location>' .
+			(!is_null($post->password) ? '<password>' . htmlspecialchars($post->password) . '</password>' : '') .
+			'<acceptComment>' . $post->acceptcomment . '</acceptComment>' .
+			'<acceptTrackback>' . $post->accepttrackback . '</acceptTrackback>' .
+			'<published>' . $post->published . '</published>' .
+			'<created>' . $post->created . '</created>' .
 			'<modified>' . $post->modified . '</modified>' .
 			'<longitude>'. $post->longitude . '</longitude>'.
 			'<latitude>'. $post->latitude. '</latitude>');
@@ -109,9 +109,9 @@ if ($post->open('', '*', 'published, id')) {
 		if ($attachment = $post->getAttachments()) {
 			do {
 				$writer->write('<attachment' . ' mime="' . htmlspecialchars($attachment->mime) . '"' . ' size="' . $attachment->size . '"' . ' width="' . $attachment->width . '"' . ' height="' . $attachment->height . '"' . '>' . '<name>' . htmlspecialchars($attachment->name) . '</name>' . '<label>' . htmlspecialchars($attachment->label) . '</label>' . '<enclosure>' . ($attachment->enclosure ? 1 : 0) . '</enclosure>' . '<attached>' . $attachment->attached . '</attached>' . '<downloads>' . $attachment->downloads . '</downloads>');
-				if ($includeFileContents && file_exists(ROOT . "/attach/$blogid/{$attachment->name}")) {
+				if ($includeFileContents && file_exists(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$attachment->name}")) {
 					$writer->write('<content>');
-					Base64Stream::encode(ROOT . "/attach/$blogid/{$attachment->name}", $writer);
+					Utils_Base64Stream::encode(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$attachment->name}", $writer);
 					$writer->write('</content>');
 				}
 				$writer->write('</attachment>');
@@ -122,13 +122,13 @@ if ($post->open('', '*', 'published, id')) {
 		if ($comment = $post->getComments()) {
 			do {
 				if($comment->isfiltered == 0) {
-					$writer->write('<comment>' . '<id>'. $comment->id . '</id>' . '<commenter' . ' id="' . $comment->commenter . '">' . '<name>' . htmlspecialchars(UTF8::correct($comment->name)) . '</name>' . '<homepage>' . htmlspecialchars(UTF8::correct($comment->homepage)) . '</homepage>' . '<ip>' . $comment->ip . '</ip>' . '<openid>' . $comment->openid . '</openid>' . '</commenter>' .
+					$writer->write('<comment>' . '<id>'. $comment->id . '</id>' . '<commenter' . ' id="' . $comment->commenter . '">' . '<name>' . htmlspecialchars(Utils_Unicode::correct($comment->name)) . '</name>' . '<homepage>' . htmlspecialchars(Utils_Unicode::correct($comment->homepage)) . '</homepage>' . '<ip>' . $comment->ip . '</ip>' . '<openid>' . $comment->openid . '</openid>' . '</commenter>' .
 					'<content>' . htmlspecialchars($comment->content) . '</content>' . '<password>' . htmlspecialchars($comment->password) . '</password>' . '<secret>' . htmlspecialchars($comment->secret) . '</secret>' .'<longitude>'.$comment->longitude .'</longitude>'.'<latitude>'.$comment->latitude.'</latitude>' . '<written>' . $comment->written . '</written>' . '<isFiltered>' . $comment->isfiltered . '</isFiltered>');
 					$writer->write(CRLF);
 					if ($childComment = $comment->getChildren()) {
 						do {
 							if($childComment->isfiltered == 0) {
-								$writer->write('<comment>' . '<id>' . $childComment->id . '</id>' . '<commenter' . ' id="' . $childComment->commenter . '"' . '>' . '<name>' . htmlspecialchars(UTF8::correct($childComment->name)) . '</name>' . '<homepage>' . htmlspecialchars(UTF8::correct($childComment->homepage)) . '</homepage>' . '<ip>' . $childComment->ip . '</ip>' . '<openid>' . $comment->openid . '</openid>' . '</commenter>' . '<content>' . htmlspecialchars($childComment->content) . '</content>' . '<password>' . htmlspecialchars($childComment->password) . '</password>' . '<secret>' . htmlspecialchars($childComment->secret) . '</secret>' . '<written>' . $childComment->written . '</written>' . '<isFiltered>' . $childComment->isfiltered . '</isFiltered>' . '</comment>');
+								$writer->write('<comment>' . '<id>' . $childComment->id . '</id>' . '<commenter' . ' id="' . $childComment->commenter . '"' . '>' . '<name>' . htmlspecialchars(Utils_Unicode::correct($childComment->name)) . '</name>' . '<homepage>' . htmlspecialchars(Utils_Unicode::correct($childComment->homepage)) . '</homepage>' . '<ip>' . $childComment->ip . '</ip>' . '<openid>' . $comment->openid . '</openid>' . '</commenter>' . '<content>' . htmlspecialchars($childComment->content) . '</content>' . '<password>' . htmlspecialchars($childComment->password) . '</password>' . '<secret>' . htmlspecialchars($childComment->secret) . '</secret>' . '<written>' . $childComment->written . '</written>' . '<isFiltered>' . $childComment->isfiltered . '</isFiltered>' . '</comment>');
 							$writer->write(CRLF);
 							}
 						} while ($childComment->shift());
@@ -143,7 +143,7 @@ if ($post->open('', '*', 'published, id')) {
 		if ($trackback = $post->getTrackbacks()) {
 			do {
 				if($trackback->isfiltered == 0) {
-					$writer->write('<trackback>' . '<url>' . htmlspecialchars(UTF8::correct($trackback->url)) . '</url>' . '<site>' . htmlspecialchars(UTF8::correct($trackback->site)) . '</site>' . '<title>' . htmlspecialchars(UTF8::correct($trackback->title)) . '</title>' . '<excerpt>' . htmlspecialchars(UTF8::correct($trackback->excerpt)) . '</excerpt>' . '<ip>' . $trackback->ip . '</ip>' . '<received>' . $trackback->received . '</received>' . '<isFiltered>' . $trackback->isfiltered . '</isFiltered>' . '</trackback>');
+					$writer->write('<trackback>' . '<url>' . htmlspecialchars(Utils_Unicode::correct($trackback->url)) . '</url>' . '<site>' . htmlspecialchars(Utils_Unicode::correct($trackback->site)) . '</site>' . '<title>' . htmlspecialchars(Utils_Unicode::correct($trackback->title)) . '</title>' . '<excerpt>' . htmlspecialchars(Utils_Unicode::correct($trackback->excerpt)) . '</excerpt>' . '<ip>' . $trackback->ip . '</ip>' . '<received>' . $trackback->received . '</received>' . '<isFiltered>' . $trackback->isfiltered . '</isFiltered>' . '</trackback>');
 					$writer->write(CRLF);
 				}
 			} while ($trackback->shift());
@@ -152,7 +152,7 @@ if ($post->open('', '*', 'published, id')) {
 		if ($log = $post->getTrackbackLogs()) {
 			$writer->write('<logs>');
 			do {
-				$writer->write('<trackback>' . '<url>' . htmlspecialchars(UTF8::correct($log->url)) . '</url>' . '<sent>' . $log->sent . '</sent>' . '</trackback>');
+				$writer->write('<trackback>' . '<url>' . htmlspecialchars(Utils_Unicode::correct($log->url)) . '</url>' . '<sent>' . $log->sent . '</sent>' . '</trackback>');
 				$writer->write(CRLF);
 			} while ($log->shift());
 			$writer->write('</logs>');
@@ -163,26 +163,58 @@ if ($post->open('', '*', 'published, id')) {
 	} while ($post->shift());
 	$post->close();
 }
+$page = new Page();
+if ($page->open()) {
+	do {
+		$writer->write('<page' . ' slogan="' . htmlspecialchars($page->slogan) . '"' . $newlineStyle . '>' . 
+			'<id>' . $page->id . '</id>' . 
+			'<visibility>' . $page->visibility . '</visibility>' . 
+			'<starred>' . $page->starred . '</starred>' . 
+			'<title>' . htmlspecialchars(Utils_Unicode::correct($page->title)) . '</title>' . 
+			'<content formatter="' . htmlspecialchars($page->contentformatter) . '" editor="' . htmlspecialchars($page->contenteditor) .'">' . htmlspecialchars(Utils_Unicode::correct($page->content)) . '</content>' . 
+			'<published>' . $page->published . '</published>' . 
+			'<created>' . $page->created . '</created>' . 
+			'<modified>' . $page->modified . '</modified>');
+
+		$writer->write(CRLF);
+		if ($attachment = $page->getAttachments()) {
+			do {
+				$writer->write('<attachment' . ' mime="' . htmlspecialchars($attachment->mime) . '"' . ' size="' . $attachment->size . '"' . ' width="' . $attachment->width . '"' . ' height="' . $attachment->height . '"' . '>' . '<name>' . htmlspecialchars($attachment->name) . '</name>' . '<label>' . htmlspecialchars($attachment->label) . '</label>' . '<enclosure>' . ($attachment->enclosure ? 1 : 0) . '</enclosure>' . '<attached>' . $attachment->attached . '</attached>' . '<downloads>' . $attachment->downloads . '</downloads>');
+				if ($includeFileContents && file_exists(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$attachment->name}")) {
+					$writer->write('<content>');
+					Utils_Base64Stream::encode(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$attachment->name}", $writer);
+					$writer->write('</content>');
+				}
+				$writer->write('</attachment>');
+				$writer->write(CRLF);
+			} while ($attachment->shift());
+			$attachment->close();
+		}
+		$writer->write('</page>');
+		$writer->write(CRLF);
+	} while ($page->shift());
+	$page->close();
+}
 $notice = new Notice();
 if ($notice->open()) {
 	do {
-		$writer->write('<notice' . ' slogan="' . htmlspecialchars($notice->slogan) . '"' . $newlineStyle . '>' . 
-			'<id>' . $notice->id . '</id>' . 
-			'<visibility>' . $notice->visibility . '</visibility>' . 
-			'<starred>' . $notice->starred . '</starred>' . 
-			'<title>' . htmlspecialchars(UTF8::correct($notice->title)) . '</title>' . 
-			'<content formatter="' . htmlspecialchars($notice->contentformatter) . '" editor="' . htmlspecialchars($notice->contenteditor) .'">' . htmlspecialchars(UTF8::correct($notice->content)) . '</content>' . 
-			'<published>' . $notice->published . '</published>' . 
-			'<created>' . $notice->created . '</created>' . 
+		$writer->write('<notice' . ' slogan="' . htmlspecialchars($notice->slogan) . '"' . $newlineStyle . '>' .
+			'<id>' . $notice->id . '</id>' .
+			'<visibility>' . $notice->visibility . '</visibility>' .
+			'<starred>' . $notice->starred . '</starred>' .
+			'<title>' . htmlspecialchars(Utils_Unicode::correct($notice->title)) . '</title>' .
+			'<content formatter="' . htmlspecialchars($notice->contentformatter) . '" editor="' . htmlspecialchars($notice->contenteditor) .'">' . htmlspecialchars(Utils_Unicode::correct($notice->content)) . '</content>' .
+			'<published>' . $notice->published . '</published>' .
+			'<created>' . $notice->created . '</created>' .
 			'<modified>' . $notice->modified . '</modified>');
 
 		$writer->write(CRLF);
 		if ($attachment = $notice->getAttachments()) {
 			do {
 				$writer->write('<attachment' . ' mime="' . htmlspecialchars($attachment->mime) . '"' . ' size="' . $attachment->size . '"' . ' width="' . $attachment->width . '"' . ' height="' . $attachment->height . '"' . '>' . '<name>' . htmlspecialchars($attachment->name) . '</name>' . '<label>' . htmlspecialchars($attachment->label) . '</label>' . '<enclosure>' . ($attachment->enclosure ? 1 : 0) . '</enclosure>' . '<attached>' . $attachment->attached . '</attached>' . '<downloads>' . $attachment->downloads . '</downloads>');
-				if ($includeFileContents && file_exists(ROOT . "/attach/$blogid/{$attachment->name}")) {
+				if ($includeFileContents && file_exists(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$attachment->name}")) {
 					$writer->write('<content>');
-					Base64Stream::encode(ROOT . "/attach/$blogid/{$attachment->name}", $writer);
+					Utils_Base64Stream::encode(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$attachment->name}", $writer);
 					$writer->write('</content>');
 				}
 				$writer->write('</attachment>');
@@ -198,23 +230,23 @@ if ($notice->open()) {
 $keyword = new Keyword();
 if ($keyword->open()) {
 	do {
-		$writer->write('<keyword' . $newlineStyle . '>' . 
-			'<id>' . $keyword->id . '</id>' . 
-			'<visibility>' . $keyword->visibility . '</visibility>' . 
-			'<starred>' . $keyword->starred . '</starred>' . 			
-			'<name>' . htmlspecialchars(UTF8::correct($keyword->name)) . '</name>' . 
-			'<description editor="' . htmlspecialchars($keyword->descriptionEditor) . '" formatter="' . htmlspecialchars($keyword->descriptionFormatter) .'">' . htmlspecialchars(UTF8::correct($keyword->description)) . '</description>' .
-			'<published>' . $keyword->published . '</published>' . 
-			'<created>' . $keyword->created . '</created>' . 
+		$writer->write('<keyword' . $newlineStyle . '>' .
+			'<id>' . $keyword->id . '</id>' .
+			'<visibility>' . $keyword->visibility . '</visibility>' .
+			'<starred>' . $keyword->starred . '</starred>' .
+			'<name>' . htmlspecialchars(Utils_Unicode::correct($keyword->name)) . '</name>' .
+			'<description editor="' . htmlspecialchars($keyword->descriptionEditor) . '" formatter="' . htmlspecialchars($keyword->descriptionFormatter) .'">' . htmlspecialchars(Utils_Unicode::correct($keyword->description)) . '</description>' .
+			'<published>' . $keyword->published . '</published>' .
+			'<created>' . $keyword->created . '</created>' .
 			'<modified>' . $keyword->modified . '</modified>');
 
 		$writer->write(CRLF);
 		if ($attachment = $keyword->getAttachments()) {
 			do {
 				$writer->write('<attachment' . ' mime="' . htmlspecialchars($attachment->mime) . '"' . ' size="' . $attachment->size . '"' . ' width="' . $attachment->width . '"' . ' height="' . $attachment->height . '"' . '>' . '<name>' . htmlspecialchars($attachment->name) . '</name>' . '<label>' . htmlspecialchars($attachment->label) . '</label>' . '<enclosure>' . ($attachment->enclosure ? 1 : 0) . '</enclosure>' . '<attached>' . $attachment->attached . '</attached>' . '<downloads>' . $attachment->downloads . '</downloads>');
-				if ($includeFileContents && file_exists(ROOT . "/attach/$blogid/{$attachment->name}")) {
+				if ($includeFileContents && file_exists(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$attachment->name}")) {
 					$writer->write('<content>');
-					Base64Stream::encode(ROOT . "/attach/$blogid/{$attachment->name}", $writer);
+					Utils_Base64Stream::encode(__TEXTCUBE_ATTACH_DIR__."/$blogid/{$attachment->name}", $writer);
 					$writer->write('</content>');
 				}
 				$writer->write('</attachment>');
@@ -230,7 +262,7 @@ if ($keyword->open()) {
 $link = new Link();
 if ($link->open()) {
 	do {
-		$writer->write('<link>' . '<url>' . htmlspecialchars(UTF8::correct($link->url)) . '</url>' . '<title>' . htmlspecialchars(UTF8::correct($link->title)) . '</title>' . '<feed>' . htmlspecialchars(UTF8::correct($link->feed)) . '</feed>' . '<registered>' . $link->registered . '</registered>' . '<xfn>' . htmlspecialchars($link->xfn) . '</xfn>' . '</link>');
+		$writer->write('<link>' . '<url>' . htmlspecialchars(Utils_Unicode::correct($link->url)) . '</url>' . '<title>' . htmlspecialchars(Utils_Unicode::correct($link->title)) . '</title>' . '<feed>' . htmlspecialchars(Utils_Unicode::correct($link->feed)) . '</feed>' . '<registered>' . $link->registered . '</registered>' . '<xfn>' . htmlspecialchars($link->xfn) . '</xfn>' . '</link>');
 		$writer->write(CRLF);
 	} while ($link->shift());
 	$link->close();
@@ -240,7 +272,7 @@ if ($log->open()) {
 	$writer->write('<logs>');
 	$writer->write(CRLF);
 	do {
-		$writer->write('<referer>' . '<url>' . htmlspecialchars(UTF8::correct($log->url)) . '</url>' . '<referred>' . $log->referred . '</referred>' . '</referer>');
+		$writer->write('<referer>' . '<url>' . htmlspecialchars(Utils_Unicode::correct($log->url)) . '</url>' . '<referred>' . $log->referred . '</referred>' . '</referer>');
 		$writer->write(CRLF);
 	} while ($log->shift());
 	$writer->write('</logs>');
@@ -257,12 +289,12 @@ if ($cmtNotified->open()) {
 		$writer->write('<comment>');
 		$writer->write('<id>' . $cmtNotified->id . '</id>');
 		$writer->write('<commenter>');
-		$writer->write('<name>' . htmlspecialchars(UTF8::correct($cmtNotified->name)) . '</name>');
-		$writer->write('<homepage>' . htmlspecialchars(UTF8::correct($cmtNotified->homepage)) . '</homepage>');
+		$writer->write('<name>' . htmlspecialchars(Utils_Unicode::correct($cmtNotified->name)) . '</name>');
+		$writer->write('<homepage>' . htmlspecialchars(Utils_Unicode::correct($cmtNotified->homepage)) . '</homepage>');
 		$writer->write('<ip>' . $cmtNotified->ip . '</ip>');
 		$writer->write('</commenter>');
 		$writer->write('<entry>' . $cmtNotified->entry . '</entry>');
-		$writer->write('<content>' . htmlspecialchars(UTF8::correct($cmtNotified->content)). '</content>');
+		$writer->write('<content>' . htmlspecialchars(Utils_Unicode::correct($cmtNotified->content)). '</content>');
 		$writer->write('<password>' . htmlspecialchars($cmtNotified->password) . '</password>');
 		$writer->write('<parent>' . htmlspecialchars($cmtNotified->parent) . '</parent>');
 		$writer->write('<secret>' . $cmtNotified->secret . '</secret>');
@@ -270,15 +302,15 @@ if ($cmtNotified->open()) {
 		$writer->write('<modified>' . $cmtNotified->modified . '</modified>');
 		$site = new CommentNotifiedSiteInfo();
 		$site->open("id = {$cmtNotified->siteid}");
-		$writer->write('<site>' . htmlspecialchars(UTF8::correct($site->url)) . '</site>');
+		$writer->write('<site>' . htmlspecialchars(Utils_Unicode::correct($site->url)) . '</site>');
 		$cur_siteinfo[$i] = $site->id; $i++;
 		$site->close();
 		$writer->write('<remoteId>' . $cmtNotified->remoteid . '</remoteId>');
 		$writer->write('<isNew>' . $cmtNotified->isnew . '</isNew>');
-		$writer->write('<url>' . htmlspecialchars(UTF8::correct($cmtNotified->url)). '</url>');
-		$writer->write('<entryTitle>' . htmlspecialchars(UTF8::correct($cmtNotified->entrytitle)). '</entryTitle>');
-		$writer->write('<entryUrl>' . htmlspecialchars(UTF8::correct($cmtNotified->entryurl)). '</entryUrl>');
-		$writer->write('</comment>');		
+		$writer->write('<url>' . htmlspecialchars(Utils_Unicode::correct($cmtNotified->url)). '</url>');
+		$writer->write('<entryTitle>' . htmlspecialchars(Utils_Unicode::correct($cmtNotified->entrytitle)). '</entryTitle>');
+		$writer->write('<entryUrl>' . htmlspecialchars(Utils_Unicode::correct($cmtNotified->entryurl)). '</entryUrl>');
+		$writer->write('</comment>');
 		$writer->write(CRLF);
 	} while ($cmtNotified->shift());
 	$writer->write('</commentsNotified>');
@@ -291,9 +323,9 @@ if ($cmtNotifiedSite->open()) {
 	do {
 		if (in_array($cmtNotifiedSite->id, $cur_siteinfo)) {
 			$writer->write('<site>');
-			$writer->write('<title>' . htmlspecialchars(UTF8::correct($cmtNotifiedSite->title)) . '</title>');
-			$writer->write('<name>' . htmlspecialchars(UTF8::correct($cmtNotifiedSite->name)) . '</name>');
-			$writer->write('<url>' . htmlspecialchars(UTF8::correct($cmtNotifiedSite->url)) . '</url>');
+			$writer->write('<title>' . htmlspecialchars(Utils_Unicode::correct($cmtNotifiedSite->title)) . '</title>');
+			$writer->write('<name>' . htmlspecialchars(Utils_Unicode::correct($cmtNotifiedSite->name)) . '</name>');
+			$writer->write('<url>' . htmlspecialchars(Utils_Unicode::correct($cmtNotifiedSite->url)) . '</url>');
 			$writer->write('<modified>' . $cmtNotifiedSite->modified . '</modified>');
 			$writer->write('</site>');
 		}
@@ -306,7 +338,7 @@ $statistics = new RefererStatistics();
 if ($statistics->open()) {
 	$writer->write('<statistics>');
 	do {
-		$writer->write('<referer>' . '<host>' . htmlspecialchars(UTF8::correct($statistics->host)) . '</host>' . '<count>' . $statistics->count . '</count>' . '</referer>');
+		$writer->write('<referer>' . '<host>' . htmlspecialchars(Utils_Unicode::correct($statistics->host)) . '</host>' . '<count>' . $statistics->count . '</count>' . '</referer>');
 		$writer->write(CRLF);
 	} while ($statistics->shift());
 	$writer->write('</statistics>');
@@ -331,31 +363,31 @@ if ($statistics->open()) {
 }
 $setting = new SkinSetting();
 if ($setting->load()) {
-	$writer->write('<skin>' . 
-		'<name>' . $setting->skin . '</name>' . 
-		'<entriesOnRecent>' . $setting->entriesOnRecent . '</entriesOnRecent>' . 
-		'<commentsOnRecent>' . $setting->commentsOnRecent . '</commentsOnRecent>' . 
-		'<trackbacksOnRecent>' . $setting->trackbacksOnRecent . '</trackbacksOnRecent>' . 
-		'<commentsOnGuestbook>' . $setting->commentsOnGuestbook . '</commentsOnGuestbook>' . 
-		'<tagsOnTagbox>' . $setting->tagsOnTagbox . '</tagsOnTagbox>' . 
-		'<alignOnTagbox>' . $setting->alignOnTagbox . '</alignOnTagbox>' . 
-		'<expandComment>' . $setting->expandComment . '</expandComment>' . 
-		'<expandTrackback>' . $setting->expandTrackback . '</expandTrackback>' . 
-		'<recentNoticeLength>' . $setting->recentNoticeLength . '</recentNoticeLength>' . 
-		'<recentEntryLength>' . $setting->recentEntryLength . '</recentEntryLength>' . 
-		'<recentTrackbackLength>' . $setting->recentTrackbackLength . '</recentTrackbackLength>' . 
-		'<linkLength>' . $setting->linkLength . '</linkLength>' . 
-		'<showListOnCategory>' . $setting->showListOnCategory . '</showListOnCategory>' . 
-		'<showListOnArchive>' . $setting->showListOnArchive . '</showListOnArchive>' . 
-		'<tree>' . 
-			'<name>' . $setting->tree . '</name>' . 
-			'<color>' . $setting->colorOnTree . '</color>' . 
-			'<bgColor>' . $setting->bgcolorOnTree . '</bgColor>' . 
-			'<activeColor>' . $setting->activecolorOnTree . '</activeColor>' . 
-			'<activeBgColor>' . $setting->activebgcolorOnTree . '</activeBgColor>' . 
-			'<labelLength>' . $setting->labelLengthOnTree . '</labelLength>' . 
-			'<showValue>' . $setting->showValueOnTree . '</showValue>' . 
-		'</tree>' . 
+	$writer->write('<skin>' .
+		'<name>' . $setting->skin . '</name>' .
+		'<entriesOnRecent>' . $setting->entriesOnRecent . '</entriesOnRecent>' .
+		'<commentsOnRecent>' . $setting->commentsOnRecent . '</commentsOnRecent>' .
+		'<trackbacksOnRecent>' . $setting->trackbacksOnRecent . '</trackbacksOnRecent>' .
+		'<commentsOnGuestbook>' . $setting->commentsOnGuestbook . '</commentsOnGuestbook>' .
+		'<tagsOnTagbox>' . $setting->tagsOnTagbox . '</tagsOnTagbox>' .
+		'<alignOnTagbox>' . $setting->alignOnTagbox . '</alignOnTagbox>' .
+		'<expandComment>' . $setting->expandComment . '</expandComment>' .
+		'<expandTrackback>' . $setting->expandTrackback . '</expandTrackback>' .
+		'<recentNoticeLength>' . $setting->recentNoticeLength . '</recentNoticeLength>' .
+		'<recentEntryLength>' . $setting->recentEntryLength . '</recentEntryLength>' .
+		'<recentTrackbackLength>' . $setting->recentTrackbackLength . '</recentTrackbackLength>' .
+		'<linkLength>' . $setting->linkLength . '</linkLength>' .
+		'<showListOnCategory>' . $setting->showListOnCategory . '</showListOnCategory>' .
+		'<showListOnArchive>' . $setting->showListOnArchive . '</showListOnArchive>' .
+		'<tree>' .
+			'<name>' . $setting->tree . '</name>' .
+			'<color>' . $setting->colorOnTree . '</color>' .
+			'<bgColor>' . $setting->bgcolorOnTree . '</bgColor>' .
+			'<activeColor>' . $setting->activecolorOnTree . '</activeColor>' .
+			'<activeBgColor>' . $setting->activebgcolorOnTree . '</activeBgColor>' .
+			'<labelLength>' . $setting->labelLengthOnTree . '</labelLength>' .
+			'<showValue>' . $setting->showValueOnTree . '</showValue>' .
+		'</tree>' .
 	'</skin>');
 	$writer->write(CRLF);
 }
@@ -380,12 +412,12 @@ if ($comment->open('parent IS NULL')) {
 	$writer->write('<guestbook>');
 	do {
 		if ($comment->isfiltered == 0) {
-			$writer->write('<comment>' . '<commenter' . ' id="' . $comment->commenter . '">' . '<name>' . htmlspecialchars(UTF8::correct($comment->name)) . '</name>' . '<homepage>' . htmlspecialchars(UTF8::correct($comment->homepage)) . '</homepage>' . '<ip>' . $comment->ip . '</ip>' . '<openid>' . $comment->openid . '</openid>' . '</commenter>' . '<content>' . htmlspecialchars(UTF8::correct($comment->content)) . '</content>' . '<password>' . htmlspecialchars($comment->password) . '</password>' . '<secret>' . htmlspecialchars($comment->secret) . '</secret>' . '<written>' . $comment->written . '</written>');
+			$writer->write('<comment>' . '<commenter' . ' id="' . $comment->commenter . '">' . '<name>' . htmlspecialchars(Utils_Unicode::correct($comment->name)) . '</name>' . '<homepage>' . htmlspecialchars(Utils_Unicode::correct($comment->homepage)) . '</homepage>' . '<ip>' . $comment->ip . '</ip>' . '<openid>' . $comment->openid . '</openid>' . '</commenter>' . '<content>' . htmlspecialchars(Utils_Unicode::correct($comment->content)) . '</content>' . '<password>' . htmlspecialchars($comment->password) . '</password>' . '<secret>' . htmlspecialchars($comment->secret) . '</secret>' . '<written>' . $comment->written . '</written>');
 			$writer->write(CRLF);
 			if ($childComment = $comment->getChildren()) {
 				do {
 					if ($childComment->isfiltered == 0) {
-						$writer->write('<comment>' . '<commenter' . ' id="' . $childComment->commenter . '">' . '<name>' . htmlspecialchars(UTF8::correct($childComment->name)) . '</name>' . '<homepage>' . htmlspecialchars(UTF8::correct($childComment->homepage)) . '</homepage>' . '<ip>' . $childComment->ip . '</ip>' . '<openid>' . $comment->openid . '</openid>' . '</commenter>' . '<content>' . htmlspecialchars(UTF8::correct($childComment->content)) . '</content>' . '<password>' . htmlspecialchars($childComment->password) . '</password>' . '<secret>' . htmlspecialchars($childComment->secret) . '</secret>' . '<written>' . $childComment->written . '</written>' . '</comment>');
+						$writer->write('<comment>' . '<commenter' . ' id="' . $childComment->commenter . '">' . '<name>' . htmlspecialchars(Utils_Unicode::correct($childComment->name)) . '</name>' . '<homepage>' . htmlspecialchars(Utils_Unicode::correct($childComment->homepage)) . '</homepage>' . '<ip>' . $childComment->ip . '</ip>' . '<openid>' . $comment->openid . '</openid>' . '</commenter>' . '<content>' . htmlspecialchars(Utils_Unicode::correct($childComment->content)) . '</content>' . '<password>' . htmlspecialchars($childComment->password) . '</password>' . '<secret>' . htmlspecialchars($childComment->secret) . '</secret>' . '<written>' . $childComment->written . '</written>' . '</comment>');
 						$writer->write(CRLF);
 					}
 				} while ($childComment->shift());
@@ -410,15 +442,32 @@ if ($filter->open()) {
 $feed = new Feed();
 if ($feed->open()) {
 	do {
-		$writer->write('<feed>' . '<group>' . htmlspecialchars($feed->getGroupName()) . '</group>' . '<url>' . htmlspecialchars(UTF8::correct($feed->url)) . '</url>' . '</feed>');
+		$writer->write('<feed>' . '<group>' . htmlspecialchars($feed->getGroupName()) . '</group>' . '<url>' . htmlspecialchars(Utils_Unicode::correct($feed->url)) . '</url>' . '</feed>');
 		$writer->write(CRLF);
 	} while ($feed->shift());
 	$feed->close();
 }
+
+$line = Model_Line::getInstance();
+$line->setFilter(array('blogid','eq',getBlogId()));
+if($lines = $line->get()) {
+	foreach ($lines as $lineitem) {
+		$writer->write('<line>' .
+			'<author>' . htmlspecialchars(Utils_Unicode::correct($lineitem['author'])) . '</author>' .
+			'<category>' . htmlspecialchars(Utils_Unicode::correct($lineitem['category'])) . '</category>' .
+			'<root>' . htmlspecialchars(Utils_Unicode::correct($lineitem['root'])) . '</root>' .
+			'<permalink>' . htmlspecialchars(Utils_Unicode::correct($lineitem['permalink'])) . '</permalink>' .
+			'<content>' . htmlspecialchars(Utils_Unicode::correct($lineitem['content'])) . '</content>' .
+			'<created>' . $lineitem['created'] . '</created>' .
+			'</line>');
+		$writer->write(CRLF);
+	}
+}
+
 $writer->write('</blog>');
 $writer->close();
 if (defined('__TEXTCUBE_BACKUP__')) {
-	@chmod(ROOT . "/cache/backup/$blogid.xml", 0666);
+	@chmod(__TEXTCUBE_CACHE_DIR__."/backup/$blogid.xml", 0666);
 	Respond::ResultPage(0);
 }
 ?>

@@ -23,20 +23,30 @@ h2
 	display                          : none !important;
 }
 
+#sub-menu
+{
+	width                            : 250px !important;
+}
+.data-inbox
+{
+/*	margin: 2px 0 2px 250px !important;*/
+}
 /* menu -----------------------------------------------------------------------------------------*/
 #data-outbox
 {
 	margin-top:83px;
-	padding                          : 0 0 0 100px !important;
+	padding                          : 0 0 0 250px !important;
 }
 
 #reader-menu-box
 {
 	background-color                 : #FFFFFF;
 	position                         : fixed;
-	top                              : 35px;
+	top                              : 30px;
 	z-index                          : 100;
-	width                            : 100%;
+	width                            : auto;
+	right                            : 0;
+	left                             : 250px;
 	margin                           : 5px 0 0 0;
 	padding                          : 5px 0 0 0;
 }
@@ -44,18 +54,20 @@ h2
 #pannel
 {
 	position                         : fixed;
-	top                              : 90px;
+	top                              : 83px;
 	left                             : 0;
 	z-index                          : 190;
-	width                            : 100%;
+	width:auto;
 }
 
 #toggleBar
 {
 	position:fixed;
-	top:80px;
-	left:150px;
-	z-index:180;
+	width:auto;
+	right:0;
+	left:120px;
+	top:75px;
+	z-index:90;
 }
 #reader-menu
 {
@@ -63,8 +75,8 @@ h2
 	background-position              : right top;
 	background-repeat                : repeat-x;
 	height                           : 30px;
-	margin                           : 0;
-	padding                          : 7px 20px 0 161px;
+	margin                           : 0 0 0 0;
+	padding                          : 7px 20px 0 0;
 }
 
 #reader-menu li
@@ -239,8 +251,9 @@ h2
 {
 	background-color                 : #D2D2CC !important;
 	border                           : none !important;
-	margin                           : 0 !important;
+	margin                           : 0 0 0 250px !important;
 	padding                          : 8px 0 8px 0 !important;
+	/*padding                          : 8px 0 8px 250px !important;*/
 
 }
 
@@ -637,7 +650,9 @@ ul#feedList li .edit-button span
 #configure
 {
 	background-color                 : #D2D2CC;
-	padding                          : 0;
+	margin                          : 0 0 0 250px;
+	padding                         : 0 8px 8px 0;
+	right:0;
 }
 
 #configure .data-inbox
@@ -796,13 +811,16 @@ ul#feedList li .edit-button span
 /*	margin-top                       : 5px;
 	padding-top                      : 13px;
 	position                         : relative;*/
+	z-index:200 !important;
 }
 #post-information
 {
 	position                         : fixed;
 	top:150px;
 	left:0;
-	margin-bottom:100px;
+	height:300px;
+	margin-bottom:100px !important;
+	z-index:190 !important;
 }
 
 #scrollPoint .caption
@@ -822,9 +840,9 @@ ul#feedList li .edit-button span
 {
 	left                             : 0;
 	position                         : absolute;
-	z-index                          : 20;
+	z-index                          : 200;
 	width                            : 250px !important;
-	padding-bottom:100px;/**/
+	/*padding-bottom:0px;*/
 }
 
 #post-list .title
@@ -870,10 +888,12 @@ ul#feedList li .edit-button span
 #listup
 {
 	background-color                 : #F1F1E9;
+	display:block;
+	position:relative;
 	border                           : 4px solid #B4B4A1;
 	clear                            : both;
-/*	height                           : 480px;*/
-	height                           : 300px;
+	height                           : 480px;
+	min-height                       : 300px;
 	overflow-y                       : auto;
 	overflow-x                       : hidden;
 	padding                          : 5px;
@@ -1042,7 +1062,7 @@ ul#feedList li .edit-button span
 {
 	color                            : #FFFFFF !important;
 	display                          : inline;
-	font-family                      : AppleGothic, '돋움', Dotum, '굴림', Gulim, sans-serif;
+	font-family                      : AppleSDGothic, Helvetica, '돋움', Dotum, '굴림', Gulim, sans-serif;
 	font-size                        : 90%;
 	letter-spacing                   : -1px;
 	margin-right                     : 5px;
@@ -1060,8 +1080,7 @@ ul#feedList li .edit-button span
 	min-height                       : 620px;
 	margin                           : 0 6px 0 6px;
 	overflow                         : auto;
-	padding-top                      : 70px;
-	padding-bottom                   : 6px !important;
+	padding-top                      : 100px !important;
 	width                            : auto !important;
 }
 
@@ -1070,6 +1089,7 @@ ul#feedList li .edit-button span
 	color                            : #000000;
 	font-weight                      : bold;
 	margin-left                      : 10px;
+	font-size                        : 2em;
 }
 
 #post-content .title .divider
@@ -1108,9 +1128,7 @@ ul#feedList li .edit-button span
 	position                         : relative;
 	width                            : 97%;
 	z-index                          : 50;
-/*	box-shadow                       : -5px 3px 15px #aaa;
-	-webkit-box-shadow               : -5px 3px 15px #aaa;
-	-moz-box-shadow                  : -5px 3px 15px #aaa;*/
+	box-shadow                       : -5px 3px 10px #aaa;
 }
 
 #entryHead
@@ -1118,6 +1136,11 @@ ul#feedList li .edit-button span
 	border-bottom                    : 1px dashed #CCCCCC;
 	margin                           : 0 5px;
 	padding                          : 10px 5px 8px 5px;
+}
+
+#entryHead .title
+{
+	font-size:1.5em;
 }
 
 #entryHead .title a

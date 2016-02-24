@@ -1,11 +1,11 @@
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
 // 입력창을 10ms마다 체크하면서 값이 변했으면 request를 보낸다.
 // 파이어폭스에서는 한글을 입력할때 keydown 이벤트가 발생하지 않기 때문에
 // 값이 변하는지 계속 보고있어야 한다.
-function eolinLocationTagFunction_WatchInputBox(id)
+function tcLocationTagFunction_WatchInputBox(id)
 {
 	try
 	{
@@ -25,7 +25,7 @@ function eolinLocationTagFunction_WatchInputBox(id)
 }
 
 // 서버에서 보내오는 필터로 로컬 location suggestion
-function eolinLocationFunction_showLocalSuggestion(id, cursor, filter)
+function tcLocationFunction_showLocalSuggestion(id, cursor, filter)
 {
 	// Container의 ID를 통해 instance를 가져온다
 	try { var instance = document.getElementById(id).instance; }
@@ -131,14 +131,14 @@ function eolinLocationFunction_showLocalSuggestion(id, cursor, filter)
 					}
 				} catch(e) { }
 			}
-		}
+		};
 		xmlhttp.send(null);
 		delete xmlhttp;
 	}
 }
 
 // 서버에서 보내오는 내용을 실행하는 함수
-function eolinLocationTagFunction_showSuggestion()
+function tcLocationTagFunction_showSuggestion()
 {
 	// Container의 ID를 통해 instance를 가져온다
 	try { var instance = document.getElementById(arguments[0]).instance; }
@@ -229,7 +229,7 @@ function LocationTag(container, language, disable)
 	this.isTyping = false;			// input box에 포커스가 있는지 여부
 	this.isSuggestionShown = false;	// suggest window가 보여지고 있는지의 여부
 
-	this.typingText = "";			// eolinTagFunction_WatchInputBox에서 input box의 값을 감시하기 위한 변수
+	this.typingText = "";			// tcTagFunction_WatchInputBox에서 input box의 값을 감시하기 위한 변수
 
 	this.container = container;		// tag list가 들어갈 container
 	this.container.instance = this;
@@ -238,7 +238,7 @@ function LocationTag(container, language, disable)
 	this.suggestion = document.createElement("ul");
 	this.suggestion.instance = this;
 	this.suggestion.selectedIndex = 0;
-	this.suggestion.className = "eolinSuggest";
+	this.suggestion.className = "tcSuggest";
 	this.suggestion.style.margin = "0px";
 	this.suggestion.style.padding = "0px";
 	this.suggestion.style.listStyleType = "none";
@@ -255,7 +255,7 @@ function LocationTag(container, language, disable)
 		this.instance.typingText = "";
 		this.instance.setValue(this.value);
 		this.instance.isFocused = false;
-	}
+	};
 	this.input.onfocus = function() {
 		if(this.instance.isFocused)
 			return;
@@ -265,7 +265,7 @@ function LocationTag(container, language, disable)
 		this.instance.isTyping = true;
 		this.instance.typingText = this.value;
 		this.instance.requestSuggestion();
-	}
+	};
 	this.input.onkeydown = function(event) {
 		var instance = this.instance;
 
@@ -313,7 +313,7 @@ function LocationTag(container, language, disable)
 		try { event.preventDefault(); } catch(e) { }
 
 		return false;
-	}
+	};
 
 	this.input.onkeypress = function(event) { return preventEnter(event); };
 	
@@ -339,10 +339,10 @@ function LocationTag(container, language, disable)
 		try { event.preventDefault(); } catch(e) { }
 
 		return false;
-	}
+	};
 	
 	// 10ms마다 input box의 값이 변했는지 체크
-	setInterval("eolinLocationTagFunction_WatchInputBox('" + this.container.id + "')", 10);
+	setInterval("tcLocationTagFunction_WatchInputBox('" + this.container.id + "')", 10);
 
 	// location list
 	this.locationList = document.createElement("ul");
@@ -366,7 +366,7 @@ LocationTag.prototype.getValues = function()
 		locations[i] = this.locationList.childNodes[i].innerHTML.trim().unhtmlspecialchars();
 
 	return "/" + locations.join("/");
-}
+};
 
 // 입력받은 값으로 리스트를 세팅한다
 LocationTag.prototype.setValue = function(str, focusOnInput)
@@ -412,7 +412,7 @@ LocationTag.prototype.setValue = function(str, focusOnInput)
 	}
 
 	this.isSettingValue = false;
-}
+};
 
 // input box로 포커스를 이동시킨다
 LocationTag.prototype.focusOnInput = function()
@@ -422,20 +422,20 @@ LocationTag.prototype.focusOnInput = function()
 
 	// 가끔씩 IE에서 포커스가 안가는 문제
 	try { setTimeout("document.getElementById('" + this.container.id + "').instance.input.focus()", 1); } catch(e) { }
-}
+};
 
 LocationTag.prototype.setInputClassName = function(str)
 {
 	this.inputClassName = str;
 	this.input.className = str;
-}
+};
 
 // suggestion window의 항목을 클릭하면 값을 세팅한다
 LocationTag.prototype.suggestionMouseClick = function(obj)
 {
 	this.setValue(obj.innerHTML.replace(new RegExp("<\/?em>", "gi"), "").replaceAll("&amp;", "&"), true);
 	this.hideSuggestion();
-}
+};
 
 // location list를 마우스로 클릭하면 뒤쪽의 값을 모두 지우고 현재 위치에 input box를 놓는다
 LocationTag.prototype.locationListMouseClick = function(event)
@@ -454,7 +454,7 @@ LocationTag.prototype.locationListMouseClick = function(event)
 	this.appendChild(input);
 
 	instance.focusOnInput();
-}
+};
 
 // suggestion window를 숨긴다
 LocationTag.prototype.hideSuggestion = function()
@@ -468,7 +468,7 @@ LocationTag.prototype.hideSuggestion = function()
 		document.getElementById("previewSelected").style.visibility = "visible";
 		document.getElementById("TCfilelist").style.visibility = "visible";
 	} catch(e) { }*/
-}
+};
 
 // suggestion window 커서를 위로 이동
 LocationTag.prototype.moveUp = function()
@@ -483,7 +483,7 @@ LocationTag.prototype.moveUp = function()
 
 		this.highlightRow();
 	}
-}
+};
 
 // location list의 이전 항목으로 이동
 LocationTag.prototype.moveBack = function()
@@ -501,7 +501,7 @@ LocationTag.prototype.moveBack = function()
 		this.locationList.lastChild.className = "lastChild";
 		this.input.value = text;
 	}
-}
+};
 
 // suggestion window 커서를 아래로 이동
 LocationTag.prototype.moveDown = function()
@@ -516,7 +516,7 @@ LocationTag.prototype.moveDown = function()
 
 		this.highlightRow();
 	}
-}
+};
 
 // 이동 후에 현재 열의 style class를 변경한다
 LocationTag.prototype.highlightRow = function()
@@ -530,7 +530,7 @@ LocationTag.prototype.highlightRow = function()
 		// 선택된 열의 값을 input box에 채운다
 		this.input.value = this.typingText = this.suggestion.childNodes[this.suggestion.selectedIndex-1].innerHTML.replace(new RegExp("<\/?em>", "gi"), "").unhtmlspecialchars();
 	}
-}
+};
 
 // 입력중인 input box의 값까지 붙여서 전체 경로를 리턴한다
 LocationTag.prototype.getPath = function()
@@ -538,7 +538,7 @@ LocationTag.prototype.getPath = function()
 	var path = this.getValues();
 
 	return path + ((path == "/") ? "" : "/") + this.input.value;
-}
+};
 
 // script의 src를 변경해 서버로부터 tag 리스트를 전송받는다
 LocationTag.prototype.requestSuggestion = function()
@@ -546,7 +546,7 @@ LocationTag.prototype.requestSuggestion = function()
 	var instance = this.instance;
 
 	if(!instance.allowEolinSuggestion || (instance.input.value.trim() == "")) {
-		eolinLocationFunction_showLocalSuggestion(instance.container.getAttribute("id"), instance.cursor, this.getPath());
+		tcLocationFunction_showLocalSuggestion(instance.container.getAttribute("id"), instance.cursor, this.getPath());
 		return;
 	}
 
@@ -556,12 +556,12 @@ LocationTag.prototype.requestSuggestion = function()
 	debug("Request " + instance.cursor);
 
 	var script = document.createElement("script");
-//	script.setAttribute("id", "eolinLocationScript");
-	script.setAttribute("src", "http://suggest.eolin.com/location/script/?id=" + instance.container.getAttribute("id") + "&cursor=" + instance.cursor + "&language=" + instance.language + "&path=" + encodeURIComponent(instance.getPath()) + (STD.isSafari ? "&encode=1" : ""));
-//	if(document.getElementById("eolinLocationScript"))
-//		document.body.removeChild(document.getElementById("eolinLocationScript"));
+//	script.setAttribute("id", "tcLocationScript");
+	script.setAttribute("src", "http://suggest.tc.com/location/script/?id=" + instance.container.getAttribute("id") + "&cursor=" + instance.cursor + "&language=" + instance.language + "&path=" + encodeURIComponent(instance.getPath()) + (STD.isSafari ? "&encode=1" : ""));
+//	if(document.getElementById("tcLocationScript"))
+//		document.body.removeChild(document.getElementById("tcLocationScript"));
 	document.body.appendChild(script);
-}
+};
 
 // 입력받은 string을 /로 잘라 배열로 리턴
 LocationTag.prototype.stringToLocation = function(str)
@@ -582,7 +582,7 @@ LocationTag.prototype.stringToLocation = function(str)
 	}
 	catch(e)
 	{ return new Array(); }
-}
+};
 
 // cross browser event
 LocationTag.prototype.adjustEventCompatibility = function(event)
@@ -594,7 +594,7 @@ LocationTag.prototype.adjustEventCompatibility = function(event)
 	}
 
 	return event;
-}
+};
 
 // 이하 잡 유틸들
 
@@ -605,27 +605,27 @@ function getOffsetLeft(obj)
 { return obj ? obj.offsetLeft + getOffsetLeft(obj.offsetParent) : 0; }
 
 var StringBuffer = function()
-{ this.buffer = new Array(); }
+{ this.buffer = new Array(); };
 
 StringBuffer.prototype.append=function(str)
-{ this.buffer[this.buffer.length] = str; }
+{ this.buffer[this.buffer.length] = str; };
 
 StringBuffer.prototype.toString = function()
-{ return this.buffer.join(""); }
+{ return this.buffer.join(""); };
 
 if(!String.prototype.trim) {
 	String.prototype.trim = function()
-	{ return this.replace(new RegExp("(^\\s*)|(\\s*$)", "g"), ""); }
+	{ return this.replace(new RegExp("(^\\s*)|(\\s*$)", "g"), ""); };
 }
 
 if(!String.prototype.htmlspecialchars) {
 	String.prototype.htmlspecialchars = function()
-	{ return this.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll("<", "&gt;"); }
+	{ return this.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll("<", "&gt;"); };
 }
 
 if(!String.prototype.unhtmlspecialchars) {
 	String.prototype.unhtmlspecialchars = function()
-	{ return this.replaceAll("&amp;", "&").replaceAll("&lt;", "<").replaceAll("&gt;", ">"); }
+	{ return this.replaceAll("&amp;", "&").replaceAll("&lt;", "<").replaceAll("&gt;", ">"); };
 }
 
 var x=0;

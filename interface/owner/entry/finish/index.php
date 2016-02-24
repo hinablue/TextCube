@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -22,7 +22,7 @@ $IV = array(
 	)
 );
 require ROOT . '/library/preprocessor.php';
-requireModel('blog.entry');
+importlib('model.blog.entry');
 
 requireStrictRoute();
 
@@ -41,8 +41,8 @@ if (empty($suri['id']) || !is_null($entry)) {
 	$entry['starred']    = $_POST['starred'];
 	$entry['category']   = $_POST['category'];
 	$entry['location']   = empty($_POST['location']) ? '/' : $_POST['location'];
-	$entry['latitude'] = empty($_POST['latitude']) ? null : $_POST['latitude'];
-	$entry['longitude'] = empty($_POST['longitude']) ? null : $_POST['longitude'];
+	$entry['latitude'] = (empty($_POST['latitude']) || $_POST['latitude'] == "null") ? null : $_POST['latitude'];
+	$entry['longitude'] = (empty($_POST['longitude']) || $_POST['longitude'] == "null") ? null : $_POST['longitude'];
 	$entry['tag']        = empty($_POST['tag']) ? '' : $_POST['tag'];
 	$entry['title']      = $_POST['title'];
 	$entry['content']    = $_POST['content'];
@@ -60,7 +60,7 @@ if (empty($suri['id']) || !is_null($entry)) {
 	if(empty($suri['id'])) {
 		if ($id = addEntry($blogid, $entry)) {
 			fireEvent('AddPost', $id, $entry);
-			setBlogSetting('LatestEditedEntry_user'.getUserId(),$id);
+			Setting::setBlogSetting('LatestEditedEntry_user'.getUserId(),$id,true);
 			$result = array();
 			$result['error'] = (($id !== false) === true ? 0 : 1);
 			$result['entryId'] = $id;
@@ -70,7 +70,7 @@ if (empty($suri['id']) || !is_null($entry)) {
 	} else {
 		if($id = updateEntry($blogid, $entry, $updateDraft)) {
 			fireEvent('UpdatePost', $id, $entry);
-			setBlogSetting('LatestEditedEntry_user'.getUserId(),$suri['id']);
+			Setting::setBlogSetting('LatestEditedEntry_user'.getUserId(),$suri['id'],true);
 			Respond::ResultPage(0);
 			exit;
 		}

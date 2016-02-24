@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -10,7 +10,7 @@ $IV = array(
 require ROOT . '/library/preprocessor.php';
 requireStrictRoute();
 if (!empty($_POST['title'])){
-	requireModel('blog.blogSetting');
+	importlib('model.blog.blogSetting');
 	if(setBlogTitle(getBlogId(), trim($_POST['title']))) {
 		Respond::ResultPage(0);
 	}

@@ -1,12 +1,13 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
 require_once ROOT . '/library/preprocessor.php';
 
+$context = Model_Context::getInstance();
 if( empty($icon_path) ) {
-	$icon_path = ROOT . "/attach/$blogid/favicon.ico";
+	$icon_path = __TEXTCUBE_ATTACH_DIR__."/".$context->getProperty("blog.id")."/favicon.ico";
 	if( !file_exists($icon_path) ) {
 		$icon_path = ROOT . '/resources/image/icon_favicon_default.ico';
 	}
@@ -23,14 +24,13 @@ $approvedToSend = true;
 
 /* If referred by other site */
 if( !empty($_SERVER["HTTP_REFERER"]) && $icon_size > 0 ) {
-	$host = split( '/', $_SERVER["HTTP_REFERER"] );
+    $host = explode( '/', $_SERVER["HTTP_REFERER"] );
 	$host = $host[2];
 
-	$favicon_daily_traffic = 
-		( empty($service['favicon_daily_traffic']) ? 10 : $service['favicon_daily_traffic'] ) *1024*1024; /* 10 MB/day */
+    $favicon_daily_traffic = $context->getProperty("service.favicon_daily_traffic", 20) * 1024 * 1024; /* default: 20 MB/day */
 
 	if( $host != $_SERVER['HTTP_HOST'] ) {
-		define( 'REFERER_STAT', ROOT . "/cache/favicon_traffic.dat" );
+		define( 'REFERER_STAT', __TEXTCUBE_CACHE_DIR__."/favicon_traffic.dat" );
 		if( file_exists( REFERER_STAT ) ) {
 			$referer = unserialize( file_get_contents( REFERER_STAT ) );
 		}
@@ -57,8 +57,7 @@ if( !empty($_SERVER["HTTP_REFERER"]) && $icon_size > 0 ) {
 }
 
 if( !$approvedToSend ) {
-	header( "HTTP/1.0 503 Service Unavailable" );
-	exit;
+	errorExit(503);
 }
 dumpWithEtag( $icon_path );
 ?>

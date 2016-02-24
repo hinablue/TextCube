@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugin version="1.0">
 	<title xml:lang="en">Modern WYSIWYG Editor</title>
-	<title xml:lang="ko">모던 위지윅 편집기</title>
-    <title xml:lang="zh-TW">所見即所得編輯器(Modern WYSIWYG Editor)</title>
-    <title xml:lang="zh-CN">所见即所得编辑器(Modern WYSIWYG Editor)</title>
+	<title xml:lang="ko">텍스트큐브 위지윅 편집기</title>
 	<link>http://needlworks.org/</link>
 	<version>1.7</version>
 	<description xml:lang="en">Provides an easy-to-use WYSIWYG editor interface.</description>
 	<description xml:lang="ko">사용하기 쉬운 위지윅 편집기 환경을 제공합니다.</description>
-    <description xml:lang="zh-TW">提供易於使用的所見即所得編輯環境。</description>
-    <description xml:lang="zh-CN">提供易于使用的所见即所得编辑环境。</description>
+	<description xml:lang="ja">WYSIWYGエディターを利用します。</description>
 	<license>GPL</license>
 	<author xml:lang="en" link="http://tokigun.net/">Kang Seonghoon (lifthrasiir / Needlworks)</author>
 	<author xml:lang="ko" link="http://tokigun.net/"><![CDATA[강 성훈 (lifthrasiir / Needlworks)]]></author>
-    <author xml:lang="zh-TW" link="http://tokigun.net/">Kang Seonghoon (lifthrasiir / Needlworks)</author>
-    <author xml:lang="zh-CN" link="http://tokigun.net/">Kang Seonghoon (lifthrasiir / Needlworks)</author>
+	<author xml:lang="ja" link="http://tokigun.net/">Kang Seonghoon (lifthrasiir / Needlworks)</author>
 	<safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
 	<requirements>
-		<textcube>1.8</textcube>
+		<textcube>1.7</textcube>
 	</requirements>
 	<binding>
 		<listener event="ShowAdminHeader">FM_Modern_adminheader</listener>
@@ -36,14 +32,7 @@
 			<usedFor formatter="markdown" />
 			<usedFor formatter="textile" />
 		</editor>
-        <editor xml:lang="zh-TW" id="modern" name="所見即所得編輯器">
-			<initialize>FM_Modern_editorinit</initialize>
-			<!--<usedFor formatter="html" />-->
-			<usedFor formatter="ttml" />
-			<usedFor formatter="markdown" />
-			<usedFor formatter="textile" />
-		</editor>
-		<editor xml:lang="zh-CN" id="modern" name="所见即所得编辑器">
+		<editor xml:lang="ja" id="modern" name="WYSIWYG Editor">
 			<initialize>FM_Modern_editorinit</initialize>
 			<!--<usedFor formatter="html" />-->
 			<usedFor formatter="ttml" />
@@ -77,27 +66,14 @@
 				</field>
 			</fieldset>
 		</config>
-        <config xml:lang="zh-TW" dataValHandler="FM_Modern_handleconfig">
+		<config xml:lang="ja" dataValHandler="FM_Modern_handleconfig">
 			<window width="500" height="525" />
-			<fieldset legend="設定">
-				<field title="預設的編輯模式" type="select" name="defaultmode">
-					<op value="WYSIWYG" checked="checked"><![CDATA[所見即所得編輯器]]></op>
-					<op value="TEXTAREA"><![CDATA[HTML 原始碼編輯器]]></op>
+			<fieldset legend="基本設定">
+				<field title="基本編集環境" type="select" name="defaultmode">
+					<op value="WYSIWYG" checked="checked"><![CDATA[WYSIWYG Editor]]></op>
+					<op value="TEXTAREA"><![CDATA[HTML editor]]></op>
 				</field>
-				<field title="斷行使用標籤" type="select" name="paragraphdelim">
-					<op value="P"><![CDATA[&lt;p&gt;&lt;/p&gt;]]></op>
-					<op value="BR" checked="checked"><![CDATA[&lt;br /&gt;]]></op>
-				</field>
-			</fieldset>
-		</config>
-		<config xml:lang="zh-CN" dataValHandler="FM_Modern_handleconfig">
-			<window width="500" height="525" />
-			<fieldset legend="设定">
-				<field title="默认的编辑模式" type="select" name="defaultmode">
-					<op value="WYSIWYG" checked="checked"><![CDATA[所见即所得编辑器]]></op>
-					<op value="TEXTAREA"><![CDATA[HTML 原始码编辑器]]></op>
-				</field>
-				<field title="断行使用标签" type="select" name="paragraphdelim">
+				<field title="段落区分用タグ" type="select" name="paragraphdelim">
 					<op value="P"><![CDATA[&lt;p&gt;&lt;/p&gt;]]></op>
 					<op value="BR" checked="checked"><![CDATA[&lt;br /&gt;]]></op>
 				</field>

@@ -4,9 +4,16 @@ define('ROOT', '../../..');
 
 require ROOT . '/library/include.icon.php';
 
+$bootFiles = array();	// From PHP 5.3, DirectoryIterator does not gurantee the order.
 foreach (new DirectoryIterator(ROOT.'/framework/boot') as $fileInfo) {
-	if($fileInfo->isFile()) require_once($fileInfo->getPathname());
+	if($fileInfo->isFile()) array_push($bootFiles, $fileInfo->getPathname());
 }
+sort($bootFiles);
+foreach ($bootFiles as $bf) {
+	require_once($bf);
+}
+unset($bootFiles);
+
 $context = Model_Context::getInstance();
 $config  = Model_Config::getInstance();
 
@@ -33,7 +40,6 @@ if ((isset($_REQUEST['blogid'])) && is_numeric($_REQUEST['blogid'])) {
 	$blogid = intval($_REQUEST['blogid']);
 }
 
-requireComponent('Textcube.Model.Statistics');
 $row = Statistics::getWeeklyStatistics();
 
 $row = array_reverse($row);

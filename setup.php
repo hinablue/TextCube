@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -8,12 +8,15 @@ header('Content-Type: text/html; charset=utf-8');
 ini_set('display_errors', 'on');
 
 define('ROOT','.');
+//if (!defined('__TEXTCUBE_CACHE_DIR__')) {
+	define('__TEXTCUBE_CACHE_DIR__', ROOT . '/user/cache');
+//}
 require ROOT.'/framework/id/textcube/config.default.php';
 
-if (version_compare(PHP_VERSION,'5.2.0', '<')) {
+if (version_compare(PHP_VERSION,'5.4.0', '<')) {
 	if(!isset($service['forceinstall']) || $service['forceinstall'] != true) {
 	    header('HTTP/1.1 503 Service Unavailable');
-		echo "PHP Version mismatch. You need at least PHP 5.2.0 to install this version of Textcube.";
+		echo "PHP Version mismatch. You need at least PHP 5.4.0 to install this version of Textcube.";
 		exit;
 	}
 }
@@ -24,9 +27,8 @@ foreach (new DirectoryIterator(ROOT.'/framework/boot') as $fileInfo) {
 sort($bootFiles);
 foreach ($bootFiles as $bf) {
 	require_once($bf);
-}			    
+}
 unset($bootFiles);
-
 if (get_magic_quotes_gpc()) {
     foreach ($_GET as $key => $value)
         $_GET[$key] = stripslashes($value);
@@ -41,7 +43,6 @@ if (count($host) > 1) {
 	$_SERVER['SERVER_PORT'] = $host[1];
 }
 unset($host);
-
 if(empty($accessInfo)) {
 	$root = substr($_SERVER['SCRIPT_FILENAME'], 0, strlen($_SERVER['SCRIPT_FILENAME']) - 10);
 	$path = stripPath(substr($_SERVER['PHP_SELF'], 0, strlen($_SERVER['PHP_SELF']) - 10));
@@ -50,22 +51,24 @@ if(empty($accessInfo)) {
 	$path = stripPath(substr($_SERVER['PHP_SELF'], 0, strlen($_SERVER['PHP_SELF']) - 12));
 }
 $_SERVER['PHP_SELF'] = rtrim($_SERVER['PHP_SELF'], '/');
-
-$__requireBasics = array(
-	'function/string',
-	'function/time',
-	'function/javascript',
-	'function/html',
-	'function/xml',
-	'function/misc',
-	'function/image',
-	'function/mail');
+// Set default table prefix.
+if (isset($_POST['dbPrefix']) && $_POST['dbPrefix'] == '') {
+	$_POST['dbPrefix'] == 'tc_';
+}
+$context = Model_Context::getInstance();
+$context->setProperty('import.library', array(
+	'function.string',
+	'function.time',
+	'function.javascript',
+	'function.html',
+	'function.xml',
+	'function.mail'));
 if(isset($_POST['dbms'])) $database['dbms'] = $_POST['dbms'];
 require ROOT.'/library/include.php';
 
-requireModel('blog.blogSetting');
-requireModel('blog.entry');
-requireLibrary('auth');
+importlib('model.blog.blogSetting');
+importlib('model.blog.entry');
+importlib('auth');
 
 if (!empty($_GET['test'])) {
 	echo getFingerPrint();
@@ -80,19 +83,19 @@ if( $locale->setDirectory(ROOT.'/resources/locale/setup') ) $locale->set( $baseL
 if (file_exists($root . '/config.php') && (filesize($root . '/config.php') > 0)) {
     header('HTTP/1.1 503 Service Unavailable');
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?php echo TEXTCUBE_NAME;?> <?php echo TEXTCUBE_VERSION;?> - Setup</title>
 <link rel="stylesheet" media="screen" type="text/css" href="resources/style/setup/style.css" />
-<script  type="text/javascript">
+<script type="text/javascript">
 //<![CDATA[
-	function current(){ 
+	function current(){
 		document.getElementById("setup").submit();
 	}
 //]]>
-</script> 
+</script>
 </head>
 <body>
 	<div id="container">
@@ -103,19 +106,19 @@ if (file_exists($root . '/config.php') && (filesize($root . '/config.php') > 0))
 
 			<div id="inner">
 				<p class="message"><?php echo _t('다시 설정하시려면 config.php를 먼저 삭제하셔야 합니다.');?></p>
-				
+
 				<p class="message">
 <?php
 	if( $locale->setDirectory(ROOT.'/resources/locale/setup')) {
 		$currentLang = isset($_REQUEST['Lang']) ? $_REQUEST['Lang'] : '';
-		$availableLanguages =   $locale->getSupportedLocales(); 
-?> 
-Select Language : <select name="Lang" id = "Lang" onchange= "current();" > 
+		$availableLanguages =   $locale->getSupportedLocales();
+?>
+Select Language : <select name="Lang" id = "Lang" onchange= "current();" >
 <?php
-		foreach( $availableLanguages as $key => $value) 
-			print('<option value="'.$key.'" '.( $key == $currentLang ? ' selected="selected" ' : '').' >'.$value.'</option>'); 
-?></select> 
-<?php 
+		foreach( $availableLanguages as $key => $value)
+			print('<option value="'.$key.'" '.( $key == $currentLang ? ' selected="selected" ' : '').' >'.$value.'</option>');
+?></select>
+<?php
 	}
 ?>
 				</p>
@@ -134,31 +137,31 @@ if (array_key_exists('phpinfo',$_GET)) {
 }
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?php echo TEXTCUBE_NAME;?> <?php echo TEXTCUBE_VERSION;?> - Setup</title>
 <link rel="stylesheet" media="screen" type="text/css" href="./resources/style/setup/style.css" />
 <script type="text/javascript">
 //<![CDATA[
 	function init() {
 	}
-    
+
 	function previous() {
 	}
 
-	function current(){ 
-		document.getElementById("step").value =""; 
-		document.getElementById("setup").submit(); 
-	} 
-	
+	function current(){
+		document.getElementById("step").value ="";
+		document.getElementById("setup").submit();
+	}
+
 	function next(type) {
 		if (type != undefined)
 			document.getElementById("setupMode").value = type;
 		document.getElementById("setup").submit();
 	}
-    
+
 	function show(id) {
 		if (document.getElementById("typeDomain"))
 			document.getElementById("typeDomain").style.display = "none";
@@ -187,7 +190,7 @@ if (empty($_POST['step'])) {
 		<h2><span class="step"><?php echo _f('%1단계', 1);?></span> : <?php echo _t('텍스트큐브 설치를 시작합니다.');?></h2>
 		<div id="langSel" >
 		<?php drawSetLang( $baseLanguage, 'Norm');?>
-		</div> 
+		</div>
 		<div id="info"><b><?php echo TEXTCUBE_VERSION;?></b><br />
 			<?php echo TEXTCUBE_COPYRIGHT;?><br />
 			Homepage: <a href="<?php echo TEXTCUBE_HOMEPAGE;?>"><?php echo TEXTCUBE_HOMEPAGE;?></a>
@@ -209,7 +212,7 @@ if (empty($_POST['step'])) {
 else if ($_POST['step'] == 7) {
 	checkStep(8, false);
 } else {
-	
+
 	for ($i = 1; $i <= $_POST['step']; $i ++) {
         if (!checkStep($i))
             break;
@@ -294,7 +297,6 @@ function checkStep($step, $check = true) {
     //<![CDATA[
      function suggestDefaultPort(db) {
 		switch(db) {
-			case 'MySQL':
 			case 'MySQLi':
 			default:
 				port = 3306;
@@ -304,6 +306,9 @@ function checkStep($step, $check = true) {
 				break;
 			case 'PostgreSQL':
 				port = 5432;
+				break;
+			default:
+				port = '';
 				break;
 		}
 		document.getElementById('dbPort').value = port;
@@ -321,13 +326,13 @@ function checkStep($step, $check = true) {
         <td>
 <?php
 $dbmsSupport = array();
-if(function_exists('mysql_connect')) array_push($dbmsSupport,'MySQL');
 if(function_exists('mysqli_connect')) array_push($dbmsSupport,'MySQLi');
 if(function_exists('pg_connect')) array_push($dbmsSupport,'PostgreSQL');
+if(class_exists('SQLite3')) array_push($dbmsSupport,'SQLite3');
 if(function_exists('cubrid_connect')) array_push($dbmsSupport,'Cubrid');
 foreach($dbmsSupport as $dbms) {
 ?>
-	      <input type="radio" id="dbms<?php echo $dbms;?>" name="dbms" value="<?php echo $dbms;?>" <?php echo (((isset($_POST['dbms']) && $_POST['dbms'] == $dbms)||(!isset($_POST['dbms']) && $dbms == $dbmsSupport[0])) ? 'checked' : '');?> onclick="suggestDefaultPort('<?php echo $dbms;?>');return false;" /> <?php echo $dbms;?> 
+	      <input type="radio" id="dbms<?php echo $dbms;?>" name="dbms" value="<?php echo $dbms;?>" <?php echo (((isset($_POST['dbms']) && $_POST['dbms'] == $dbms)||(!isset($_POST['dbms']) && $dbms == $dbmsSupport[0])) ? 'checked' : '');?> onclick="suggestDefaultPort('<?php echo $dbms;?>');return false;" /> <?php echo $dbms;?>
 <?php
 }
 ?>
@@ -342,7 +347,7 @@ foreach($dbmsSupport as $dbms) {
       <tr>
         <th><?php echo _t('데이터베이스 포트');?> :</th>
         <td>
-          <input type="text" id="dbPort" name="dbPort" value="<?php echo (isset($_POST['dbPort']) ? $_POST['dbPort'] : 
+          <input type="text" id="dbPort" name="dbPort" value="<?php echo (isset($_POST['dbPort']) ? $_POST['dbPort'] :
 		  '3306'
 		  );?>" class="input<?php echo ($check && (empty($_POST['dbPort']) || ($error == 1)) ? ' input_error' : '');?>" />
         </td>
@@ -369,7 +374,7 @@ foreach($dbmsSupport as $dbms) {
 		switch ($_POST['mode']) {
 			case 'install':
 			case 'setup':
-?>      
+?>
       <tr>
         <th><?php echo _t('테이블 식별자');?> :</th>
         <td>
@@ -387,7 +392,7 @@ foreach($dbmsSupport as $dbms) {
     <div id="content">
       <ol>
         <li><?php echo _t('데이터베이스가 해당 호스트에 먼저 생성되어 있어야 합니다.');?></li>
-        <li><?php echo _t('테이블식별자는 텍스트큐브가 사용하는 테이블이름 앞에 붙는 문자열입니다. 데이터 베이스내에 다른 어플리케이션이 사용하는 테이블이 있을 경우 구별하기 위해 사용합니다');?></li>
+		<li><?php echo _t('테이블식별자는 텍스트큐브가 사용하는 테이블이름 앞에 붙는 문자열입니다. 데이터 베이스내에 다른 어플리케이션이 사용하는 테이블이 있을 경우 구별하기 위해 사용합니다');?> <?php echo _t('테이블식별자를 입력하지 않을 경우 자동으로 tc_ 를 사용합니다.');?></li>
       </ol>
     </div>
     <div id="warning"><?php
@@ -474,10 +479,6 @@ copy
 count
 dechex
 dir
-ereg
-ereg_replace
-eregi
-eregi_replace
 explode
 fclose
 feof
@@ -573,10 +574,10 @@ xml_set_object
             if (!function_exists($function))
                 array_push($required, $function);
         }
-		if (version_compare(PHP_VERSION, '5.2.0') === -1 && ( !isset( $service['forceinstall'] ) || $service['forceinstall']==false) ) {
+		if (version_compare(PHP_VERSION, '5.4.0') === -1 && ( !isset( $service['forceinstall'] ) || $service['forceinstall']==false) ) {
 			$error = 4;
 ?>
-                <span style="color:red"><?php echo _f('PHP 버전이 낮습니다. 설치를 위해서는 최소한 %1 이상의 버전이 필요합니다.','5.2.0');?></span>
+                <span style="color:red"><?php echo _f('PHP 버전이 낮습니다. 설치를 위해서는 최소한 %1 이상의 버전이 필요합니다.','5.4.0');?></span>
 <?php
 		} else if (count($required) == 0) {
 ?>
@@ -603,11 +604,6 @@ xml_set_object
         else {
            echo '<li style="color:navy">Character Set: ', _t('UTF8 미지원 (경고: 한글 지원이 불완전할 수 있습니다.)'), '</li>';
         }
-/*        if (POD::query('SET SESSION collation_connection = \'utf8_general_ci\''))
-           echo '<li>Collation: OK</li>';
-        else {
-           echo '<li style="color:navy">Collation: ', _t('UTF8 General 미지원 (경고: 한글 지원이 불완전할 수 있습니다.)'), '</li>';
-        }*/
         if (POD::query("CREATE TABLE {$_POST['dbPrefix']}Setup (a INT NOT NULL)")) {
             POD::query("DROP TABLE {$_POST['dbPrefix']}Setup");
            echo '<li>', _t('테이블 생성 권한'), ': OK</li>';
@@ -669,7 +665,7 @@ xml_set_object
                 }
             }
         }
-		
+
 		switch ($_POST['mode']) {
 			case 'install':
 				echo '<h3>', _t('새 데이터베이스 테이블'), '</h3>';
@@ -699,6 +695,7 @@ xml_set_object
     <h3><?php echo _t('파일 시스템 권한');?></h3>
     <ul>
 <?php
+        $commands = array();
         $filename = $root . '/.htaccess';
         if (file_exists($filename)) {
             if (is_writable($filename)) {
@@ -709,16 +706,18 @@ xml_set_object
             }
             else {
                 $error = 8;
-               echo '<li style="color:red">', _t('웹 설정 파일'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0666'), '<br />', _f('FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다 : %1','chmod 0666 '.$filename), '</li>';
+                echo '<li style="color:red">', _t('웹 설정 파일'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0666'), '</li>';
+                array_push($commands, 'chmod 0666 '.$filename);
             }
         }
         else if (is_writable($root))
-           echo '<li>', _t('웹 설정 파일'), ': OK</li>';
+            echo '<li>', _t('웹 설정 파일'), ': OK</li>';
         else {
             $error = 9;
-           echo '<li style="color:red">', _t('웹 설정 파일'), ': ', _f('"%1"에 %2 파일을 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', $root, '.htaccess', '0777'), '<br /><span class="instruction">', _f('FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다 : %1','chmod 0777 '.$root), '</span></li>';
+            echo '<li style="color:red">', _t('웹 설정 파일'), ': ', _f('"%1"에 %2 파일을 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', $root, '.htaccess', '0777'), '</li>';
+            array_push($commands, 'chmod 0777 '.$root);
         }
-        
+
         $filename = $root . '/config.php';
         if (file_exists($filename)) {
             if (is_writable($filename)) {
@@ -729,46 +728,70 @@ xml_set_object
             }
             else {
                 $error = 10;
-               echo '<li style="color:red">', _t('설정 파일'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0666'), '<br /><span class="instruction">', _f('FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다 : %1','chmod 0666 '.$filename), '</span></li>';
+                echo '<li style="color:red">', _t('설정 파일'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0666'), '</li>';
+                array_push($commands, 'chmod 0666 '.$filename);
             }
         }
         else if (is_writable($root))
            echo '<li>', _t('설정 파일'), ': OK</li>';
         else {
             $error = 11;
-           echo '<li style="color:red">', _t('설정 파일'), ': ', _f('"%1"에 %2 파일을 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', $root, 'config.php', '0777'), '<br /><span class="instruction">', _f('FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다 : %1','chmod 0777 '.$root), '</span></li>';
+            echo '<li style="color:red">', _t('설정 파일'), ': ', _f('"%1"에 %2 파일을 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', $root, 'config.php', '0777'), '</li>';
+            array_push($commands, 'chmod 0777 '.$root);
         }
-        
-        $filename = $root . '/attach';
+
+        $filename = $root . '/user';
+        if (file_exists($filename)) {
+            if (is_dir($filename) && is_writable($filename))
+               echo '<li>', _t('사용자 데이터 디렉토리'), ': OK</li>';
+            else {
+                $error = 12;
+                echo '<li style="color:red">', _t('사용자 데이터 디렉토리'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0777'), '</li>';
+                array_push($commands, 'chmod 0777 '.$filename);
+            }
+        } else if (mkdir($filename)) {
+            @chmod($filename, 0777);
+            echo '<li>', _t('사용자 데이터 디렉토리'), ': OK</li>';
+        } else {
+            $error = 13;
+            echo '<li style="color:red">', _t('사용자 데이터 디렉토리'), ': ', _f('"%1"에 %2 디렉토리를 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', $root, 'user', '0777'), '</li>';
+            array_push($commands, 'chmod 0777 '.$root);
+        }
+
+        $filename = $root . '/user/attach';
         if (file_exists($filename)) {
             if (is_dir($filename) && is_writable($filename))
                echo '<li>', _t('첨부 디렉토리'), ': OK</li>';
             else {
                 $error = 12;
-               echo '<li style="color:red">', _t('첨부 디렉토리'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0777'), '</li>';
+                echo '<li style="color:red">', _t('첨부 디렉토리'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0777'), '</li>';
+                array_push($commands, 'chmod 0777 '.$filename);
             }
         } else if (mkdir($filename)) {
-			@chmod($filename, 0777);
-           echo '<li>', _t('첨부 디렉토리'), ': OK</li>';
+            @chmod($filename, 0777);
+            echo '<li>', _t('첨부 디렉토리'), ': OK</li>';
         } else {
             $error = 13;
-           echo '<li style="color:red">', _t('첨부 디렉토리'), ': ', _f('"%1"에 %2 디렉토리를 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', $root, 'attach', '0777'), '<br /><span class="instruction">', _f('FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다 : %1','chmod 0777 '.$root), '</span></li>';
+            echo '<li style="color:red">', _t('첨부 디렉토리'), ': ', _f('"%1"에 %2 디렉토리를 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', $root, 'attach', '0777'), '</li>';
+            array_push($commands, 'chmod 0777 '.$root);
         }
-        
-        $filename = $root . '/cache';
+
+        $filename = $root . '/user/cache';
         if (is_dir($filename)) {
             if (is_writable($filename))
                echo '<li>', _t('캐시 디렉토리'), ': OK</li>';
             else {
                 $error = 12;
-				   echo '<li style="color:red">', _t('캐시 디렉토리'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0777'), '<br /><span class="instruction">', _f('FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다 : %1','chmod 0777 '.$filename), '</span></li>';
+                    echo '<li style="color:red">', _t('캐시 디렉토리'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0777'), '</li>';
+                    array_push($commands, 'chmod 0777 '.$filename);
             }
         } else if (mkdir($filename)) {
-			@chmod($filename, 0777);
-           echo '<li>', _t('캐시 디렉토리'), ': OK</li>';
+            @chmod($filename, 0777);
+            echo '<li>', _t('캐시 디렉토리'), ': OK</li>';
         } else {
             $error = 13;
-           echo '<li style="color:red">', _t('캐시 디렉토리'), ': ', _f('"%1"에 %2 디렉토리를 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', $root, 'cache', '0777'), '<br /><span class="instruction">', _f('FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다 : %1','chmod 0777 '.$root), '</span></li>';
+            echo '<li style="color:red">', _t('캐시 디렉토리'), ': ', _f('"%1"에 %2 디렉토리를 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', $root, 'cache', '0777'), '</li>';
+            array_push($commands, 'chmod 0777 '.$root);
         }
 
 /*        $filename = $root . '/remote';
@@ -787,25 +810,36 @@ xml_set_object
            echo '<li style="color:red">', _t('원격 설치 디렉토리'), ': ', _f('"%1"에 %2 디렉토리를 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', $root, 'cache', '0777'), '</li>';
         }*/
 
-        $filename = $root . '/skin/blog/customize';
+        $filename = $root . '/user/skin/blog/customize';
         if (is_dir($filename)) {
             if (is_writable($filename))
                echo '<li>', _t('스킨 디렉토리'), ': OK</li>';
             else {
                 $error = 14;
-               echo '<li style="color:red">', _t('스킨 디렉토리'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0777'), '<br /><span class="instruction">', _f('FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다 : %1','chmod 0777 '.$filename), '</span></li>';
+                echo '<li style="color:red">', _t('스킨 디렉토리'), ': ', _f('"%1"에 접근할 수 없습니다. 퍼미션을 %2(으)로 수정해 주십시오.', $filename, '0777'), '</li>';
+                array_push($commands, 'chmod 0777 '.$filename);
             }
         } else if (mkdir($filename)) {
 			@chmod($filename, 0777);
            echo '<li>', _t('스킨 디렉토리'), ': OK</li>';
         } else {
             $error = 15;
-           echo '<li style="color:red">', _t('스킨 디렉토리'), ': ', _f('"%1"에 %2 디렉토리를 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', "$root/skin/blog", 'customize', '0777'), '<br /><span class="instruction">', _f('FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다 : %1','chmod 0777 '."$root/skin/blog"), '</span></li>';
+            echo '<li style="color:red">', _t('스킨 디렉토리'), ': ', _f('"%1"에 %2 디렉토리를 생성할 수 없습니다. "%1"의 퍼미션을 %3(으)로 수정해 주십시오.', "$root/user/skin/blog", 'customize', '0777'), '</li>';
+            array_push($commands, 'chmod 0777 '."$root/user/skin/blog");
         }
 
 ?>
     </ul>
 <?php
+        if (!empty($commands)) {
+			echo '<span class="instruction">'._t("퍼미션 수정은 FTP 프로그램을 사용하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다.")."</span>";
+            echo '<ul class="instruction">';
+            $commands = array_unique($commands);
+            foreach($commands as $command) {
+                echo "<li>" . $command . "</li>";
+            }
+            echo '</ul>';
+        }
         if ($step == 33) {
             $error = 16;
             if (checkIIS()) {
@@ -884,7 +918,7 @@ RewriteRule ^testrewrite$ setup.php [L]"
         	);
 	        fclose($fp);
 			@chmod($filename, 0666);
-        
+
         	if (testMyself('blog' . substr($_SERVER['HTTP_HOST'], strpos($_SERVER['HTTP_HOST'], '.')), $path . '/testrewrite?test=now', $_SERVER['SERVER_PORT']))
             	$rewrite = 3;
 	        else if (testMyself('blog.' . $_SERVER['HTTP_HOST'], $path . '/testrewrite?test=now', $_SERVER['SERVER_PORT']))
@@ -911,6 +945,9 @@ RewriteRule ^testrewrite$ setup.php [L]"
 			$rewrite = 0;
 		}
     	$domain = $rewrite == 3 ? substr($_SERVER['HTTP_HOST'], strpos($_SERVER['HTTP_HOST'], '.') + 1) : $_SERVER['HTTP_HOST'];
+
+        $blogProtocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
+        $blogDefaultPort = isset($_SERVER['HTTPS']) ? 443 : 80;
 ?>
   <input type="hidden" name="step" value="<?php echo $step;?>" />
   <input type="hidden" name="mode" value="<?php echo $_POST['mode'];?>" />
@@ -959,16 +996,16 @@ RewriteRule ^testrewrite$ setup.php [L]"
         <th style="padding-top:20px"><?php echo _t('블로그 주소 예시');?></th>
         <td style="padding-top:20px; height:100px">
         <ul id="typeDomain"<?php echo ($rewrite >= 2 ? '' : ' style="display:none"');?>>
-          <li>http://<b>blog1</b>.<?php echo $domain;?><?php echo ($_SERVER['SERVER_PORT'] == 80 ? '' : ":{$_SERVER['SERVER_PORT']}");?><?php echo $path;?>/</li>
-          <li>http://<b>blog2</b>.<?php echo $domain;?><?php echo ($_SERVER['SERVER_PORT'] == 80 ? '' : ":{$_SERVER['SERVER_PORT']}");?><?php echo $path;?>/</li>
-        </ul> 
+          <li><?php echo $blogProtocol;?>://<b>blog1</b>.<?php echo $domain;?><?php echo ($_SERVER['SERVER_PORT'] == $blogDefaultPort ? '' : ":{$_SERVER['SERVER_PORT']}");?><?php echo $path;?>/</li>
+          <li><?php echo $blogProtocol;?>://<b>blog2</b>.<?php echo $domain;?><?php echo ($_SERVER['SERVER_PORT'] == $blogDefaultPort ? '' : ":{$_SERVER['SERVER_PORT']}");?><?php echo $path;?>/</li>
+        </ul>
         <ul id="typePath"<?php echo ($rewrite == 1 ? '' : ' style="display:none"');?>>
-          <li>http://<?php echo $domain;?><?php echo ($_SERVER['SERVER_PORT'] == 80 ? '' : ":{$_SERVER['SERVER_PORT']}");?><?php echo $path;?>/<b>blog1</b></li>
-          <li>http://<?php echo $domain;?><?php echo ($_SERVER['SERVER_PORT'] == 80 ? '' : ":{$_SERVER['SERVER_PORT']}");?><?php echo $path;?>/<b>blog2</b></li>
-        </ul> 
+          <li><?php echo $blogProtocol;?>://<?php echo $domain;?><?php echo ($_SERVER['SERVER_PORT'] == $blogDefaultPort ? '' : ":{$_SERVER['SERVER_PORT']}");?><?php echo $path;?>/<b>blog1</b></li>
+          <li><?php echo $blogProtocol;?>://<?php echo $domain;?><?php echo ($_SERVER['SERVER_PORT'] == $blogDefaultPort ? '' : ":{$_SERVER['SERVER_PORT']}");?><?php echo $path;?>/<b>blog2</b></li>
+        </ul>
         <ul id="typeSingle" <?php echo (empty($_POST['disableRewrite']) ? 'style="display:none"' : '');?>>
-          <li>http://<?php echo $domain;?><?php echo ($_SERVER['SERVER_PORT'] == 80 ? '' : ":{$_SERVER['SERVER_PORT']}");?><?php echo $path;?>/<?php echo (empty($_POST['disableRewrite']) ? '' : 'blog/');?></li>
-        </ul> 
+          <li><?php echo $blogProtocol;?>://<?php echo $domain;?><?php echo ($_SERVER['SERVER_PORT'] == $blogDefaultPort ? '' : ":{$_SERVER['SERVER_PORT']}");?><?php echo $path;?>/<?php echo (empty($_POST['disableRewrite']) ? '' : 'blog/');?></li>
+        </ul>
         </td>
       </tr>
     </table>
@@ -1001,13 +1038,12 @@ RewriteRule ^testrewrite$ setup.php [L]"
 				$_POST['password2'] = $_POST['password'];
 				POD::free($result);
 			}
-			if ($result = @POD::queryCell("SELECT value FROM {$_POST['dbPrefix']}BlogSettings 
-						WHERE blogid = 1 
+			if ($result = @POD::queryCell("SELECT value FROM {$_POST['dbPrefix']}BlogSettings
+						WHERE blogid = 1
 							AND name = 'name'")) {
 				$_POST['blog'] = $result;
 			}
 		}
-		
 ?>
   <input type="hidden" name="step" value="<?php echo $step;?>" />
   <input type="hidden" name="mode" value="<?php echo $_POST['mode'];?>" />
@@ -1089,7 +1125,7 @@ RewriteRule ^testrewrite$ setup.php [L]"
     else if ($step == 7) {
         if ($check)
             return true;
-        
+
 ?>
   <input type="hidden" name="step" value="<?php echo $step;?>" />
   <input type="hidden" name="mode" value="<?php echo $_POST['mode'];?>" />
@@ -1129,15 +1165,15 @@ RewriteRule ^testrewrite$ setup.php [L]"
 		$baseLanguage = POD::escapeString( $_POST['Lang']);
 		$baseTimezone = POD::escapeString( substr(_t('default:Asia/Seoul'),8));
 
-		if(POD::dbms() == 'MySQL' || POD::dbms() == 'MySQLi') {
-	        $charset = 'TYPE=MyISAM DEFAULT CHARSET=utf8';
+		if(POD::dbms() == 'MySQLi') {
+	        $charset = 'DEFAULT CHARSET=utf8';
 //    	    if (!@POD::query('SET CHARACTER SET utf8'))
   //      	    $charset = 'TYPE=MyISAM';
 	    //    @POD::query('SET SESSION collation_connection = \'utf8_general_ci\'');
 		} else {
 			$charset = '';
 		}
-        
+
         if ($_POST['mode'] == 'install') {
 			$schema = '';
 			// Compatibility layer load
@@ -1148,7 +1184,7 @@ RewriteRule ^testrewrite$ setup.php [L]"
 					@POD::query($sub);
 				}
 				$schema = '';
-				$query = array(); 
+				$query = array();
 			}
             // Loading create schema from sql file. (DBMS specific)
 			if(POD::dbms() == 'MySQLi') $dbSelector = 'MySQL';
@@ -1156,27 +1192,29 @@ RewriteRule ^testrewrite$ setup.php [L]"
 			$schema .= file_get_contents(ROOT.'/resources/setup/initialize.'.$dbSelector.'.sql');
 			$schema = str_replace('[##_dbPrefix_##]',$_POST['dbPrefix'],$schema);
 			$schema = str_replace('[##_charset_##]',$charset,$schema);
-			
+
             $schema .= "
 INSERT INTO {$_POST['dbPrefix']}Users VALUES (1, '$loginid', '$password', '$name', ".Timestamp::getUNIXtime().", 0, 0);
 INSERT INTO {$_POST['dbPrefix']}Privileges VALUES (1, 1, 16, ".Timestamp::getUNIXtime().", 0);
-INSERT INTO {$_POST['dbPrefix']}ServiceSettings VALUES ('newlineStyle', '1.1'); 
-INSERT INTO {$_POST['dbPrefix']}ServiceSettings VALUES ('useNewPluginSetting', true); 
+INSERT INTO {$_POST['dbPrefix']}ServiceSettings VALUES ('newlineStyle', '1.1');
+INSERT INTO {$_POST['dbPrefix']}ServiceSettings VALUES ('useNewPluginSetting', 1);
 INSERT INTO {$_POST['dbPrefix']}BlogSettings VALUES (1, 'name', '$blog');
 INSERT INTO {$_POST['dbPrefix']}BlogSettings VALUES (1, 'language', '$baseLanguage');
 INSERT INTO {$_POST['dbPrefix']}BlogSettings VALUES (1, 'blogLanguage', '$baseLanguage');
 INSERT INTO {$_POST['dbPrefix']}BlogSettings VALUES (1, 'timezone', '$baseTimezone');
-INSERT INTO {$_POST['dbPrefix']}BlogSettings VALUES (1, 'defaultEditor', 'modern');
+INSERT INTO {$_POST['dbPrefix']}BlogSettings VALUES (1, 'defaultEditor', 'tinyMCE');
 INSERT INTO {$_POST['dbPrefix']}BlogSettings VALUES (1, 'defaultFormatter', 'ttml');
+INSERT INTO {$_POST['dbPrefix']}BlogSettings VALUES (1, 'acceptTrackbacks', 1);
+INSERT INTO {$_POST['dbPrefix']}BlogSettings VALUES (1, 'acceptComments', 1);
 INSERT INTO {$_POST['dbPrefix']}Plugins VALUES (1, 'CL_OpenID', null);
-INSERT INTO {$_POST['dbPrefix']}SkinSettings VALUES (1,'skin','coolant');
+INSERT INTO {$_POST['dbPrefix']}SkinSettings VALUES (1,'skin','periwinkle');
 INSERT INTO {$_POST['dbPrefix']}FeedSettings (blogid) values(1);
 INSERT INTO {$_POST['dbPrefix']}FeedGroups (blogid) values(1);
-INSERT INTO {$_POST['dbPrefix']}Entries (blogid, userid, id, category, visibility, location, title, slogan, contentformatter, contenteditor, starred, acceptcomment, accepttrackback, created, published, modified, content) VALUES (1, 1, 1, 0, 2, '/', '".POD::escapeString(_t('환영합니다'))."', 'welcome', 'ttml', 'modern', 0, 1, 1, ".Timestamp::getUNIXtime().", ".Timestamp::getUNIXtime().",".Timestamp::getUNIXtime().",'".POD::escapeString(getDefaultPostContent())."')";
+INSERT INTO {$_POST['dbPrefix']}Entries (blogid, userid, id, category, visibility, location, title, slogan, contentformatter, contenteditor, starred, acceptcomment, accepttrackback, created, published, modified, content) VALUES (1, 1, 1, 0, 2, '/', '".POD::escapeString(_t('환영합니다'))."', 'welcome', 'ttml', 'tinyMCE', 0, 1, 1, ".Timestamp::getUNIXtime().", ".Timestamp::getUNIXtime().",".Timestamp::getUNIXtime().",'".POD::escapeString(getDefaultPostContent())."')";
             $query = explode(';', trim($schema));
             foreach ($query as $sub) {
 				if (!empty($sub) && !POD::query($sub, false)) {
-					$tables = getTables('1.8',$_POST['dbPrefix']);
+					$tables = getTables('2.0',$_POST['dbPrefix']);
 					foreach ($tables as $table) {
 						if (POD::dbms()=='Cubrid') {
 							@POD::query("DROP ".$table);
@@ -1234,13 +1272,15 @@ INSERT INTO {$_POST['dbPrefix']}Entries (blogid, userid, id, category, visibilit
 			}
         }
 		else {
+			$ctx = Model_Context::getInstance();
+			$ctx->setProperty('database.prefix',$_POST['dbPrefix']);
 			$pool = DBModel::getInstance();
 			$pool->reset('Users');
 			$pool->setAttribute('loginid',$loginid,true);
 			$pool->setAttribute('name',$name,true);
 			$pool->setQualifier('userid','equals',1);
 			$pool->update();
-			
+
 			$pool->reset('Users');
 			$pool->setAttribute('password',$password,true);
 			$pool->setQualifier('userid','equals',1);
@@ -1258,13 +1298,18 @@ INSERT INTO {$_POST['dbPrefix']}Entries (blogid, userid, id, category, visibilit
 			$pool->setQualifier('blogid','equals',1);
 			$pool->setQualifier('name','equals','language',true);
 			$pool->update();
-			
+
 			$pool->reset('BlogSettings');
 			$pool->setAttribute('value',$baseTimezone,true);
 			$pool->setQualifier('blogid','equals',1);
 			$pool->setQualifier('name','equals','timezone',true);
 			$pool->update();
-		
+
+			$pool->reset('BlogSettings');
+			$pool->setAttribute('value',Timestamp::getUNIXtime());
+			$pool->setQualifier('blogid','equals',1);
+			$pool->setQualifier('name','equals','created',true);
+			$pool->update();
 		}
 		if (!$error) {
 			POD::unbind();
@@ -1278,7 +1323,7 @@ INSERT INTO {$_POST['dbPrefix']}Entries (blogid, userid, id, category, visibilit
     else if ($step == 8) {
         if ($check)
             return true;
-
+        $useSSL = Utils_Misc::isSecureProtocol() ? 'true' : 'false';
         $filename = $root . '/config.php';
         $fp = fopen($filename, 'w+');
 		// For first entry addition
@@ -1302,16 +1347,31 @@ ini_set('display_errors', 'off');
 \$service['type'] = '{$_POST['type']}';
 \$service['domain'] = '{$_POST['domain']}';
 \$service['path'] = '$path';
-\$service['skin'] = 'coolant';
+\$service['skin'] = 'periwinkle';
 \$service['favicon_daily_traffic'] = 10; // 10MB
+\$service['useSSL'] = {$useSSL};  // Force SSL protocol (via https)
 //\$serviceURL = 'http://{$_POST['domain']}{$path}' ; // for path of Skin, plugin and etc.
 //\$service['reader'] = true; // Use Textcube reader. You can set it to false if you do not use Textcube reader, and want to decrease DB load.
 //\$service['debugmode'] = true; // uncomment for debugging, e.g. displaying DB Query or Session info
 //\$service['pagecache'] = false; // uncomment if you want to disable page cache feature.
+//\$service['codecache'] = true; // uncomment if you want to enable code cache feature.
 //\$service['debug_session_dump'] = true; // session info debuging.
 //\$service['debug_rewrite_module'] = true; // rewrite handling module debuging.
 //\$service['session_cookie_path'] = \$service['path']; // for avoiding spoiling other textcube's session id sharing root.
 //\$service['allowBlogVisibilitySetting'] = true; // Allow service users to change blog visibility.
+//\$service['externalresources'] = false;  // Loads resources from external storage.
+//\$service['resourcepath'] = 'http://example.com/resource';	// Specify the full URI of external resource.
+//\$service['autologinTimeout'] = 1209600;	// Automatic login timeout (sec.)
+//\$service['favicon_daily_traffic'] = 10; // Set favicon traffic limitation. default is 10MB.
+//\$service['skincache'] = true;        // Use skin pre-fetching. Textcube will parse static elements (blog name, title…) only when you change skin. Reduces CPU loads.
+//\$service['cookie_prefix'] = '';        // Service cookie prefix. Default cookie prefix is Textcube_[VERSION_NUMBER].
+//\$database['port'] = 3639;            // Database port number
+//\$database['dbms'] = 'MySQLi';         // DBMS. (MySQL, MySQLi, PostgreSQL, Cubrid.)
+//\$service['memcached'] = true;       // Using memcache to handle session and cache
+//\$memcached['server'] = 'localhost';  // Where memcache server is.
+//\$service['requirelogin'] = false;    // Force log-in process to every blogs. (for private blog service)
+//\$service['jqueryURL'] = '';		// Add URL if you want to use external jquery via CDN. e.g.) Microsoft's CDN: http://ajax.aspnetcdn.com/ajax/jQuery/
+//\$service['lodashURL'] = '';		// Add URL if you want to use external lo-dash via CDN. e.g.) CDNJS' CDN: https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/
 ?>"
             );
             fclose($fp);
@@ -1320,14 +1380,15 @@ ini_set('display_errors', 'off');
       	if(!isset($_POST['disableRewrite']) || !$_POST['disableRewrite']) {
 	        $filename = $root . '/.htaccess';
     	    $fp = fopen($filename, 'w+');
-        
+
 			switch ($_POST['rewriteMode']) {
 			case 'ISAPI':
 				// Users must copy these rules to IsapiRewrite4.ini
 				$htaccessContent = <<<EOF
 RewriteRule ^{$path}/(thumbnail)/([0-9]+/.+)\$ {$path}/cache/\$1/\$2 [L,U]
+RewriteRule ^{$path}/attach/([0-9]+/.+)\$ {$path}/user/attach/\$1 [L,U]
 RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule ^{$path}/(cache)+/+(.+[^/]).(cache|xml|txt|log)\$ - [NC,F,L,U]
+RewriteRule ^{$path}/user+/+(cache)+/+(.+[^/]).(cache|xml|txt|log)\$ - [NC,F,L,U]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^{$path}/([^?]+[^/])\$ {$path}/\$1/ [L,U]
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -1340,8 +1401,9 @@ EOF;
 				// Users must import these rules into URL Rewrite module.
 				$htaccessContent = <<<EOF
 RewriteRule ^{$path}/(thumbnail)/([0-9]+/.+)\$ {$path}/cache/\$1/\$2 [L]
+RewriteRule ^{$path}/attach/([0-9]+/.+)\$ {$path}/user/attach/\$1 [L]
 RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule ^{$path}/(cache)+/+(.+[^/]).(cache|xml|txt|log)\$ - [NC,F,L]
+RewriteRule ^{$path}/user+/+(cache)+/+(.+[^/]).(cache|xml|txt|log)\$ - [NC,F,L]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^{$path}/([^?]+[^/])\$ {$path}/\$1/ [L]
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -1358,8 +1420,9 @@ EOF;
 RewriteEngine On
 RewriteBase {$path}/
 RewriteRule ^(thumbnail)/([0-9]+/.+)\$ cache/\$1/\$2 [L]
+RewriteRule ^attach/([0-9]+/.+)\$ user/attach/\$1 [L]
 RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule ^(cache)+/+(.+[^/]).(cache|xml|txt|log)\$ - [NC,F,L]
+RewriteRule ^user+/+(cache)+/+(.+[^/]).(cache|xml|txt|log)\$ - [NC,F,L]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^(.+[^/])\$ \$1/ [L]
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -1373,16 +1436,19 @@ EOF;
 	            @chmod($filename, 0666);
     	    }
 		}
-    
+
+        $blogProtocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
+        $blogDefaultPort = isset($_SERVER['HTTPS']) ? 443 : 80;
+
         switch ($_POST['type']) {
             case 'domain':
-                $blogURL = "http://{$_POST['blog']}.{$_POST['domain']}" . ($_SERVER['SERVER_PORT'] != 80 ? ":{$_SERVER['SERVER_PORT']}" : '') . "$path".(empty($_POST['disableRewrite']) ? '' : '/index.php?');
+                $blogURL = "$blogProtocol://{$_POST['blog']}.{$_POST['domain']}" . ($_SERVER['SERVER_PORT'] != $blogDefaultPort ? ":{$_SERVER['SERVER_PORT']}" : '') . "$path".(empty($_POST['disableRewrite']) ? '' : '/index.php?');
                 break;
             case 'path':
-                $blogURL = "http://{$_POST['domain']}" . ($_SERVER['SERVER_PORT'] != 80 ? ":{$_SERVER['SERVER_PORT']}" : '') . "$path".(empty($_POST['disableRewrite']) ? '' : '/index.php?')."/{$_POST['blog']}";
+                $blogURL = "$blogProtocol://{$_POST['domain']}" . ($_SERVER['SERVER_PORT'] != $blogDefaultPort ? ":{$_SERVER['SERVER_PORT']}" : '') . "$path".(empty($_POST['disableRewrite']) ? '' : '/index.php?')."/{$_POST['blog']}";
                 break;
             case 'single':
-                $blogURL = "http://{$_POST['domain']}" . ($_SERVER['SERVER_PORT'] != 80 ? ":{$_SERVER['SERVER_PORT']}" : '') . "$path".(empty($_POST['disableRewrite']) ? '' : '/index.php?');
+                $blogURL = "$blogProtocol://{$_POST['domain']}" . ($_SERVER['SERVER_PORT'] != $blogDefaultPort ? ":{$_SERVER['SERVER_PORT']}" : '') . "$path".(empty($_POST['disableRewrite']) ? '' : '/index.php?');
                 break;
         }
 ?>
@@ -1401,6 +1467,7 @@ EOF;
       </ul>
       <p>
 		<?php if (checkIIS()) echo _t('새로 IIS용 Rewrite 모듈을 설치하셨다면 <b>.htaccess 내용을 모듈 설정에 적용</b>해주십시오.<br />'); ?>
+		<?php echo '<li style="color:red">', _t('보안 관련 안내'), ': ', '<br /><span class="instruction">', _t('보안을 위하여 설치때 필요했던 권한 중 일부를 제거해주세요. FTP 프로그램으로 권한을 수정하시거나 다음의 명령을 터미널에 붙여 넣으시면 됩니다'), '<br />', 'chmod 0755 '.$root, '</span></li>';?>
         <?php echo _t('텍스트큐브 관리 툴로 로그인 하신 후 필요사항을 수정해 주십시오.');?><br />
         <?php echo _t('텍스트큐브를 이용해 주셔서 감사합니다.');?>
       </p>
@@ -1437,7 +1504,28 @@ EOF;
 				$entriesMatched = preg_match('/Entries$/', $table);
 
 
-				if ($entriesMatched && checkTables('1.8', $prefix = substr($table, 0, strlen($table) - 7))) {
+				if ($entriesMatched && checkTables('2.0', $prefix = substr($table, 0, strlen($table) - 7))) {
+?>
+      <tr>
+        <th><?php echo $prefix;?></th>
+        <th>2.0</th>
+        <td><?php echo implode(', ', getTables('2.0', $prefix));?></td>
+	    <th><input type="radio" name="target" value="2.0_<?php echo $prefix;?>" <?php echo $ckeckedString;?>/></th>
+      </tr>
+<?php
+					$ckeckedString = '';
+
+				} else if ($entriesMatched && checkTables('1.9', $prefix = substr($table, 0, strlen($table) - 7))) {
+?>
+      <tr>
+        <th><?php echo $prefix;?></th>
+        <th>1.9</th>
+        <td><?php echo implode(', ', getTables('1.9', $prefix));?></td>
+	    <th><input type="radio" name="target" value="1.9_<?php echo $prefix;?>" <?php echo $ckeckedString;?>/></th>
+      </tr>
+<?php
+					$ckeckedString = '';
+				} else if ($entriesMatched && checkTables('1.8', $prefix = substr($table, 0, strlen($table) - 7))) {
 ?>
       <tr>
         <th><?php echo $prefix;?></th>
@@ -1587,19 +1675,19 @@ EOF;
 <?php
 	}
 }
- 
-function drawSetLang( $currentLang = "ko"  ,$curPosition = 'Norm' /*or 'Err'*/ ){ 
+
+function drawSetLang( $currentLang = "ko"  ,$curPosition = 'Norm' /*or 'Err'*/ ){
 	$locale = Locales::getInstance();
-	if( $locale->setDirectory(ROOT.'/resources/locale/setup'))   $availableLanguages =   $locale->getSupportedLocales(); 
-	else return false; 
-?> 
-		Select Default Language : 
-		<select name="Lang" id = "Lang" onchange= "current();" > 
-<?php      foreach( $availableLanguages as $key => $value) 
-			print('			<option value="'.$key.'" '.( $key == $currentLang ? ' selected="selected" ' : '').'>'.$value.'</option>'.CRLF); 
+	if( $locale->setDirectory(ROOT.'/resources/locale/setup'))   $availableLanguages =   $locale->getSupportedLocales();
+	else return false;
+?>
+		Select Default Language :
+		<select name="Lang" id = "Lang" onchange= "current();" >
+<?php      foreach( $availableLanguages as $key => $value)
+			print('			<option value="'.$key.'" '.( $key == $currentLang ? ' selected="selected" ' : '').'>'.$value.'</option>'.CRLF);
 ?>
 		</select>
-<?php 
+<?php
 	return true;
 }
 
@@ -1674,7 +1762,7 @@ function checkTables($version, $prefix) {
 	foreach ($tables as $table) {
 		if ($result = POD::query("DESCRIBE $table"))
 			POD::free($result);
-		else 
+		else
 			return false;
 	}
 	return true;
@@ -1682,6 +1770,12 @@ function checkTables($version, $prefix) {
 
 function getTables($version, $prefix) {
 	switch ($version) {
+		case '2.0':
+			return array("{$prefix}Attachments", "{$prefix}BlogSettings", "{$prefix}BlogStatistics", "{$prefix}Categories", "{$prefix}Comments", "{$prefix}TrashComments", "{$prefix}CommentsNotified", "{$prefix}CommentsNotifiedQueue", "{$prefix}CommentsNotifiedSiteInfo", "{$prefix}DailyStatistics", "{$prefix}Entries", "{$prefix}EntriesArchive", "{$prefix}FeedGroupRelations", "{$prefix}FeedGroups", "{$prefix}FeedItems", "{$prefix}FeedReads", "{$prefix}Feeds", "{$prefix}FeedSettings", "{$prefix}FeedStarred", "{$prefix}Filters", "{$prefix}Lines", "{$prefix}Links", "{$prefix}LinkCategories", "{$prefix}OpenIDUsers", "{$prefix}Plugins", "{$prefix}Properties", "{$prefix}RefererLogs", "{$prefix}RefererStatistics", "{$prefix}ReservedWords", "{$prefix}ServiceSettings", "{$prefix}Sessions", "{$prefix}SessionVisits", "{$prefix}SkinSettings", "{$prefix}TagRelations", "{$prefix}Tags", "{$prefix}RemoteResponseLogs", "{$prefix}RemoteResponses", "{$prefix}TrashRemoteResponses","{$prefix}Users", "{$prefix}UserSettings", "{$prefix}Widgets", "{$prefix}XMLRPCPingSettings", "{$prefix}Privileges", "{$prefix}PageCacheLog");
+        case '1.10':
+            return array("{$prefix}Attachments", "{$prefix}BlogSettings", "{$prefix}BlogStatistics", "{$prefix}Categories", "{$prefix}Comments", "{$prefix}TrashComments", "{$prefix}CommentsNotified", "{$prefix}CommentsNotifiedQueue", "{$prefix}CommentsNotifiedSiteInfo", "{$prefix}DailyStatistics", "{$prefix}Entries", "{$prefix}EntriesArchive", "{$prefix}FeedGroupRelations", "{$prefix}FeedGroups", "{$prefix}FeedItems", "{$prefix}FeedReads", "{$prefix}Feeds", "{$prefix}FeedSettings", "{$prefix}FeedStarred", "{$prefix}Filters", "{$prefix}Lines", "{$prefix}Links", "{$prefix}LinkCategories", "{$prefix}OpenIDUsers", "{$prefix}Plugins", "{$prefix}RefererLogs", "{$prefix}RefererStatistics", "{$prefix}ReservedWords", "{$prefix}ServiceSettings", "{$prefix}Sessions", "{$prefix}SessionVisits", "{$prefix}SkinSettings", "{$prefix}TagRelations", "{$prefix}Tags", "{$prefix}RemoteResponseLogs", "{$prefix}RemoteResponses", "{$prefix}TrashRemoteResponses","{$prefix}Users", "{$prefix}UserSettings", "{$prefix}Widgets", "{$prefix}XMLRPCPingSettings", "{$prefix}Privileges", "{$prefix}PageCacheLog");
+		case '1.9':
+			return array("{$prefix}Attachments", "{$prefix}BlogSettings", "{$prefix}BlogStatistics", "{$prefix}Categories", "{$prefix}Comments", "{$prefix}TrashComments", "{$prefix}CommentsNotified", "{$prefix}CommentsNotifiedQueue", "{$prefix}CommentsNotifiedSiteInfo", "{$prefix}DailyStatistics", "{$prefix}Entries", "{$prefix}EntriesArchive", "{$prefix}FeedGroupRelations", "{$prefix}FeedGroups", "{$prefix}FeedItems", "{$prefix}FeedReads", "{$prefix}Feeds", "{$prefix}FeedSettings", "{$prefix}FeedStarred", "{$prefix}Filters", "{$prefix}Lines", "{$prefix}Links", "{$prefix}LinkCategories", "{$prefix}OpenIDUsers", "{$prefix}Plugins", "{$prefix}RefererLogs", "{$prefix}RefererStatistics", "{$prefix}ReservedWords", "{$prefix}ServiceSettings", "{$prefix}Sessions", "{$prefix}SessionVisits", "{$prefix}SkinSettings", "{$prefix}TagRelations", "{$prefix}Tags", "{$prefix}RemoteResponseLogs", "{$prefix}RemoteResponses", "{$prefix}TrashRemoteResponses","{$prefix}Users", "{$prefix}UserSettings", "{$prefix}Widgets", "{$prefix}XMLRPCPingSettings", "{$prefix}Privileges", "{$prefix}PageCacheLog");
 		case '1.8':
 			return array("{$prefix}Attachments", "{$prefix}BlogSettings", "{$prefix}BlogStatistics", "{$prefix}Categories", "{$prefix}Comments", "{$prefix}CommentsNotified", "{$prefix}CommentsNotifiedQueue", "{$prefix}CommentsNotifiedSiteInfo", "{$prefix}DailyStatistics", "{$prefix}Entries", "{$prefix}EntriesArchive", "{$prefix}FeedGroupRelations", "{$prefix}FeedGroups", "{$prefix}FeedItems", "{$prefix}FeedReads", "{$prefix}Feeds", "{$prefix}FeedSettings", "{$prefix}FeedStarred", "{$prefix}Filters", "{$prefix}Lines", "{$prefix}Links", "{$prefix}LinkCategories", "{$prefix}OpenIDUsers", "{$prefix}Plugins", "{$prefix}RefererLogs", "{$prefix}RefererStatistics", "{$prefix}ReservedWords", "{$prefix}ServiceSettings", "{$prefix}Sessions", "{$prefix}SessionVisits", "{$prefix}SkinSettings", "{$prefix}TagRelations", "{$prefix}Tags", "{$prefix}RemoteResponseLogs", "{$prefix}RemoteResponses", "{$prefix}Users", "{$prefix}UserSettings", "{$prefix}Widgets", "{$prefix}XMLRPCPingSettings", "{$prefix}Privileges", "{$prefix}PageCacheLog");
 		case '1.7':
@@ -1700,7 +1794,7 @@ function getTables($version, $prefix) {
 			return array("{$prefix}Attachments", "{$prefix}BlogSettings", "{$prefix}BlogStatistics", "{$prefix}Categories", "{$prefix}ContentFilters", "{$prefix}DailyStatistics", "{$prefix}Entries", "{$prefix}GuestFilters", "{$prefix}HostFilters", "{$prefix}Links", "{$prefix}MonthlyStatistics", "{$prefix}RefererLogs", "{$prefix}RefererStatistics", "{$prefix}Replies", "{$prefix}ReservedWords", "{$prefix}ServiceSetting", "{$prefix}SessionVisits", "{$prefix}Sessions", "{$prefix}SkinSettings", "{$prefix}TagRelations", "{$prefix}Tags", "{$prefix}TrackbackLogs", "{$prefix}Trackbacks", "{$prefix}URLFilters", "{$prefix}Users");
 		case '0.97':
 			return array("t3_{$prefix}_10ofmg", "t3_{$prefix}_10ofmg_cnt_log", "t3_{$prefix}_10ofmg_count", "t3_{$prefix}_10ofmg_ct1", "t3_{$prefix}_10ofmg_ct2", "t3_{$prefix}_10ofmg_files", "t3_{$prefix}_10ofmg_guest", "t3_{$prefix}_10ofmg_guest_icon", "t3_{$prefix}_10ofmg_guest_reply", "t3_{$prefix}_10ofmg_keyword", "t3_{$prefix}_10ofmg_keyword_files", "t3_{$prefix}_10ofmg_link", "t3_{$prefix}_10ofmg_notice_log", "t3_{$prefix}_10ofmg_notice_queue", "t3_{$prefix}_10ofmg_referlog", "t3_{$prefix}_10ofmg_referstat", "t3_{$prefix}_10ofmg_reply", "t3_{$prefix}_10ofmg_rss", "t3_{$prefix}_10ofmg_rss_group", "t3_{$prefix}_10ofmg_rss_item", "t3_{$prefix}_10ofmg_setting", "t3_{$prefix}_10ofmg_spam_filter", "t3_{$prefix}_10ofmg_tag", "t3_{$prefix}_10ofmg_tblog", "t3_{$prefix}_10ofmg_trackback");
-		case '0.96':	
+		case '0.96':
 			return array("t3_{$prefix}", "t3_{$prefix}_cnt_log", "t3_{$prefix}_count", "t3_{$prefix}_ct1", "t3_{$prefix}_ct2", "t3_{$prefix}_files", "t3_{$prefix}_guest", "t3_{$prefix}_guest_icon", "t3_{$prefix}_guest_reply", "t3_{$prefix}_keyword", "t3_{$prefix}_keyword_files", "t3_{$prefix}_link", "t3_{$prefix}_referlog", "t3_{$prefix}_referstat", "t3_{$prefix}_reply", "t3_{$prefix}_rss", "t3_{$prefix}_rss_group", "t3_{$prefix}_rss_item", "t3_{$prefix}_setting", "t3_{$prefix}_tblog", "t3_{$prefix}_trackback");
 	}
 	return null;

@@ -2,33 +2,30 @@
 <plugin version="1.0">
   <title xml:lang="ko">OpenID</title>
   <title xml:lang="en">OpenID</title>
-  <title xml:lang="zh_TW">OpenID</title>
-  <title xml:lang="zh_CN">OpenID</title>
+  <title xml:lang="ja">OpenID</title>
   <link>http://www.needlworks.org/</link>
   <version>1.0</version>
   <description xml:lang="en">This plugin enables OpenID facility.</description>
   <description xml:lang="ko"><![CDATA[OpenID 사용을 가능하게 합니다. 오픈아이디 가입링크를 수정하시려면, CL_OpenID 플러그인 디렉토리안의 affiliate.php를 참조하세요.]]></description>
-  <description xml:lang="zh_TW"><![CDATA[啟用 OpenID 功能。OpenID 的服務可以透過修改 affiliate.php 來指定其他的 OpenID 服務提供者。</description>
-  <description xml:lang="zh_CN"><![CDATA[启用 OpenID 功能。 OpenID 的服务可以透过修改affiliate.php 来指定其他的OpenID 服务提供者。]]></description>
+  <description xml:lang="ja">OpenIDを利用します。OpenID登録サイトへのリンクを変更するためには、CL_OpenID の affiliate.phpから変更してください。</description>
   <license>GPL</license>
   <author xml:lang="en" link="http://coolengineer.com/">Hojin Choi (coolengineer / Needlworks)</author>
   <author xml:lang="ko" link="http://coolengineer.com/"><![CDATA[최호진 (coolengineer / Needlworks)]]></author>
-  <author xml:lang="zh_TW" link="http://coolengineer.com/">Hojin Choi (coolengineer / Needlworks)</author>
-  <author xml:lang="zh_CN" link="http://coolengineer.com/">Hojin Choi (coolengineer / Needlworks)</author>
+  <author xml:lang="ja" link="http://www.needlworks.org/">Hojin Choi (coolengineer / Needlworks)</author>
   <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
   <scope>blog</scope>
   <requirements>
     <textcube>
-		<minVersion>1.8</minVersion>
+	  <minVersion>1.8</minVersion>
 	</textcube>
   </requirements>
   <binding>
-	<listener event="Logout">openid_Logout</listener>
-	<listener event="AddComment">openid_AddComment</listener>
-	<listener event="AddGuestComment">openid_AddComment</listener>
-	<listener event="ViewCommenter">openid_ViewCommenter</listener>
-	<listener event="ViewGuestCommenter">openid_ViewCommenter</listener>
-	<listener event="OpenIDAffiliateLinks">openid_OpenIDAffiliateLinks</listener>
+	<listener event="Logout" handler="openid_Logout" />
+	<listener event="AddComment" handler="openid_AddComment" />
+	<listener event="AddGuestComment" handler="openid_AddComment" />
+	<listener event="ViewCommenter" handler="openid_ViewCommenter" />
+	<listener event="ViewGuestCommenter" handler="openid_ViewCommenter" />
+	<listener event="OpenIDAffiliateLinks" handler="openid_OpenIDAffiliateLinks" />
 
 	<tag name="SKIN_head_start" handler="openid_add_delegate" />
   </binding>

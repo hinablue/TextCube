@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -23,7 +23,7 @@ $IV = array(
 		)
 	);
 require ROOT . '/library/preprocessor.php';
-requireModel("blog.entry");
+importlib("model.blog.entry");
 
 
 requireStrictRoute();
@@ -39,8 +39,8 @@ $entry['content'] = $_POST['content'];
 $entry['contentformatter'] = $_POST['contentformatter'];
 $entry['contenteditor'] = $_POST['contenteditor'];
 $entry['location'] = empty($_POST['location']) ? '/' : $_POST['location'];
-$entry['latitude'] = empty($_POST['latitude']) ? null : $_POST['latitude'];
-$entry['longitude'] = empty($_POST['longitude']) ? null : $_POST['longitude'];
+$entry['latitude'] = (empty($_POST['latitude']) || $_POST['latitude'] == "null") ? null : $_POST['latitude'];
+$entry['longitude'] = (empty($_POST['longitude']) || $_POST['longitude'] == "null") ? null : $_POST['longitude'];
 $entry['tag'] = empty($_POST['tag']) ? '' : $_POST['tag'];
 $entry['acceptcomment'] = empty($_POST['acceptcomment']) ? 0 : 1;
 $entry['accepttrackback'] = empty($_POST['accepttrackback']) ? 0 : 1;

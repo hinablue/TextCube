@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -21,14 +21,15 @@ function getSymbolByQuantity($bytes) {
 	return sprintf('%.2f '.$symbols[$exp], ($bytes/pow(1024, floor($exp))));
 }
 
+$context = Model_Context::getInstance();
 /* Current time */
 $serverTime = strftime( "Server Time: %Y-%m-%d %H:%M:%S %z (%Z)", time() );
 
 /* Database version */
 $dbVersion = '';
 //if( $service['dbms'] == 'mysql' ) {
-	$dbVersion = POD::queryColumn("SELECT VERSION()");
-	$dbVersion = "MySQL: " . $dbVersion[0];
+	$dbVersion = POD::version();
+	$dbVersion = POD::dbms(). ": " . $dbVersion;
 	$dbStat = preg_replace( "/\\s{2,}/", "<br />", POD::stat());
 //}
 

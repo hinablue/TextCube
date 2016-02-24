@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -16,27 +16,6 @@ $IV = array(
 	//)
 );
 require ROOT . '/library/preprocessor.php';
-/*if (isset($_POST['ipValue'])) {
-	$_POST['mode'] = "ip";
-} else if (isset($_POST['urlValue'])) {
-	$_POST['mode'] = "url";
-} else if (isset($_POST['contentValue'])) {
-	$_POST['mode'] = "content";
-} else if (isset($_POST['nameValue'])) {
-	$_POST['mode'] = "name";
-} else if (isset($_POST['whiteurlValue'])) {
-	$_POST['mode'] = "whiteurl";
-}
-if (!empty($_POST['mode'])) {
-	$filter = new Filter();
-	$filter->type = $_POST['mode'];
-	$filter->pattern = $_POST[($_POST['mode'] . 'Value')];
-	$filter->add();
-	//$history = $_POST['mode'];
-}
-//if (!empty($_GET['history'])) {
-//	$history = $_GET['history'];
-//}*/
 require ROOT . '/interface/common/owner/header.php';
 
 
@@ -67,7 +46,7 @@ function printFilterBox($mode, $title) {
 			$className .= ($id == sizeof($filtersList) - 1) ? ' last-line' : '';
 ?>
 												<tr class="<?php echo $className;?> inactive-class" onmouseover="rolloverClass(this, 'over')" onmouseout="rolloverClass(this, 'out')">
-			<td class="content"><span title="<?php echo htmlspecialchars($entity);?>"><?php echo htmlspecialchars(UTF8::lessenAsEm($entity, 26));?></span></td>
+			<td class="content"><span title="<?php echo htmlspecialchars($entity);?>"><?php echo htmlspecialchars(Utils_Unicode::lessenAsEm($entity, 26));?></span></td>
 													<td class="delete"><a class="delete-button button" href="#void" onclick="deleteFilter(parentNode.parentNode,'<?php echo $mode;?>', '<?php echo urlencode($entity);?>',<?php echo $value[0];?>); return false;" title="<?php echo _t('이 필터링을 제거합니다.');?>"><span class="text"><?php echo _t('삭제');?></span></a></td>
 												</tr>
 <?php
@@ -113,7 +92,7 @@ function printFilterBox($mode, $title) {
 									param += '&command=unblock';
 									param += '&id=' + id;
 									
-									var request = new HTTPRequest("GET", "<?php echo $blogURL;?>/owner/communication/filter/change/" + param);
+									var request = new HTTPRequest("GET", "<?php echo $context->getProperty('uri.blog');?>/owner/communication/filter/change/" + param);
 									request.onSuccess = function() {
 										PM.removeRequest(this);
 										PM.showMessage("<?php echo _t('필터를 삭제하였습니다.');?>", "center", "bottom");							
@@ -203,7 +182,7 @@ function printFilterBox($mode, $title) {
 									param  = '?mode=' + mode;
 									param += '&value=' + target.value;
 									
-									var request = new HTTPRequest("GET", "<?php echo $blogURL;?>/owner/communication/filter/change/" + param);
+									var request = new HTTPRequest("GET", "<?php echo $context->getProperty('uri.blog');?>/owner/communication/filter/change/" + param);
 									request.onSuccess = function() {
 										PM.removeRequest(this);
 										PM.showMessage("<?php echo _t('필터를 추가하였습니다.');?>", "center", "bottom");
@@ -265,25 +244,25 @@ function printFilterBox($mode, $title) {
 							</div>
 							
 							<div class="data-inbox">
-								<form id="ipSection" class="section" method="post" action="<?php echo $blogURL;?>/owner/communication/filter">
+								<form id="ipSection" class="section" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/communication/filter">
 <?php echo printFilterBox('ip', _t('IP 필터링'));?>
 								</form>
 										
 								<hr class="hidden" />
 										
-								<form id="urlSection" class="section" method="post" action="<?php echo $blogURL;?>/owner/communication/filter">
+								<form id="urlSection" class="section" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/communication/filter">
 <?php echo printFilterBox('url', _t('홈페이지 필터링'));?>
 								</form>
 								
 								<hr class="hidden" />
 								
-								<form id="contentSection" class="section" method="post" action="<?php echo $blogURL;?>/owner/communication/filter">
+								<form id="contentSection" class="section" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/communication/filter">
 <?php echo printFilterBox('content', _t('본문 필터링'));?>
 								</form>
 								
 								<hr class="hidden" />
 								
-								<form id="nameSection" class="section" method="post" action="<?php echo $blogURL;?>/owner/communication/filter">
+								<form id="nameSection" class="section" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/communication/filter">
 <?php echo printFilterBox('name', _t('이름 필터링'));?>
 								</form>
 							</div>
@@ -297,7 +276,7 @@ function printFilterBox($mode, $title) {
 							</div>
 							
 							<div class="data-inbox">
-								<form id="whiteurlSection" class="section" method="post" action="<?php echo $blogURL;?>/owner/communication/filter">
+								<form id="whiteurlSection" class="section" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/communication/filter">
 <?php echo printFilterBox('whiteurl', _t('예외 처리할 홈페이지'));?>
 								</form>
 								

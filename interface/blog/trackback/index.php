@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -14,7 +14,7 @@ $IV = array(
 	)
 );
 require ROOT . '/library/preprocessor.php';
-if(!Setting::getBlogSetting('acceptTrackbacks',1)) {
+if(!Setting::getBlogSettingGlobal('acceptTrackbacks',0)) {
 	Respond::PrintResult(array('error' => 1, 'message' => 'The entry does not accept trackback'));
 	exit;	
 }
@@ -36,14 +36,17 @@ if(empty($suri['id'])) {
 }*/
 $result = receiveTrackback($blogid, $suri['id'], $title, $url, $excerpt, $blog_name);
 if ($result == 0) {
-	if($row = POD::queryRow("SELECT * 
-		FROM {$database['prefix']}Entries
-		WHERE blogid = $blogid 
-			AND id = {$suri['id']} 
-			AND draft = 0 
-			AND visibility = 3 
-			AND acceptcomment = 1"))
-		sendTrackbackPing($suri['id'], "$defaultURL/".($blog['useSloganOnPost'] ? "entry/{$row['slogan']}": $suri['id']), $url, $blog_name, $title);
+    $context = Model_Context::getInstance();
+    $pool = DBModel::getInstance();
+    $pool->init("Entries");
+    $pool->setQualifier("blogid","eq",$blogid);
+    $pool->setQualifier("id","eq",$context->getProperty("suri.id"));
+    $pool->setQualifier("draft","eq",0);
+    $pool->setQualifier("visibility","eq",3);
+    $pool->setQualifier("acceptcomment","eq",1);
+    if($row = $pool->getRow()) {
+        sendTrackbackPing($suri['id'], $context->getProperty('uri.default') . "/" . ($context->getProperty('blog.useSloganOnPost') ? "entry/{$row['slogan']}" : $suri['id']), $url, $blog_name, $title);
+    }
 	Respond::ResultPage(0);
 } else {
 	if ($result == 1) {

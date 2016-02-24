@@ -3,15 +3,11 @@
   <title xml:lang="en">Referer Log</title>
   <title xml:lang="ko">리퍼러 기록</title>
   <title xml:lang="ja">リファラ統計</title>
-  <title xml:lang="zh-TW">Referer 統計</title>
-  <title xml:lang="zh-CN">Referer 统计</title>
   <link>http://needlworks.org/</link>
   <version>1.6</version>
   <description xml:lang="en">Referer log Plugin using Textcube Components.</description>
   <description xml:lang="ko">텍스트큐브 컴포넌트를 이용하여 리퍼러 기록을 보여줍니다.</description>
-  <description xml:lang="ja">テト・ツールズのコンポーネントを利用して、詳細なリファラ情報を見せます。</description>
-  <description xml:lang="zh-TW">使用 TextCube 元件紀錄 Referer 統計資料。</description>
-  <description xml:lang="zh-CN">使用 TextCube 组件纪录 Referer 统计数据。</description>  
+  <description xml:lang="ja">Textcubeの構成要素を利用して、詳細なリファラ統計を表示します。</description>
   <license>GPL</license>
   <author xml:lang="en" link="http://needlworks.org">Needlworks</author>
   <author xml:lang="ko" link="http://needlworks.org">Needlworks</author>
@@ -28,8 +24,6 @@
           <title xml:lang="en">Referer Log</title>
           <title xml:lang="ko">리퍼러 기록</title>
           <title xml:lang="ja">リファラ統計</title>
-          <title xml:lang="zh-TW">Referer 統計</title>
-          <title xml:lang="zh-CN">Referer 统计</title>
           <handler>PN_Referer_Default</handler>
           <params>
             <param>

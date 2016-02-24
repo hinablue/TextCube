@@ -1,4 +1,4 @@
-/// Copyright (c) 2004-2010, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
@@ -79,4 +79,59 @@ function removeFormatting() {
 			str = str.replace(result[0], result[1]);
 	}
 	document.getElementById('nicknameStyle').innerHTML = str;
+}
+
+function uploadImage(frm, type) {
+	frm.type.value = type;
+	if(type == 'upload'){
+		frm.submit();
+		frm.imageRemove.disabled = false;
+	}else{
+		if(confirm(_t('정말 삭제하시겠습니까?'))){
+			frm.submit();
+			frm.imageRemove.disabled = true;
+			frm.imageRemove.checked = false;
+		}else{
+			frm.imageRemove.checked = false;
+			return false;
+		}
+	}
+	frm.reset();
+}
+
+function setStyleSave() {
+	try {
+		var fontBold = document.getElementById('fontBold').checked;
+		var fontItalic = document.getElementById('fontItalic').checked;
+		var fontUnderline = document.getElementById('fontUnderline').checked;
+		var fontColor = document.getElementById('fontColor').value;
+		var fontFamilyList = document.getElementById('fontFamilyList').value;
+		var fontSizeList = document.getElementById('fontSizeList').value;
+		var queryString = "flag=style&fontstyle=" + encodeURIComponent(fontBold + "|" + fontItalic + "|" + fontUnderline + "|" + fontColor + "|" + fontFamilyList + "|" + fontSizeList);
+
+		var request = new HTTPRequest("POST", blogURL + "/plugin/teamContentsSave/");
+		request.onSuccess = function () {
+			PM.showMessage("필명 스타일이 저장 되었습니다.", "center", "bottom");
+		}
+		request.onError = function() {
+			PM.showErrorMessage("저장하지 못했습니다. 다시 시도 해주세요.", "center", "bottom");
+		}
+		request.send(queryString);
+	} catch(e) {}
+}
+
+function setProfileSave() {
+	try {
+		var profile = document.getElementById('profile').value;
+		var queryString = "flag=profile&profile=" + encodeURIComponent(profile);
+
+		var request = new HTTPRequest("POST", blogURL + "/plugin/teamContentsSave/");
+		request.onSuccess = function () {
+			PM.showMessage("프로필 설명이 저장 되었습니다.", "center", "bottom");
+		}
+		request.onError = function() {
+			PM.showErrorMessage("저장하지 못했습니다. 다시 시도 해주세요.", "center", "bottom");
+		}
+		request.send(queryString);
+	} catch(e) {}
 }

@@ -1,15 +1,15 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 require ROOT . '/library/preprocessor.php';
 requireStrictRoute();
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<!DOCTYPE html>
+<html>
 <head>
+	<meta charset="utf-8">
 	<title>Textcube Data Correcting</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript">
 		//<![CDATA[
 			var pi = window.parent.document.getElementById("correctingIndicator");
@@ -105,26 +105,25 @@ updateEntriesOfCategory($blogid);
 setProgress($item++ / $items * 100, _t('태그와 태그 관계 정보를 다시 계산해서 저장합니다.'));
 $post->correctTagsAll();
 
-if ($result = POD::query("SELECT id, name, parent, homepage, comment, entry, isfiltered FROM {$database['prefix']}Comments WHERE blogid = $blogid")) {
+if ($result = POD::query("SELECT id, name, parent, homepage, comment, entry, isfiltered FROM {$database['prefix']}Comments WHERE blogid = $blogid and isfiltered = 0")) {
 	while ($comment = POD::fetch($result)) {
 		setProgress($item++ / $items * 100, _t('댓글과 방명록 데이터를 교정하고 있습니다.'));
 		$correction = '';
-		if (!UTF8::validate($comment['name']))
-			$correction .= ' name = \'' . POD::escapeString(UTF8::correct($comment['name'], '?')) . '\'';
-		if (!UTF8::validate($comment['homepage']))
-			$correction .= ' homepage = \'' . POD::escapeString(UTF8::correct($comment['homepage'], '?')) . '\'';
-		if (!UTF8::validate($comment['comment']))
-			$correction .= ' comment = \'' . POD::escapeString(UTF8::correct($comment['comment'], '?')) . '\'';
+		if (!Utils_Unicode::validate($comment['name']))
+			$correction .= ' name = \'' . POD::escapeString(Utils_Unicode::correct($comment['name'], '?')) . '\'';
+		if (!Utils_Unicode::validate($comment['homepage']))
+			$correction .= ' homepage = \'' . POD::escapeString(Utils_Unicode::correct($comment['homepage'], '?')) . '\'';
+		if (!Utils_Unicode::validate($comment['comment']))
+			$correction .= ' comment = \'' . POD::escapeString(Utils_Unicode::correct($comment['comment'], '?')) . '\'';
 		if (strlen($correction) > 0) {
 			POD::query("UPDATE {$database['prefix']}Comments SET $correction WHERE blogid = $blogid AND id = {$comment['id']}");
 			$corrected++;
 		}
 		if (!is_null($comment['parent']) && ($comment['isfiltered'] == 0)) {
-			$r2 = POD::query("SELECT id FROM {$database['prefix']}Comments WHERE blogid = $blogid AND id = {$comment['parent']} AND isfiltered = 0");
-			if (POD::num_rows($r2) <= 0) {
+			$r2 = POD::queryCount("SELECT id FROM {$database['prefix']}Comments WHERE blogid = $blogid AND id = {$comment['parent']} AND isfiltered = 0");
+			if ($r2 <= 0) {
 				trashCommentInOwner($blogid, $comment['id']);
 			}
-			POD::free($r2);
 		}
 	}
 	POD::free($result);
@@ -134,14 +133,14 @@ if ($result = POD::query("SELECT id, url, site, subject, excerpt FROM {$database
 	while ($trackback = POD::fetch($result)) {
 		setProgress($item++ / $items * 100, _t('걸린 글 데이터를 교정하고 있습니다.'));
 		$correction = '';
-		if (!UTF8::validate($trackback['url']))
-			$correction .= ' url = \'' . POD::escapeString(UTF8::correct($trackback['url'], '?')) . '\'';
-		if (!UTF8::validate($trackback['site']))
-			$correction .= ' site = \'' . POD::escapeString(UTF8::correct($trackback['site'], '?')) . '\'';
-		if (!UTF8::validate($trackback['subject']))
-			$correction .= ' subject = \'' . POD::escapeString(UTF8::correct($trackback['subject'], '?')) . '\'';
-		if (!UTF8::validate($trackback['excerpt']))
-			$correction .= ' excerpt = \'' . POD::escapeString(UTF8::correct($trackback['excerpt'], '?')) . '\'';
+		if (!Utils_Unicode::validate($trackback['url']))
+			$correction .= ' url = \'' . POD::escapeString(Utils_Unicode::correct($trackback['url'], '?')) . '\'';
+		if (!Utils_Unicode::validate($trackback['site']))
+			$correction .= ' site = \'' . POD::escapeString(Utils_Unicode::correct($trackback['site'], '?')) . '\'';
+		if (!Utils_Unicode::validate($trackback['subject']))
+			$correction .= ' subject = \'' . POD::escapeString(Utils_Unicode::correct($trackback['subject'], '?')) . '\'';
+		if (!Utils_Unicode::validate($trackback['excerpt']))
+			$correction .= ' excerpt = \'' . POD::escapeString(Utils_Unicode::correct($trackback['excerpt'], '?')) . '\'';
 		if (strlen($correction) > 0) {
 			POD::query("UPDATE {$database['prefix']}RemoteResponses SET $correction WHERE blogid = $blogid AND id = {$trackback['id']}");
 			$corrected++;

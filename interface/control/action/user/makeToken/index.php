@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -13,10 +13,15 @@ requireStrictRoute();
 requirePrivilege('group.creators');
 
 $authtoken = md5(User::__generatePassword());
-$result = POD::query("REPLACE INTO `{$database['prefix']}UserSettings` (userid, name, value) VALUES ('".$_GET['userid']."', 'AuthToken', '$authtoken')");
+
+$pool = DBModel::getInstance();
+$pool->init("UserSettings");
+$pool->setAttribute("userid",$_GET['userid']);
+$pool->setAttribute("name",'AuthToken',true);
+$pool->setAttribute("value",$authtoken,true);
+$result = $pool->replace();
 if ($result) {
 	Respond::PrintResult(array('error' => 0));
-	echo "s";
 }
 else {
 	$result = _t('임시 암호 발급에 실패하였습니다.');

@@ -1,10 +1,11 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
-$service['admin_script']='control.js';
 
 require ROOT . '/library/preprocessor.php';
+$context = Model_Context::getInstance();
+$context->setProperty('service.admin_script','control.js');
 require ROOT . '/interface/common/control/header.php';
 
 requirePrivilege('group.creators');
@@ -62,7 +63,7 @@ $pool = DBModel::getInstance();
 								msg = this.getText("/response/result");
 								alert("<?php echo _t('블로그 삭제에 실패하였습니다.');?>\r\nError : " + msg);
 							}
-							PM.addRequest(request, _t("블로그 삭제중"));
+							PM.addRequest(request, _t('블로그 삭제중'));
 							request.send();
 						}
 						
@@ -125,7 +126,7 @@ $pool = DBModel::getInstance();
 	
 	$pool->reset('RemoteResponses');
 	$pool->setQualifier('blogid','eq',$bid);
-	$pool->setQualifier('type','eq','trackback',true);
+	$pool->setQualifier('responsetype','eq','trackback',true);
 	$pool->setQualifier('isfiltered','eq',0);
 	$numberOfTrackbacks = $pool->getCount();
 	
@@ -145,7 +146,7 @@ $pool = DBModel::getInstance();
                                     <li><?php echo _f('이 블로그에는 총 %1개의 댓글이 있습니다.', $numberOfComments);?></li>
                                     <li><?php 
 		if(empty($attachmentSum)) echo _t('이 블로그에는 첨부파일이 없습니다.');
-		else echo _f('이 블로그가 사용중인 첨부파일의 총 용량은 %1입니다.', Misc::getSizeHumanReadable($attachmentSum));?></li>
+		else echo _f('이 블로그가 사용중인 첨부파일의 총 용량은 %1입니다.', Utils_Misc::getSizeHumanReadable($attachmentSum));?></li>
                                 </ul>
 							</div>
 								
@@ -197,7 +198,7 @@ $pool = DBModel::getInstance();
 										<dd>
 											<span id="suggestContainer"><input type="text" id="bi-owner-loginid" name="user" value="" /></span>
 											<input type="hidden" name="blogid" value="<?php echo $bid?>" />
-											<input type="submit" class="input-button" value="<?php echo _t("팀원 추가");?>" onclick="addUser(ctlUserSuggestObj.getValue());return false;" />
+											<input type="submit" class="input-button" value="<?php echo _t('팀원 추가');?>" onclick="addUser(ctlUserSuggestObj.getValue());return false;" />
 										</dd>
 									</dl>
 								</form>
@@ -216,10 +217,9 @@ $pool = DBModel::getInstance();
 							</div>
 							
 							<div class="button-box">
-								<input type="submit" class="input-button" href="#void" onclick="deleteBlog(<?php echo $bid;?>); return false;" value="<?php echo _t("블로그 삭제");?>" />
-								<span class="hidden">|</span>
-								<?php if (!$isRepBlog) { ?><input type="submit" class="input-button" href="<?php echo $context->getProperty('uri.blog');?>/control/action/blog/setDefault/?blogid=<?php echo $bid;?>" onclick="setDefaultBlog('<?php echo $bid;?>'); return false;" value="<?php echo _t('대표 블로그 설정');?>" /><span class="hidden">|</span><?php } ?>
-								<input type="submit" class="input-button" onclick="location.href='<?php echo $context->getProperty('uri.blog');?>/control/blog'" value="<?php echo _t("돌아가기");?>" />
+								<a class="button" href="#void" onclick="deleteBlog(<?php echo $bid;?>); return false;"><?php echo _t('블로그 삭제');?></a>
+								<?php if ($bid != Setting::getServiceSettingGlobal("defaultBlogId",1)) { ?><a class="button" href="<?php echo $context->getProperty('uri.blog');?>/control/action/blog/setDefault/?blogid=<?php echo $bid;?>" onclick="setDefaultBlog('<?php echo $bid;?>'); return false;"><?php echo _t('대표 블로그 설정');?></a><?php } ?>
+								<a class="button" href="<?php echo $context->getProperty('uri.blog');?>/control/blog"><?php echo _t('돌아가기');?></a>
 							</div>
 						</div>
 <?php

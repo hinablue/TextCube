@@ -2,23 +2,20 @@
 <plugin version="1.0">
   <title xml:lang="ko">Blog API</title>
   <title xml:lang="en">Blog API</title>
-  <title xml:lang="zh_TW">Blog API</title>
-  <title xml:lang="zh_CN">Blog API</title>
+  <title xml:lang="ja">Blog API</title>
   <link>http://needlworks.org/</link>
-  <version>1.6</version>
+  <version>2.0</version>
   <description xml:lang="en">This helps blog editor discover automatically blog's profile</description>
   <description xml:lang="ko">편집기 환경 설정에 블로그 주소만 입력하여도 자동 설정되도록 합니다.</description>
-  <description xml:lang="zh_TW">讓外部的離線編輯器能夠自動找尋部落格的基本設定。</description>
-  <description xml:lang="zh_CN">让外部的离线编辑器能够自动找寻博客的基本设定。</description>
+  <description xml:lang="ja">ブログのURLだけを入力しても記事作成用ソフトウェアからAPI アドレスを認識できるように設定します。</description>
   <license>GPL</license>
   <author xml:lang="en" link="http://coolengineer.com">Hojin Choi (coolengineer / Needlworks)</author>
   <author xml:lang="ko" link="http://coolengineer.com"><![CDATA[최호진 (coolengineer / Needlworks)]]></author>
-  <author xml:lang="zh_TW" link="http://coolengineer.com">Hojin Choi (coolengineer / Needlworks)</author>
-  <author xml:lang="zh_CN" link="http://coolengineer.com">Hojin Choi (coolengineer / Needlworks)</author>
+  <author xml:lang="ja" link="http://coolengineer.com">Hojin Choi (coolengineer / Needlworks)</author>
   <safety changeData="no" exposeData="no" accessLocal="no" accessRemote="no" accessRaw="no" />
   <requirements>
     <textcube>
-		<minVersion>1.8</minVersion>
+	  <minVersion>2.0</minVersion>
 	</textcube>
   </requirements>
   <binding>

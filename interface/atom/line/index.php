@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 define('NO_SESSION', true);
@@ -7,7 +7,7 @@ define('__TEXTCUBE_LOGIN__',true);
 define('__TEXTCUBE_CUSTOM_HEADER__', true);
 
 require ROOT . '/library/preprocessor.php';
-requireModel("blog.feed");
+importlib("model.blog.feed");
 
 requireStrictBlogURL();
 

@@ -1,11 +1,11 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 require ROOT . '/library/preprocessor.php';
 // get style files list in current skin.
 $styleFileList = array();
-$tempStyleFileList = Misc::getFileListByRegExp(ROOT . "/skin/blog/{$skinSetting['skin']}", '\.css$', true);
+$tempStyleFileList = Utils_Misc::getFileListByRegExp(getSkinPath($skinSetting['skin']), '\.css$', true);
 
 foreach ($tempStyleFileList as $styleFile) {
 	$styleFileList[basename($styleFile)] = $styleFile;
@@ -19,20 +19,20 @@ if (isset($_GET['style'])) {
 	$currentStyleFile = $_GET['style'];
 } else {
 	$tempKeys = array_keys($styleFileList);
-	$currentStyleFile = str_replace(ROOT . "/skin/blog/{$skinSetting['skin']}/", '', $styleFileList[$tempKeys[0]]);
+	$currentStyleFile = str_replace(getSkinPath($skinSetting['skin']) . '/', '', $styleFileList[$tempKeys[0]]);
 }
 
 $skin = '';
-if (file_exists(ROOT . "/skin/blog/{$skinSetting['skin']}/skin.html")) {
-	$skin = @file_get_contents(ROOT . "/skin/blog/{$skinSetting['skin']}/skin.html");
+if (file_exists(getSkinPath($skinSetting['skin']) . "/skin.html")) {
+	$skin = @file_get_contents(getSkinPath($skinSetting['skin']) . "/skin.html");
 }
 $skin_keyword = '';
-if (file_exists(ROOT . "/skin/blog/{$skinSetting['skin']}/skin_keyword.html")) {
-	$skin_keyword = @file_get_contents(ROOT . "/skin/blog/{$skinSetting['skin']}/skin_keyword.html");
+if (file_exists(getSkinPath($skinSetting['skin']) . "/skin_keyword.html")) {
+	$skin_keyword = @file_get_contents(getSkinPath($skinSetting['skin']) . "/skin_keyword.html");
 }
 
-$htmlFilePerms = preg_replace('@^[0-9]{2}|[0-9]{2}$@', '', strrev(decoct(fileperms(ROOT . "/skin/blog/{$skinSetting['skin']}/skin.html"))));
-$styleFilePerms = preg_replace('@^[0-9]{2}|[0-9]{2}$@', '', $temp = strrev(decoct(fileperms(ROOT . "/skin/blog/{$skinSetting['skin']}/" . $currentStyleFile))));
+$htmlFilePerms = preg_replace('@^[0-9]{2}|[0-9]{2}$@', '', strrev(decoct(fileperms(getSkinPath($skinSetting['skin']) . "/skin.html"))));
+$styleFilePerms = preg_replace('@^[0-9]{2}|[0-9]{2}$@', '', $temp = strrev(decoct(fileperms(getSkinPath($skinSetting['skin']) . "/" . $currentStyleFile))));
 
 require ROOT . '/interface/common/owner/header.php';
 
@@ -50,7 +50,7 @@ require ROOT . '/interface/common/owner/header.php';
 										if(mode == 'skin' && currentTag != 'all') {
 											skinData = skinCode;
 											currentCode = document.getElementById(mode).value;
-											var request = new HTTPRequest("POST", "<?php echo $blogURL;?>/owner/skin/edit/crop/");									
+											var request = new HTTPRequest("POST", "<?php echo $context->getProperty('uri.blog');?>/owner/skin/edit/crop/");									
 											request.onSuccess = function() {
 												skinData = this.getText("/response/skinCode");
 												saveSkinCode(mode,skinData,file);
@@ -72,14 +72,14 @@ require ROOT . '/interface/common/owner/header.php';
 									}
 								}
 								function saveSkinCode(mode,skinData,file) {
-									var request = new HTTPRequest("POST", "<?php echo $blogURL;?>/owner/skin/edit/skin/");
+									var request = new HTTPRequest("POST", "<?php echo $context->getProperty('uri.blog');?>/owner/skin/edit/skin/");
 									request.onSuccess = function() {
 										PM.showMessage("<?php echo _t('저장되었습니다');?>", "center", "bottom");
 										
 										if (mode == 'skin') {
 											skinHTMLSaved = true;
 											if(document.getElementById('skin-download').innerHTML == '') {
-												document.getElementById('skin-download').innerHTML = '<a href="<?php echo $blogURL;?>/owner/skin/edit/download/?file=skin.html"><?php echo _t('내려받기');?></a>';
+												document.getElementById('skin-download').innerHTML = '<a href="<?php echo $context->getProperty('uri.blog');?>/owner/skin/edit/download/?file=skin.html"><?php echo _t('내려받기');?></a>';
 											}
 										} else {
 											skinStyleSaved = true;
@@ -98,7 +98,7 @@ require ROOT . '/interface/common/owner/header.php';
 
 								function changeTab(mode,tag) {
 									currentCode = document.getElementById(mode).value;
-									var request = new HTTPRequest("POST", "<?php echo $blogURL;?>/owner/skin/edit/crop/");									
+									var request = new HTTPRequest("POST", "<?php echo $context->getProperty('uri.blog');?>/owner/skin/edit/crop/");									
 									request.onSuccess = function() {
 										PM.showMessage("<?php echo _t('불러왔습니다.');?>", "center", "bottom");
 										document.getElementById(mode).value = (this.getText("/response/code") ? this.getText("/response/code") : ''); 
@@ -131,21 +131,23 @@ require ROOT . '/interface/common/owner/header.php';
 									}
 									return true;
 								}
+
+
 <?php
-if (count($styleFileList) > 0 && !empty($currentStyleFile) && file_exists(ROOT . "/skin/blog/{$skinSetting['skin']}/" . $currentStyleFile)) {
+if (count($styleFileList) > 0 && !empty($currentStyleFile) && file_exists(ROOT . "/skin/blog/".$context->getProperty('skin.skin')."/" . $currentStyleFile)) {
 ?>		
 								var currentStyleLiNumber = 0;
 								var documentIcons = new Array();
 								documentIcons['css_off'] = new Image();
-								documentIcons['css_off'].src = '<?php echo $serviceURL . $adminSkinSetting['skin'];?>/image/img_css_document_off.gif';
+								documentIcons['css_off'].src = '<?php echo $context->getProperty('uri.service') . $context->getProperty('panel.skin');?>/image/img_css_document_off.gif';
 								documentIcons['css_on'] = new Image();
-								documentIcons['css_on'].src = '<?php echo $serviceURL . $adminSkinSetting['skin'];?>/image/img_css_document_on.gif';
+								documentIcons['css_on'].src = '<?php echo $context->getProperty('uri.service') . $context->getProperty('panel.skin');?>/image/img_css_document_on.gif';
 								
 								function changeCSSFile(obj, file) {
 									if (skinStyleSaved == false && confirm("<?php echo _t('변경된 스타일이 아직 저장되지 않았습니다.\n저장하시겠습니까?');?>"))
 										setSkin('style');
 									
-									var request = new HTTPRequest("POST", "<?php echo $blogURL;?>/owner/skin/edit/loadCSS/");
+									var request = new HTTPRequest("POST", "<?php echo $context->getProperty('uri.blog');?>/owner/skin/edit/loadCSS/");
 									request.onSuccess = function() {
 										document.getElementById('cssSectionForm').s_cache_style_css.value = this.getText("/response/content");
 										document.getElementById('cssSectionForm').file.value = file;
@@ -194,8 +196,8 @@ if (count($styleFileList) > 0 && !empty($currentStyleFile) && file_exists(ROOT .
 							//]]>
 						</script>
 <?php
-if (file_exists(ROOT . "/skin/blog/{$skinSetting['skin']}/index.xml")) {
-	$xml = file_get_contents(ROOT . "/skin/blog/{$skinSetting['skin']}/index.xml");
+if (file_exists(getSkinPath($skinSetting['skin']) . "/index.xml")) {
+	$xml = file_get_contents(getSkinPath($skinSetting['skin']) . "/index.xml");
 	$xmls = new XMLStruct();
 	$xmls->open($xml, $service['encoding']);
 	$skinName = $xmls->getValue('/skin/information/name') . ($skinSetting['skin'] == "customize/$blogid" ? _t('(수정한 스킨)') : NULL);
@@ -229,14 +231,14 @@ if (file_exists(ROOT . "/skin/blog/{$skinSetting['skin']}/index.xml")) {
 									<li id="skin-cover"><a href="#" onclick="changeTab('skin','cover');return false;"><?php echo _t('표지');?></a></li>
 								</ul>
 								
-								<form id="htmlSectionForm" class="section" method="post" action="<?php echo $blogURL;?>/owner/skin/edit/skin/">
+								<form id="htmlSectionForm" class="section" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/skin/edit/skin/">
 									<ul>
-										<li class="selected"><a><img src="<?php echo $serviceURL . $adminSkinSetting['skin'];?>/image/img_html_document_on.gif" alt="" /><strong>skin.html</strong></a>
+										<li class="selected"><a><img src="<?php echo $context->getProperty('uri.service') . $context->getProperty('panel.skin');?>/image/img_html_document_on.gif" alt="" /><strong>skin.html</strong></a>
 											<span id="skin-download" class="download">
 <?php
-if (file_exists(ROOT . "/skin/blog/customize/".getBlogId()."/skin.html")) {
+if (isCustomSkin($skinSetting['skin']) && file_exists(getSkinPath($skinSetting['skin']) . "/skin.html")) {
 ?>
-											<a href="<?php echo $blogURL;?>/owner/skin/edit/download/?file=skin.html"><?php echo _t('내려받기');?></a>
+											<a href="<?php echo $context->getProperty('uri.blog');?>/owner/skin/edit/download/?file=skin.html"><?php echo _t('내려받기');?></a>
 <?php
 }
 ?>
@@ -275,26 +277,26 @@ if ($htmlFilePerms >= 6) {
 								
 <?php
 // get current style's contents.
-$currentStyleContents = file_get_contents(ROOT . "/skin/blog/{$skinSetting['skin']}/{$currentStyleFile}");
+$currentStyleContents = file_get_contents(getSkinPath($skinSetting['skin']) . "/{$currentStyleFile}");
 
 if (count($styleFileList) > 0) {
 ?>
 								<hr class="hidden" />
 								
-								<form id="cssSectionForm" class="section" method="post" action="<?php echo $blogURL;?>/owner/skin/edit/skin/">
+								<form id="cssSectionForm" class="section" method="post" action="<?php echo $context->getProperty('uri.blog');?>/owner/skin/edit/skin/">
 									<ul>
 <?php
 	$count = 0;
 	
 	foreach ($styleFileList as $styleFile) {
-		$tempFile = str_replace(ROOT . "/skin/blog/{$skinSetting['skin']}/", '', $styleFile);
+		$tempFile = str_replace(getSkinPath($skinSetting['skin']) . "/", '', $styleFile);
 		if ($tempFile == $currentStyleFile) {
 ?>
-										<li class="selected"><a href="<?php echo $blogURL;?>/owner/skin/edit/?style=<?php echo $tempFile;?>" onclick="changeCSSFile(this, '<?php echo $tempFile;?>'); return false;"><strong><img src="<?php echo $serviceURL . $adminSkinSetting['skin'];?>/image/img_css_document_on.gif" alt="" /><?php echo basename($tempFile);?></strong></a></li>
+										<li class="selected"><a href="<?php echo $context->getProperty('uri.blog');?>/owner/skin/edit/?style=<?php echo $tempFile;?>" onclick="changeCSSFile(this, '<?php echo $tempFile;?>'); return false;"><strong><img src="<?php echo $context->getProperty('uri.service') . $context->getProperty('panel.skin');?>/image/img_css_document_on.gif" alt="" /><?php echo basename($tempFile);?></strong></a></li>
 <?php
 		} else {
 ?>
-										<li><a href="<?php echo $blogURL;?>/owner/skin/edit/?style=<?php echo $tempFile;?>" onclick="changeCSSFile(this, '<?php echo $tempFile;?>'); return false;"><img src="<?php echo $serviceURL . $adminSkinSetting['skin'];?>/image/img_css_document_off.gif" alt="" /><?php echo basename($tempFile);?></a></li>
+										<li><a href="<?php echo $context->getProperty('uri.blog');?>/owner/skin/edit/?style=<?php echo $tempFile;?>" onclick="changeCSSFile(this, '<?php echo $tempFile;?>'); return false;"><img src="<?php echo $context->getProperty('uri.service') . $context->getProperty('panel.skin');?>/image/img_css_document_off.gif" alt="" /><?php echo basename($tempFile);?></a></li>
 <?php
 		}
 		

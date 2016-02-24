@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -10,12 +10,12 @@ $IV = array(
 
 require ROOT . '/library/preprocessor.php';
 $page=(isset($_GET['page']) && $_GET['page'] >= 1 ? $_GET['page'] : 1 );
-$service['admin_script']='control.js';
+$context = Model_Context::getInstance();
+$context->setProperty('service.admin_script','control.js');
 require ROOT . '/interface/common/control/header.php';
 
 requirePrivilege('group.creators');
 
-global $blogURL;
 $page = $_GET['page'];
 
 ?>
@@ -32,7 +32,7 @@ $page = $_GET['page'];
 				</dl>
 			</fieldset>
 			<div class="button-box">
-				<a class="button" href="#void" onclick="sendUserAddInfo(document.getElementById('ui-name').value,document.getElementById('ui-email').value); return false;"><?php echo _t("새 사용자 등록");?></a>
+				<a class="button" href="#void" onclick="sendUserAddInfo(document.getElementById('ui-name').value,document.getElementById('ui-email').value); return false;"><?php echo _t('새 사용자 등록');?></a>
 			</div>
 		</form>
 	</div>
@@ -65,7 +65,7 @@ if($userlist){
 ?>
 					<tr id="table-user-list_<?php echo $row['userid'];?>">
 						<td><?php echo $row['userid']?></td>
-						<td><a href="<?php echo $blogURL;?>/control/user/detail/<?php echo $row['userid']?>"><?php echo $row['loginid'];?></a></td>
+						<td><a href="<?php echo $context->getProperty('uri.blog');?>/control/user/detail/<?php echo $row['userid']?>"><?php echo $row['loginid'];?></a></td>
 						<td><?php echo $row['name']?></td>
 						<td><?php echo ($row['lastlogin']?date("Y/m/d H:i:s T",$row['lastlogin']):'<span class="warning">'._t('아직 로그인하지 않았습니다.').'</span>');?></td>
 						<td><?php if(empty($row['lastlogin']) || null !== Setting::getUserSettingGlobal('AuthToken',null,$row['userid'])) echo Setting::getUserSettingGlobal('AuthToken',null,$row['userid']);?></td>
@@ -84,10 +84,10 @@ $paging = array('url' => "", 'prefix' => '?page=', 'postfix' => '', 'total' => 0
 $paging['pages'] = $pages;
 $paging['page'] = $page ;
 $pagingTemplate = '[##_paging_rep_##]';
-$pagingItemTemplate = '<a [##_paging_rep_link_##]>[[##_paging_rep_link_num_##]]</a>';
+$pagingItemTemplate = '<a [##_paging_rep_link_##]>[##_paging_rep_link_num_##]</a>';
 ?>
 	<div id="page-navigation">
-		<span id="page-list"><?php echo getPagingView($paging, $pagingTemplate, $pagingItemTemplate);?></span>
+		<span id="page-list"><?php echo Paging::getPagingView($paging, $pagingTemplate, $pagingItemTemplate);?></span>
 		<span id="total-count"><?php echo _f('총 %1명의 사용자',$usercount);?></span>
 	</div>
 	

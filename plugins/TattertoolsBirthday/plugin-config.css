@@ -1,0 +1,24 @@
+@charset "utf-8";
+
+/* Layout ****************************************************************************************/
+
+#config_data fieldset
+{
+	padding                          : 10px;
+}
+
+#config_data fieldset .field
+{
+	border-top                       : none;
+	display                          : inline;
+}
+
+#config_data fieldset .field .fieldcaption
+{
+	margin-bottom                    : 0 !important;
+}
+
+#config_data fieldset .field label
+{
+	padding                          : 0;
+}

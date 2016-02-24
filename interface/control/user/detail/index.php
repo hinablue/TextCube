@@ -1,27 +1,31 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
-$service['admin_script']='control.js';
-
 require ROOT . '/library/preprocessor.php';
+$context = Model_Context::getInstance();
+$context->setProperty('service.admin_script','control.js');
+
 require ROOT . '/interface/common/control/header.php';
 
 requirePrivilege('group.creators');
-global $database;
 
 $uid = $suri['id'];
 
-$usersetting= POD::queryRow("SELECT * FROM {$database['prefix']}Users WHERE userid = " . $uid);
-$usersetting['owner']= POD::queryCell("SELECT userid FROM {$database['prefix']}Privileges WHERE acl & ".BITWISE_OWNER." != 0 AND blogid = " . $blogid);
+$usersetting = User::getInfo($uid);
+$pool = DBModel::getInstance();
+$pool->init("Privileges");
+$pool->setQualifier("acl & ".BITWISE_OWNER,"neq",0);
+$pool->setQualifier("blogid","eq",$blogid);
+$usersetting['owner'] = $pool->getCell("userid");
 $AuthToken = Setting::getUserSettingGlobal('AuthToken',null,$uid);
 ?>
 						<script type="text/javascript"> 
 						//<![CDATA[
 
 						function makeToken(uid) {
-							var request = new HTTPRequest("<?php echo $blogURL;?>/control/action/user/makeToken/?userid="+uid);
+							var request = new HTTPRequest("<?php echo $context->getProperty('uri.blog');?>/control/action/user/makeToken/?userid="+uid);
 							request.onSuccess = function() {
 								alert("<?php echo _t('임시 암호가 설정되었습니다.');?>");
 								window.location.reload();
@@ -46,7 +50,7 @@ $AuthToken = Setting::getUserSettingGlobal('AuthToken',null,$uid);
 								
 								<ul>
 									<?php if(!is_null($AuthToken)) { ?>
-										<li><em><?php echo _t("임시 암호가 설정되어 있습니다.");?></em></li>
+										<li><em><?php echo _t('임시 암호가 설정되어 있습니다.');?></em></li>
 										<li><em><?php echo $AuthToken;?></em></li>
 									<?php }?>
 									<li><?php echo _f('이 계정은 %1에 생성되었습니다.', date("D M j G:i:s T Y", $usersetting['created']));?></li>
@@ -91,16 +95,18 @@ $AuthToken = Setting::getUserSettingGlobal('AuthToken',null,$uid);
 										</tr>
 									</thead>
 									<tbody><?php
-$teamblog = POD::queryAll("SELECT * FROM `{$database['prefix']}Privileges` WHERE userid = " . $uid);
+    $pool->init("Privileges");
+    $pool->setQualifier("userid","eq",$uid);
+    $teamblog = $pool->getAll();
 	foreach ($teamblog as $row){
 		echo "<tr>";
-		echo "<td class=\"name\"><a href=\"{$blogURL}/control/blog/detail/{$row['blogid']}\">".POD::queryCell("SELECT value FROM `{$database['prefix']}BlogSettings` WHERE name = 'name' AND blogid = " . $row['blogid'])."</a></td>";
+		echo "<td class=\"name\"><a href=\"".$context->getProperty('uri.blog')."/control/blog/detail/{$row['blogid']}\">".Setting::getBlogSettingGlobal('name','',$row['blogid'],true)."</a></td>";
 
 		$tmpstr = '';
-		if ($row['acl'] & BITWISE_ADMINISTRATOR) $tmpstr .= _t("관리자")." ";
-		if ($row['acl'] & BITWISE_OWNER) $tmpstr .= _t("소유자")." ";
-		if ($row['acl'] & BITWISE_EDITOR) $tmpstr .= _t("글관리")." ";
-		$tmpstr = ($tmpstr?$tmpstr:_t("없음"));
+		if ($row['acl'] & BITWISE_ADMINISTRATOR) $tmpstr .= _t('관리자')." ";
+		if ($row['acl'] & BITWISE_OWNER) $tmpstr .= _t('소유자')." ";
+		if ($row['acl'] & BITWISE_EDITOR) $tmpstr .= _t('글관리')." ";
+		$tmpstr = ($tmpstr?$tmpstr:_t('없음'));
 		echo "<td class=\"role\">".$tmpstr."</td>";
 		echo "</tr>";
 	}
@@ -110,9 +116,9 @@ $teamblog = POD::queryAll("SELECT * FROM `{$database['prefix']}Privileges` WHERE
 							</div>
 							
 							<div class="button-box">
-								<?php if (is_null($AuthToken)) { ?><a class="button" href="<?php echo $blogURL;?>/control/action/user/makeToken/?userid=<?php echo $uid;?>" onclick="makeToken('<?php echo $uid;?>'); return false;"><?php echo _t('임시 암호 설정');?></a><?php } ?>
-								<a class="button" href="<?php echo $blogURL;?>/control/action/user/delete/?userid=<?php echo $uid;?>" onclick="cleanUser('<?php echo $uid;?>'); return false;"><?php echo _t('사용자 삭제');?></a>
-								<a class="button" href="<?php echo $blogURL;?>/control/user"><?php echo _t('돌아가기');?></a>
+								<?php if (is_null($AuthToken)) { ?><a class="button" href="<?php echo $context->getProperty('uri.blog');?>/control/action/user/makeToken/?userid=<?php echo $uid;?>" onclick="makeToken('<?php echo $uid;?>'); return false;"><?php echo _t('임시 암호 설정');?></a><?php } ?>
+								<a class="button" href="<?php echo $context->getProperty('uri.blog');?>/control/action/user/delete/?userid=<?php echo $uid;?>" onclick="cleanUser('<?php echo $uid;?>'); return false;"><?php echo _t('사용자 삭제');?></a>
+								<a class="button" href="<?php echo $context->getProperty('uri.blog');?>/control/user"><?php echo _t('돌아가기');?></a>
 							</div>
 						</div>
 <?php

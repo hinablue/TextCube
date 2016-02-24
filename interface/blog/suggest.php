@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 $IV = array(
@@ -13,7 +13,12 @@ require ROOT . '/library/preprocessor.php';
 header('Content-Type: text/xml; charset=utf-8');
 $id = isset($_GET['id']) ? $_GET['id'] : false;
 $cursor = isset($_GET['cursor']) ? $_GET['cursor'] : false;
-$filter = isset($_GET['filter']) ? $_GET['filter'] : '1';
+if(isset($_GET['filter'])) {
+	$args = explode(" ",$_GET['filter']);
+	$filter = array($args[0],$args[1],$args[2],true);
+} else {
+	$filter = null;
+}
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
 echo "<response";
 if ($id !== false)

@@ -1,6 +1,7 @@
 <?php //正體中文
 
 // Hina, Cain Chen. Modified: 2011-05-04
+// http://blog.hinablue.me
 
 //Timezone
 $__text['Asia/Seoul'] = '韓國';

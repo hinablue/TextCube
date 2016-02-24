@@ -1,11 +1,13 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 
 require ROOT . '/library/preprocessor.php';
 
 $cache = pageCache::getInstance();
+$context = Model_Context::getInstance();
+$suri = $context->getAllFromNamespace('suri');
 if (strlen($suri['value'])) {
 	if(!isset($suri['id']) || (Setting::getBlogSettingGlobal('useSloganOnTag',1) == 1)) {
 		$tag = getTagId($blogid, $suri['value']);
@@ -43,8 +45,8 @@ if (strlen($suri['value'])) {
 
 	// Now, print starts.
 	require ROOT . '/interface/common/blog/begin.php';
-	$cache->reset();
 	if(Setting::getBlogSettingGlobal('useKeywordAsTag',true)==true) {
+		$cache->reset();
 		$cache->name = 'keyword-'.$tag.'-';
 		if($cache->load()) {
 			require ROOT . '/interface/common/blog/entries.php';
@@ -56,7 +58,7 @@ if (strlen($suri['value'])) {
 			}
 		}
 	}
-	
+
 	if ($skinSetting['showListOnTag'] != 0) {
 		$cache = $listCache;
 		require ROOT . '/interface/common/blog/list.php';
@@ -66,7 +68,7 @@ if (strlen($suri['value'])) {
 		$entries = $preservedEntries;
 		require ROOT . '/interface/common/blog/entries.php';
 	}
-	
+
 } else {
 	require ROOT . '/interface/common/blog/begin.php';
 	$cache->reset();

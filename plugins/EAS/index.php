@@ -1,90 +1,111 @@
 <?php
+/* Frypan Anti-spam Service adapter for Textcube
+   ---------------------------------------------
+   Version 2.1
+   Tatter Network Foundation development team / Needlworks.
 
-function EAS_Call($type, $name, $title, $url, $content)
+   Creator          : Gendoh
+   Maintainer       : inureyes
+
+   Created at       : 2006.6.8
+   Last modified at : 2015.2.25
+
+ General Public License
+ http://www.gnu.org/licenses/gpl.html
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+*/
+function FAS_Call($type, $name, $title, $url, $content)
 {
-	global $hostURL, $blogURL, $database;
-	
-	$blogstr = $hostURL . $blogURL;
-	
+	$context = Model_Context::getInstance();
+	$pool = DBModel::getInstance();
+
+	$blogstr = $context->getProperty('uri.host').$context->getProperty('uri.blog');
+
+	$DDosTimeWindowSize = 300;
+
 	$rpc = new XMLRPC();
-	$rpc->url = 'http://antispam.eolin.com/RPC/index.php';
-	if ($rpc->call('checkSpam', $blogstr, $type, $name, $title, $url, $content, $_SERVER['REMOTE_ADDR']) == false) 
+	$rpc->url = 'http://antispam.textcube.org/RPC/';
+	if ($rpc->call('checkSpam', $blogstr, $type, $name, $title, $url, $content, $_SERVER['REMOTE_ADDR']) == false)
 	{
 		// call fail
 		// Do Local spam check with "Thief-cat algorithm"
 		$count = 0;
-		$tableName = $database['prefix'] . 'RemoteResponses';
-			
+
 		if ($type == 2) // Trackback Case
 		{
-			$sql = 'SELECT COUNT(id) as cc FROM ' . $database['prefix'] . 'RemoteResponses WHERE';
-			$sql .= ' url = \'' . POD::escapeString($url) . '\'';
-			$sql .= ' AND isfiltered > 0';
-			
-			if ($row = POD::queryRow($sql)) {
-				$count += @$row[0];
-			}
-			
-		} else { // Comment Case
-			$tableName = $database['prefix'] . 'Comments';	
+			$storage = "RemoteResponses";
+			$pool->reset($storage);
 
-			$sql = 'SELECT COUNT(id) as cc FROM ' . $database['prefix'] . 'Comments WHERE';
-			$sql .= ' comment = \'' . POD::escapeString($content) . '\'';
-			$sql .= ' AND homepage = \'' . POD::escapeString($url) . '\'';
-			$sql .= ' AND name = \'' . POD::escapeString($name) . '\'';
-			$sql .= ' AND isfiltered > 0';
-			
-			if ($row = POD::queryRow($sql)) {
-				$count += @$row[0];
+			$pool->setQualifier("url","eq",$url,true);
+			$pool->setQualifier("isfiltered",">",0);
+
+			if ($cnt = $pool->getCount("id")) {
+				$count += $cnt;
+			}
+
+		} else { // Comment Case
+			$storage = "Comments";
+			$pool->reset($storage);
+			$pool->setQualifier("comment","eq",$$content,true);
+			$pool->setQualifier("name","eq",$name,true);
+			$pool->setQualifier("homepage","eq",$url,true);
+			$pool->setQualifier("isfiltered",">",0);
+
+			if ($cnt = $pool->getCount("id")) {
+				$count += $cnt;
 			}
 		}
 
 		// Check IP
-		$sql = 'SELECT COUNT(id) as cc FROM ' . $tableName . ' WHERE';
-		$sql .= ' ip = \'' . POD::escapeString($_SERVER['REMOTE_ADDR']) . '\'';
-		$sql .= ' AND isfiltered > 0';
+		$pool->reset($storage);
+		$pool->setQualifier("ip","eq",$_SERVER['REMOTE_ADDR'],true);
+		$pool->setQualifier("written",">",Timestamp::getUNIXtime()-$DDosTimeWindowSize);
 
-		if ($row = POD::queryRow($sql)) {
-			$count += @$row[0];
+		if ($cnt = $pool->getCount("id")) {
+			$count += $cnt;
 		}
-		
+
 		if ($count >= 10) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	if (!is_null($rpc->fault)) {
-		// EAS has some problem
+		// FAS has some problem
 		return true;
 	}
-	
+
 	if ($rpc->result['result'] == true) {
 		return false; // it's spam
 	}
-	
+
 	return true;
 }
 
-function EAS_AddingTrackback($target, $mother)
+function FAS_AddingTrackback($target, $mother)
 {
-	return $target && EAS_Call(2, $mother['site'], $mother['title'], $mother['url'], $mother['excerpt']);
+	return $target && FAS_Call(2, $mother['site'], $mother['title'], $mother['url'], $mother['excerpt']);
 }
 
-function EAS_AddingComment($target, $mother)
+function FAS_AddingComment($target, $mother)
 {
-	global $user;
 	if ($mother['secret'] ==  true) // it's secret(only owner can see it)
 	{
 		// Don't touch
 		return $target;
 	}
-	
+
 	$type = 1; // comment
 	if ($mother['entry'] == 0) $type = 3; // guestbook
-	
-	return $target && EAS_Call($type, $mother['name'], '', $mother['homepage'], $mother['comment']);
+
+	return $target && FAS_Call($type, $mother['name'], '', $mother['homepage'], $mother['comment']);
 }
 
 ?>

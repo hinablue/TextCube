@@ -1,5 +1,5 @@
 
-Textcube 1.8 Simple task flow
+Textcube 2.0 Simple task flow
 =========================
                                                                         By J.K.Shin (inureyes@gmail.com)
 
@@ -15,10 +15,10 @@ Dispatching                                           +------+------+
                                                       +------+------+
                                                              |
                                                         rewrite.php
-														     |
-													/framework/Dispatcher.php
-                                                             |  + /config.php
-                                            (Context / URL / configuration loading)
+                                                             |
+                         /framework/id/[content in file 'load' / textcube (Default)]/Dispatcher.php
+                                                             |
+                                          (Context / URL / configuration loading)
                                                              |
                                                       interface/*.php
                                                     (Interface loading)
@@ -28,8 +28,8 @@ Dispatching                                           +------+------+
                                           Base components loading ( /framework/boot )
                                               + Environment Normalization (Unification)
                                               + Core component loading
-											  + Component / library autoload setting
-											  + Authenticating settings
+                                              + Component / library autoload setting
+                                              + Authenticating settings
                                                              |
                                           Validation
                                               + Basic POST/GET value validation
@@ -37,20 +37,11 @@ Dispatching                                           +------+------+
                                               + URI information validation
                                                              |
                                           Config, context object initialization.
+                                                        /framework/id/[textcube]/config.default.php
+											[textcube] can be changed via /framework/id/load
                                                 (Automatic initialization via first instanciation)
                                                              |
-                                          Loading required components / libraries
-                                              + library/include.XXX.php 
-                                                (specific library list due to interface)
-                                              + library/include.php
-                                                (actual library loading occurs. 
-                                                 if there is library cache, loading them instead.)
-                                                    /library/include.php
-                                                             |     + /library/config.php
-                                                             |     + /config.php (override)
-                                                             |     + /library/model/~
-                                                             |     + /library/view/~
-------------                                                 |     
+------------                                                 |
 Initializing                                                 |
                                                              |
                                                     If database needed,
@@ -64,6 +55,17 @@ Initializing                                                 |
                               |     +  /framework/legacy/Textcube.Data.Session.XXX.php     |
                               +------------------------------+-----------------------------+
                                                              |
+                                          Loading required components / libraries
+                                              + library/include.XXX.php
+                                                (specific library list due to interface)
+                                              + library/include.php
+                                                (actual library loading occurs.
+                                                 if there is library cache, loading them instead.)
+                                                    /library/include.php
+                                                             |     + /config.php (override)
+                                                             |     + /library/model/~
+                                                             |     + /library/view/~
+                                                             |
                                                  If initialization needed,
                                    +-------------------------+------------------------+
                                    |   Loading basic information (blog/user)          |
@@ -72,8 +74,9 @@ Initializing                                                 |
                                    |                                                  |
                                    |   Loading locale resource                        |
                                    |     (if locale information is needed)            |
-                                   |                                                  |
+                                   |   Administrator locales if needed                |
                                    +-------------------------+------------------------+
+                                                             |
                                                              |
                                                      If plugin needed,
                                    +--------------------------------------------------+
@@ -85,11 +88,11 @@ Initializing                                                 |
                                                              |
            --------------------------------------------------|------------------------------------------------
 ------------                                                 |
-Quilting                                   +-----------------+-----------------+                    
+Quilting                                   +-----------------+-----------------+
                       (Sequence defined at each interface path)      /interface/common/owner/header.php
                            /interface/common/blog/begin.php                    |
                                            |                                   |
-                           /interface/common/blog/XXX.php                Interface code     
+                           /interface/common/blog/XXX.php                Interface code
                                            |                                   |
                            /interface/common/blog/end.php               /interface/common/owner/footer.php
 ------------                               |                                   |

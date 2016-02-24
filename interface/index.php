@@ -1,5 +1,5 @@
 <?php
-/// Copyright (c) 2004-2011, Needlworks  / Tatter Network Foundation
+/// Copyright (c) 2004-2016, Needlworks  / Tatter Network Foundation
 /// All rights reserved. Licensed under the GPL.
 /// See the GNU General Public License for more details. (/documents/LICENSE, /documents/COPYRIGHT)
 if (isset($_POST['page']))
@@ -39,6 +39,7 @@ if (!empty($_POST['mode']) && $_POST['mode'] == 'fb') {
 	$IV = array(
 		'GET' => array(
 			'page' => array('int', 1, 'default' => 1),
+			'mode' => array(array('mobile','desktop','tablet'),'mandatory'=>false),
 			'category' => array('int', 0, 'mandatory'=>false)
 		)
 	);
@@ -47,17 +48,7 @@ if (!empty($_POST['mode']) && $_POST['mode'] == 'fb') {
 require ROOT . '/library/preprocessor.php';
 
 // Redirect for ipod touch / iPhone
-$browserUtil = Utils_Browser::getInstance();
-if(Setting::getBlogSettingGlobal('useiPhoneUI',true) && ($browserUtil->isMobile() == true)){
-	if(isset($suri['id'])) {
-		$slogan = getSloganById($blogid, $suri['id']);
-		if(!empty($slogan)) {
-			header("Location: $blogURL/i/entry/".$slogan); exit;
-		}
-	} else {
-		header("Location: $blogURL/i"); exit;
-	}
-}
+$context = Model_Context::getInstance();
 publishEntries();
 
 if (!empty($_POST['mode']) && $_POST['mode'] == 'fb') { // Treat comment notifier.
@@ -69,14 +60,12 @@ if (!empty($_POST['mode']) && $_POST['mode'] == 'fb') { // Treat comment notifie
 } else {
 	notifyComment();
 }
-
 fireEvent('OBStart');
-
 if(empty($suri['id'])) {  // Without id.
-	$skin = new Skin($skinSetting['skin']);
+	$skin = new Skin($context->getProperty('skin.skin'));
 	$frontpage = Setting::getBlogSettingGlobal('frontpage','entry');
 	if (empty($suri['value']) && $suri["directive"] == "/" && ($frontpage != 'entry')) {
-		if($frontpage == 'cover' && isset($skin->cover)	&& count($coverpageMappings) > 0) {		
+		if($frontpage == 'cover' && isset($skin->cover)	&& count($coverpageMappings) > 0) {
 			define('__TEXTCUBE_COVER__',true);
 			require ROOT . '/interface/common/blog/begin.php';
 			dress('article_rep', '', $view);
@@ -93,6 +82,11 @@ if(empty($suri['id'])) {  // Without id.
 			$lines = $lineobj->get();
 			require ROOT . '/interface/common/blog/begin.php';
 			require ROOT . '/interface/common/blog/line.php';
+			require ROOT . '/interface/common/blog/end.php';
+		} else if ($frontpage == 'cover' && $context->getProperty('blog.displaymode','desktop') == 'mobile') {
+			list($entries, $paging) = getEntriesWithPaging($blogid, $suri['page'], $blog['entriesOnPage']);
+			require ROOT . '/interface/common/blog/begin.php';
+			require ROOT . '/interface/common/blog/entries.php';
 			require ROOT . '/interface/common/blog/end.php';
 		} else {
 			require ROOT . '/interface/common/blog/begin.php';
@@ -112,10 +106,10 @@ if(empty($suri['id'])) {  // Without id.
 	} else { // Just normal entry view
 		list($entries, $paging) = getEntryWithPaging($blogid, $suri['id']);
 	}
-	
+
 	if (isset($_POST['partial'])) { // Partial output.
 		header('Content-Type: text/plain; charset=utf-8');
-		$skin = new Skin($skinSetting['skin']);
+		$skin = new Skin($context->getProperty('skin.skin'));
 		$view = '[##_article_rep_##]';
 		require ROOT . '/interface/common/blog/entries.php';
 		$view = removeAllTags($view);
@@ -125,10 +119,10 @@ if(empty($suri['id'])) {  // Without id.
 		require ROOT . '/interface/common/blog/begin.php';
 		if (empty($entries)) {
 			header('HTTP/1.1 404 Not Found');
-			if (empty($skin->pageError)) { 
+			if (empty($skin->pageError)) {
 				dress('article_rep', '<div class="TCwarning">' . _text('존재하지 않는 페이지입니다.') . '</div>', $view);
 			} else{
-				dress('article_rep', NULL, $view); 
+				dress('article_rep', NULL, $view);
 				dress('page_error', $skin->pageError, $view);
 			}
 			unset($paging);
