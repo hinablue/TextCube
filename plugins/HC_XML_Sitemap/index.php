@@ -225,7 +225,7 @@ class HC_XMLSitemap
 		echo '	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"', CRLF;
 		echo '	  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9', CRLF;
 		echo '			http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">', CRLF, CRLF;
-	
+
 		/// build blog root, subroot
 		echo '<url>', CRLF;
 		echo '  <loc>', $userBlogUrl, '/</loc>', CRLF;
@@ -266,7 +266,7 @@ class HC_XMLSitemap
 		echo '  <loc>', $userBlogUrl, '/rss</loc>', CRLF;
 		echo '  <priority>0.8</priority>', CRLF;
 		echo '  <changefreq>daily</changefreq>', CRLF;
-		echo '</url>', CRLF; 
+		echo '</url>', CRLF;
 
         $notices = POD::query("SELECT `id`,`slogan` FROM {$database['prefix']}Entries WHERE `category`=-2 AND `visibility`>=2 AND `userid`={$userid} AND `blogid`={$blogid} ORDER BY `created` ASC");
         while($row = POD::fetch($notices, 'array')) {
@@ -299,7 +299,7 @@ class HC_XMLSitemap
             fclose($fp);
             chmod($cacheFile, 0644);
             $zp = gzopen($gzcacheFile, "w9");
-            if (gzwrite($zp, $sitemapIndexes)) 
+            if (gzwrite($zp, $sitemapIndexes))
             {
                 gzclose($zp);
                 chmod($gzcacheFile, 0644);
@@ -451,7 +451,7 @@ class HC_XMLSitemap
 function sitemap_buildonchange()
 {
 	requireModel('common.setting');
-	
+
 	header('Content-Type: text/xml; charset=utf-8');
 	if( !Acl::check( array("group.administrators") ) ) {
 		getRespondResultPage(0);
@@ -467,7 +467,7 @@ function sitemap_buildonchange()
 function sitemap_notification()
 {
 	requireModel('common.setting');
-	
+
 	header('Content-Type: text/xml; charset=utf-8');
 	if( !Acl::check( array("group.administrators") ) ) {
 		getRespondResultPage(0);
@@ -510,7 +510,7 @@ function sitemap_rebuildcheck()
     $force = (isset($_GET['force']) && (1 === (int) $_GET['force'])) ? true : false;
 
     $lastModify = (!is_null(Setting::getServiceSetting('TextcubeXMLSitemapAddon'))) ? Setting::getServiceSetting('TextcubeXMLSitemapAddon') : 0;
-    
+
     $sitemap = new HC_XMLSitemap();
     if ($_SERVER['REQUEST_TIME'] - $lastModify > 600 || $force === true)
     {
@@ -555,7 +555,7 @@ function sitemap_lastModify($target)
 
     $userid = getUserId();
     $lastModify = (!is_null(Setting::getServiceSetting('TextcubeXMLSitemapAddon'))) ? Setting::getServiceSetting('TextcubeXMLSitemapAddon') : 0;
-    
+
     $sitemap = new HC_XMLSitemap();
     if ($_SERVER['REQUEST_TIME'] - $lastModify > 600)
     {
@@ -584,8 +584,9 @@ function sitemap_Manage()
 	global $blog, $service, $database, $pluginURL, $hostURL, $blogURL, $blogid;
 
 	$userid = getUserId();
-	
-	if (substr(file_get_contents(ROOT.'/cache/CHECKUP'), 0, 3) < 1.8) {
+
+	$version = explode('.', trim((file_get_contents(ROOT.'/cache/CHECKUP'))));
+    if ($version[0] < 1 || ($version[0] === '1' && (int) $version[1] < 8)) {
 		$_text = _t('Alert ::\r\n - This plugin must be Textcube 1.8 or above. \r\n Please update your textcube and try again.');
 		$setupAlert = '<script type="text/javascript">alert("'.$_text.'"); history.go(-1);</script>';
 		exit;
@@ -732,6 +733,6 @@ function sitemap_Manage()
 			</tbody>
 		</table>
 	</div>
-<?php    
+<?php
 }
 ?>
