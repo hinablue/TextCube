@@ -1,5 +1,10 @@
 # UPDATE #
 
+官方最新更新 master(v2.0.0-alpha.4) 版本，已經完全整合，然後修改了一些錯誤。
+如果需要 1.10.0 的版本，可以切換到 [v1] [5] 去看看。
+
+# UPDATE #
+
 官方最新更新 1.9.2-rc1
 我完整 clone 一份並且加入 1.8.6 版本的修訂，重新出了一個 hc 新版本，想試用的人可以前往這裡下載壓縮檔案去安裝。
 
@@ -24,3 +29,4 @@ TextCube 是韓國的開放原始碼的部落格平台，詳細的資訊可以�
   [2]: http://blog.hinablue.me                      "Hina, Cain Chen."
   [3]: http://groups.google.com/group/textcubefans  "TextCube Google Group"
   [4]: https://github.com/hinablue/Textcube_Offical/tree/hc_1.9.2rc1 "New TextCube 1.9.2 RC 1"
+  [5]: https://github.com/hinablue/TextCube/tree/v1 "TextCube HC Version merge from TextCube v1.10.0"
