@@ -33,7 +33,7 @@ function activatePlugin($name) {
 	$manifest = @file_get_contents(ROOT . "/plugins/$name/index.xml");
 	if ($xmls->open($manifest)) {
 		list($currentTextcubeVersion) = explode(' ', TEXTCUBE_VERSION, 2);
-		
+
 		$requiredTattertoolsVersion = $xmls->getValue('/plugin/requirements/tattertools');
 		$requiredTextcubeVersion = $xmls->getValue('/plugin/requirements/textcube');
 		if(is_null($requiredTextcubeVersion) && !is_null($requiredTattertoolsVersion)) {
@@ -52,7 +52,7 @@ function activatePlugin($name) {
 		if (!is_null($requiredTextcubeVersion)) {
 			if (version_compare($currentTextcubeVersion,$requiredTextcubeVersion) < 0)
 				return false;
-		}		
+		}
 	} else {
 		return false;
 	}
@@ -70,7 +70,7 @@ function deactivatePlugin($name) {
 		return false;
 	$pluginName = $name;
 	$name = POD::escapeString($name);
-	POD::query("DELETE FROM {$database['prefix']}Plugins 
+	POD::query("DELETE FROM {$database['prefix']}Plugins
 			WHERE blogid = ".getBlogId()."
 				AND name = '$name'");
 	clearPluginSettingCache();
@@ -84,9 +84,9 @@ function getCurrentSetting($name) {
 	if( !in_array( $name , $activePlugins))
 		return false;
 	if( empty($pluginSetting) ) {
-		$settings = POD::queryAllWithCache("SELECT name, settings 
-				FROM {$database['prefix']}Plugins 
-				WHERE blogid = ".getBlogId(), MYSQL_NUM );
+		$settings = POD::queryAllWithCache("SELECT name, settings
+				FROM {$database['prefix']}Plugins
+				WHERE blogid = ".getBlogId(), MYSQLI_NUM );
 		foreach( $settings as $k => $v ) {
 			$pluginSetting[ $v[0] ] = $v[1];
 		}
@@ -130,7 +130,7 @@ function getPluginInformation($plugin) {
 	if (!file_exists(ROOT . "/plugins/$plugin/index.xml"))
 		return false;
 	if (!$xmls->open(file_get_contents(ROOT . "/plugins/$plugin/index.xml"))) {
-		error_log( "PLUGIN XML_PARSE_ERROR: ". $plugin. ": ". 
+		error_log( "PLUGIN XML_PARSE_ERROR: ". $plugin. ": ".
 		xml_error_string($xmls->error['code']));
 		return false;
 	} else {
@@ -156,7 +156,7 @@ function getPluginInformation($plugin) {
 		if($scopeCount == 0) array_push($pluginScope, 'none');
 		// load plugin information.
 		$maxVersion = max($xmls->getValue('/plugin/requirements/tattertools'),$xmls->getValue('/plugin/requirements/textcube'));
-		$requiredVersion = empty($maxVersion) ? 0 : $maxVersion; 
+		$requiredVersion = empty($maxVersion) ? 0 : $maxVersion;
 
 		$pluginInformation = array(
 			'link'         => $xmls->getValue('/plugin/link[lang()]'),
@@ -229,7 +229,7 @@ function treatPluginTable($plugin, $name, $fields, $keys, $version) {
 			$sentence = $field['name'] . " " . $field['attribute'] . $fieldLength . $isNull . $defaultValue . $ai . ",";
 			$query .= $sentence;
 		}
-		
+
 		array_unshift($keys, 'blogid');
 		$query .= " PRIMARY KEY (" . implode(',',$keys) . ")";
 		$query .= $index;
@@ -242,7 +242,7 @@ function treatPluginTable($plugin, $name, $fields, $keys, $version) {
 			return true;
 		}
 		else return false;
-		
+
 	}
 	return true;
 }
@@ -266,7 +266,7 @@ function getPluginTableName() {
 	requireModel('common.setting');
 
 	global $database;
-	
+
 	$likeEscape = array ( '/_/' , '/%/' );
 	$likeReplace = array ( '\\_' , '\\%' );
 	$escapename = preg_replace($likeEscape, $likeReplace, $database['prefix']);
@@ -320,7 +320,7 @@ function fireEvent($event, $target = null, $mother = null, $condition = true) {
 	foreach ($eventMappings[$event] as $mapping) {
 		include_once (ROOT . "/plugins/{$mapping['plugin']}/index.php");
 		if (function_exists($mapping['listener'])) {
-			if( !empty( $configMappings[$mapping['plugin']]['config'] ) ) 				
+			if( !empty( $configMappings[$mapping['plugin']]['config'] ) )
 				$configVal = getCurrentSetting($mapping['plugin']);
 			else
 				$configVal = null;
@@ -369,7 +369,7 @@ function handleTags( & $content) {
 			foreach ($tagMappings[$tag] as $mapping) {
 				include_once (ROOT . "/plugins/{$mapping['plugin']}/index.php");
 				if (function_exists($mapping['handler'])) {
-					if( !empty( $configMappings[$mapping['plugin']]['config'] ) ) 				
+					if( !empty( $configMappings[$mapping['plugin']]['config'] ) )
 						$configVal = getCurrentSetting($mapping['plugin']);
 					else
 						$configVal ='';
@@ -386,7 +386,7 @@ function handleTags( & $content) {
 							$locale->set($locale->defaultLanguage, $mapping['plugin']);
 							$locale->domain = $mapping['plugin'];
 						}
-					}					
+					}
 					$target = call_user_func($mapping['handler'], $target);
 					if(!is_null($languageDomain)) $locale->domain = $languageDomain;
 					$pluginURL = $pluginPath = $pluginName = "";
@@ -403,7 +403,7 @@ function handleCenters($mapping) {
 
 	include_once (ROOT . "/plugins/{$mapping['plugin']}/index.php");
 	if (function_exists($mapping['handler'])) {
-		if( !empty( $configMappings[$mapping['plugin']]['config'] ) ) 				
+		if( !empty( $configMappings[$mapping['plugin']]['config'] ) )
 			$configVal = getCurrentSetting($mapping['plugin']);
 		else
 			$configVal ='';
@@ -420,7 +420,7 @@ function handleCenters($mapping) {
 				$locale->set($locale->defaultLanguage, $pluginName);
 				$locale->domain = $mapping['plugin'];
 			}
-		}		
+		}
 		$target = call_user_func($mapping['handler'], $target);
 		if(!is_null($languageDomain)) $locale->domain = $languageDomain;
 		$pluginURL = $pluginPath = $pluginName = "";
@@ -433,12 +433,12 @@ function handleCenters($mapping) {
 function handleSidebars(& $sval, & $obj, $previewMode) {
 	global $service, $pluginURL, $pluginPath, $pluginName, $configVal, $configMappings;
 	requireModel('blog.sidebar');
-	$newSidebarAllOrders = array(); 
+	$newSidebarAllOrders = array();
 	// [sidebar id][element id](type, id, parameters)
 	// type : 1=skin text, 2=default handler, 3=plug-in
 	// id : type1=sidebar i, type2=handler id, type3=plug-in handler name
 	// parameters : type1=sidebar j, blah blah~
-	
+
 	$sidebarCount = count($obj->sidebarBasicModules);
 	$sidebarAllOrders = getSidebarModuleOrderData($sidebarCount);
 	if ($previewMode == true) {
@@ -446,7 +446,7 @@ function handleSidebars(& $sval, & $obj, $previewMode) {
 	} else {
 		if (is_null($sidebarAllOrders)) $sidebarAllOrders = array();
 	}
-	
+
 	for ($i=0; $i<$sidebarCount; $i++) {
 		$str = "";
 		if ((!is_null($sidebarAllOrders)) && ((array_key_exists($i, $sidebarAllOrders)))) {
@@ -479,17 +479,17 @@ function handleSidebars(& $sval, & $obj, $previewMode) {
 			}
 		} else {
 			$newSidebarAllOrders[$i] = array();
-			
+
 			for ($j=0; $j<count($obj->sidebarBasicModules[$i]); $j++) {
 				$str .= $obj->sidebarBasicModules[$i][$j]['body'];
 				array_push($newSidebarAllOrders[$i], array('type' => '1', 'id' => "$i", 'parameters' => "$j"));
 			}
-			
-			if (!is_null($sidebarAllOrders)) $sidebarAllOrders[$i] = $newSidebarAllOrders[$i];  
+
+			if (!is_null($sidebarAllOrders)) $sidebarAllOrders[$i] = $newSidebarAllOrders[$i];
 		}
 		dress("sidebar_{$i}", $str, $sval);
 	}
-	
+
 	if (count($newSidebarAllOrders) > 0) {
 		if (($previewMode == false) && !is_null($sidebarAllOrders)) {
 			setBlogSetting("sidebarOrder", serialize($sidebarAllOrders));
@@ -506,10 +506,10 @@ function handleCoverpages(& $obj, $previewMode = false) {
 	// type : 3=plug-in
 	// id : type1=coverpage i, type2=handler id, type3=plug-in handler name
 	// parameters : type1=coverpage j, blah blah~
-	
+
 	$coverpageAllOrders = getCoverpageModuleOrderData();
 	if ($previewMode == true) $coverpageAllOrders = null;
-	
+
 	$i = 0;
 	$obj->coverpageModule = array();
 	if ((!is_null($coverpageAllOrders)) && ((array_key_exists($i, $coverpageAllOrders)))) {
@@ -525,11 +525,11 @@ function handleCoverpages(& $obj, $previewMode = false) {
 					$pluginURL = "{$service['path']}/plugins/{$plugin}";
 					$pluginPath = ROOT . "/plugins/{$plugin}";
 					$pluginName = $plugin;
-					if( !empty( $configMappings[$plugin]['config'] ) ) 				
+					if( !empty( $configMappings[$plugin]['config'] ) )
 						$configVal = getCurrentSetting($plugin);
 					else
 						$configVal ='';
-					
+
 					if (function_exists($handler)) {
 						// Loading locale resource
 						$languageDomain = null;
@@ -541,7 +541,7 @@ function handleCoverpages(& $obj, $previewMode = false) {
 								$locale->set($locale->defaultLanguage, $plugin);
 								$locale->domain = $plugin;
 							}
-						}												
+						}
 						$obj->coverpageStorage["temp_coverpage_element_{$i}_{$j}"] = call_user_func($handler, $parameters);
 						if(!is_null($languageDomain)) $locale->domain = $languageDomain;
 						$pluginURL = $pluginPath = $pluginName = "";
@@ -560,11 +560,11 @@ function handleDataSet( $plugin , $DATA ) {
 	global $configMappings, $activePlugins, $service, $pluginURL, $pluginPath, $pluginName, $configMapping, $configVal;
 	$xmls = new XMLStruct();
 	if( ! $xmls->open($DATA) ) {
-		unset($xmls);	
+		unset($xmls);
 		return array('error' => '3' ,'customError' => '' ) ;
 	}
-	unset($xmls);	
-	if( ! in_array($plugin, $activePlugins) ) 
+	unset($xmls);
+	if( ! in_array($plugin, $activePlugins) )
 		return array('error' => '9' , 'customError'=> _f('%1 : 플러그인이 활성화되어 있지 않아 설정을 저장하지 못했습니다.',$plugin));
 	$reSetting = true;
 	if( !empty( $configMappings[$plugin]['dataValHandler'] ) ) {
@@ -573,7 +573,7 @@ function handleDataSet( $plugin , $DATA ) {
 		$pluginName = $plugin;
 		include_once (ROOT . "/plugins/{$plugin}/index.php");
 		if( function_exists( $configMappings[$plugin]['dataValHandler'] ) ) {
-			if( !empty( $configMappings[$plugin]['config'] ) ) 				
+			if( !empty( $configMappings[$plugin]['config'] ) )
 				$configVal = getCurrentSetting($plugin);
 			else
 				$configVal ='';
@@ -588,12 +588,12 @@ function handleDataSet( $plugin , $DATA ) {
 					$locale->domain = $pluginName;
 				}
 			}
-				
+
 			$reSetting = call_user_func( $configMappings[$plugin]['dataValHandler'] , serialize(Setting::fetchConfigXML($DATA)));
 			$pluginURL = $pluginPath = $pluginName = "";
-			if(!is_null($languageDomain)) $locale->domain = $languageDomain;	
+			if(!is_null($languageDomain)) $locale->domain = $languageDomain;
 		}
-		if( true !== $reSetting )	
+		if( true !== $reSetting )
 			return array( 'error' => '9', 'customError' => $reSetting)	;
 	}
 	$result = updatePluginConfig($plugin, $DATA);
@@ -607,22 +607,22 @@ function fetchConfigVal($DATA) {
 function handleConfig($plugin) {
 	global $service , $typeSchema, $pluginURL, $pluginPath, $pluginName, $configMappings, $configVal, $adminSkinSetting;
 	$typeSchema = array(
-		'text' 
+		'text'
 	,	'textarea'
 	,	'select'
 	,	'checkbox'
 	,	'radio'
 	);
 	$manifest = @file_get_contents(ROOT . "/plugins/$plugin/index.xml");
-	$xmls = new XMLStruct();	
+	$xmls = new XMLStruct();
 	$CDSPval = '';
 	$i=0;
 	$dfVal =  Setting::fetchConfigVal(getCurrentSetting($plugin));
 	$name = '';
 	$clientData ='[';
-	
+
 	$title = $plugin;
-	
+
 	if ($manifest && $xmls->open($manifest)) {
 		$title = $xmls->getValue('/plugin/title[lang()]');
 		//설정 핸들러가 존재시 바꿈
@@ -636,24 +636,24 @@ function handleConfig($plugin) {
 			$pluginName = $plugin;
 			include_once (ROOT . "/plugins/$plugin/index.php");
 			if (function_exists($handler)) {
-				if( !empty( $configMappings[$plugin]['config'] ) ) 				
+				if( !empty( $configMappings[$plugin]['config'] ) )
 					$configVal = getCurrentSetting($plugin);
 				else
 					$configVal ='';
-					
-					
+
+
 				$manifest = call_user_func( $handler , $plugin );
-				if(!is_null($languageDomain)) $locale->domain = $languageDomain;		
+				if(!is_null($languageDomain)) $locale->domain = $languageDomain;
 			}
 			$newXmls = new XMLStruct();
-			if($newXmls->open( $manifest) ) {	 
+			if($newXmls->open( $manifest) ) {
 				unset( $config );
 				$config = $newXmls->selectNode('/config[lang()]');
 			}
 			unset( $newXmls);
 		}
-		if( is_null( $config['fieldset'] ) ) 
-			return array( 'code' => _t('설정 값이 없습니다.') , 'script' => '[]' ) ;  	
+		if( is_null( $config['fieldset'] ) )
+			return array( 'code' => _t('설정 값이 없습니다.') , 'script' => '[]' ) ;
 		foreach ($config['fieldset'] as $fieldset) {
 			$legend = !empty($fieldset['.attributes']['legend']) ? htmlspecialchars($fieldset['.attributes']['legend']) :'';
 			$CDSPval .= CRLF.TAB."<fieldset>".CRLF.TAB.TAB."<legend><span class=\"text\">$legend</span></legend>".CRLF;
@@ -662,12 +662,12 @@ function handleConfig($plugin) {
 					if( empty( $field['.attributes']['name'] ) ) continue;
 					$name = $field['.attributes']['name'] ;
 					$clientData .= getFieldName($field , $name) ;
-					$CDSPval .=  TreatType( $field , $dfVal ,  $name) ;	
+					$CDSPval .=  TreatType( $field , $dfVal ,  $name) ;
 				}
 			}
 			$CDSPval .= TAB."</fieldset>".CRLF;
 		}
-	} else	$CDSPval = _t('설정 값이 없습니다.'); 	
+	} else	$CDSPval = _t('설정 값이 없습니다.');
 	$clientData .= ']';
 	return array( 'code' => $CDSPval , 'script' => $clientData, 'title' => $title ) ;
 }
@@ -692,7 +692,7 @@ function TreatType(  $cmd , $dfVal , $name ) {
 	$fieldTitle = TAB.TAB.TAB.'<label class="fieldtitle" for="'.$name.'">'.htmlspecialchars($cmd['.attributes']['title']) . '</label>';
 	$fieldControl = TAB.TAB.TAB.'<span class="fieldcontrol">' .CRLF.  call_user_func($cmd['.attributes']['type'].'Treat' , $cmd, $dfVal, $name) .TAB.TAB.TAB.'</span>';
 	$caption = empty($cmd['caption'][0]) ? '':TAB.TAB.TAB.'<div class="fieldcaption">'. $cmd['caption'][0]['.value']  . '</div>'.CRLF;
-	if( $titleFw) 
+	if( $titleFw)
 		return	TAB.TAB.'<div class="field" id="div_'.htmlspecialchars($cmd['.attributes']['name']).'">'.CRLF.$fieldTitle.CRLF.$fieldControl.CRLF.$caption.TAB.TAB."</div>\n";
 	else
 		return	TAB.TAB.'<div class="field" id="div_'.htmlspecialchars($cmd['.attributes']['name']).'">'.CRLF.$fieldControl.CRLF.$fieldTitle.CRLF.$caption.TAB.TAB."</div>\n";
@@ -706,7 +706,7 @@ function treatDefaultValue($value, $default, $allowZero = true) {
 }
 
 function textTreat( $cmd , $dfVal , $name ) {
-	$dfVal = ( !is_null( $dfVal[$name]  ) ) ? $dfVal[$name]  :  ((!isset($cmd['.attributes']['value']) || (empty($cmd['.attributes']['value']) && $cmd['.attributes']['value']!== 0))?null:$cmd['.attributes']['value']); 
+	$dfVal = ( !is_null( $dfVal[$name]  ) ) ? $dfVal[$name]  :  ((!isset($cmd['.attributes']['value']) || (empty($cmd['.attributes']['value']) && $cmd['.attributes']['value']!== 0))?null:$cmd['.attributes']['value']);
 	$DSP = TAB.TAB.TAB.TAB.'<input type="text" class="textcontrol" ';
 	$DSP .= ' id="'.$name.'" ';
 	$DSP .= empty( $cmd['.attributes']['size'] ) ? '' : 'size="'. $cmd['.attributes']['size'] . '"' ;
@@ -732,7 +732,7 @@ function selectTreat( $cmd, $dfVal , $name) {
 	foreach( $cmd['op']  as $option ) {
 		$ov = ((!isset($option['.attributes']['value']) || (empty($option['.attributes']['value']) && $option['.attributes']['value']!== 0))?null:$option['.attributes']['value']);
 		$oc = ((!isset($option['.attributes']['checked']) || (empty($option['.attributes']['checked']) && $option['.attributes']['checked']!== 0))?null:$option['.attributes']['checked']);
-		
+
 		$DSP .= TAB.TAB.TAB.TAB.TAB.'<option ';
 		$DSP .= !is_string( $ov ) ? '' : 'value="'.htmlspecialchars($ov).'" ';
 		$DSP .= is_string( $oc ) && 'checked' == $oc && is_null($dfVal) ? 'selected="selected" ':'';
@@ -746,13 +746,13 @@ function selectTreat( $cmd, $dfVal , $name) {
 }
 
 function checkboxTreat( $cmd, $dfVal, $name) {
-	$DSP = '';	
+	$DSP = '';
 	foreach( $cmd['op']  as $option ) {
 		if( empty($option['.attributes']['name']) || !is_string( $option['.attributes']['name'] ) ) continue;
 		$df = ((!isset($dfVal[$option['.attributes']['name']]) || (empty($dfVal[$option['.attributes']['name']]) && $dfVal[$option['.attributes']['name']]!== 0))?null:$dfVal[$option['.attributes']['name']]);
-		$oc = ((!isset($option['.attributes']['checked']) || (empty($option['.attributes']['checked']) && $option['.attributes']['checked']!== 0))?null:$option['.attributes']['checked']);		
-		
-		$checked = !is_string( $df ) ? 
+		$oc = ((!isset($option['.attributes']['checked']) || (empty($option['.attributes']['checked']) && $option['.attributes']['checked']!== 0))?null:$option['.attributes']['checked']);
+
+		$checked = !is_string( $df ) ?
 				( is_string( $oc ) && 'checked' == $oc && is_null( $dfVal ) ? 'checked="checked" ' : ''   ) :
 				( '' != $df ? 'checked="checked" ' : '');
 		$DSP .= TAB.TAB.TAB.TAB.'<input type="checkbox" class="checkboxcontrol"';
