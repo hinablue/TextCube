@@ -11,17 +11,17 @@ final class Utils_Browser extends Singleton
 	}
 
 	function __construct() {
-		$this->browserName = null;
+		self::$browserName = null;
 		$this->machineName = null;
 	}
-	
+
 	public function getBrowserName() {
 		/// Blocking (is in development)
 		$ctx = Model_Context::getInstance();
 //		if($ctx->getProperty('service.usemobileadmin',true) === false) {
 //			return 'unknown';
 //		}
-		if(!is_null($this->browserName)) return $this->browserName;
+		if(!is_null(self::$browserName)) return self::$browserName;
 		if(isset($_SERVER['HTTP_USER_AGENT'])) {
 			if(strpos($_SERVER['HTTP_USER_AGENT'],'iPhone') ||
 				strpos($_SERVER['HTTP_USER_AGENT'],'iPod') ||
@@ -29,48 +29,48 @@ final class Utils_Browser extends Singleton
 				(strpos($_SERVER['HTTP_USER_AGENT'],'AppleWebkit')!== false &&
 					(strpos($_SERVER['HTTP_USER_AGENT'],'SymbianOS')!== false ||	// Nokia
 					strpos($_SERVER['HTTP_USER_AGENT'],'Pre')!== false))){ 	// Palm pre
-				$this->browserName = 'MobileSafari';
+				self::$browserName = 'MobileSafari';
 			} else if(strpos($_SERVER['HTTP_USER_AGENT'],'Android')) {
-				$this->browserName = 'Android';
+				self::$browserName = 'Android';
 			} else if(strpos($_SERVER['HTTP_USER_AGENT'],'Firefox') ||
 				strpos($_SERVER['HTTP_USER_AGENT'],'iceweasel') ||
 				strpos($_SERVER['HTTP_USER_AGENT'],'Minefield')) {
-				$this->browserName = 'firefox';
+				self::$browserName = 'firefox';
 			} else if(strpos($_SERVER['HTTP_USER_AGENT'],'Safari')) {
-				$this->browserName = 'Safari';
+				self::$browserName = 'Safari';
 			} else if(strpos($_SERVER['HTTP_USER_AGENT'],'Chrome')) {
-				$this->browserName = 'Chrome';
+				self::$browserName = 'Chrome';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'Webkit')) {
-				$this->browserName = 'Webkit';
+				self::$browserName = 'Webkit';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'IEMobile')) {
-				$this->browserName = 'IEMobile';
+				self::$browserName = 'IEMobile';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'MSIE')) {
-				$this->browserName = 'IE';
+				self::$browserName = 'IE';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'Opera Mini')) {
-				$this->browserName = 'OperaMini';
+				self::$browserName = 'OperaMini';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'Opera')) {
-				$this->browserName = 'Opera';
+				self::$browserName = 'Opera';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'AvantGo')) {	// Avantgo (palm)
-				$this->browserName = 'AvantGo';
+				self::$browserName = 'AvantGo';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'DoCoMo')) {	// DoCoMo Phones
-				$this->browserName = 'DoCoMo';
+				self::$browserName = 'DoCoMo';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'Minimo')) {	// Firefox mini
-				$this->browserName = 'Minimo';
+				self::$browserName = 'Minimo';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'Maemo')) {	// Firefox mini
-				$this->browserName = 'Maemo';
+				self::$browserName = 'Maemo';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'BlackBerry')!== false) {	// Blackberry
-				$this->browserName = 'BlackBerry';
+				self::$browserName = 'BlackBerry';
 			} else if (strpos($_SERVER['HTTP_USER_AGENT'],'POLARIS')!== false) {	// LGE Phone
-				$this->browserName = 'Polaris';
+				self::$browserName = 'Polaris';
 			} else {
-				$this->browserName = 'unknown';
+				self::$browserName = 'unknown';
 			}
 		}
-		return $this->browserName;
+		return self::$browserName;
 	}
 	public function getVersion() {
 	}
-	
+
 	public function isMobile() {
 		return (in_array($this->getBrowserName(),array('MobileSafari','Android','Maemo','OperaMini','Minimo','DoCoMo','AvantGo','BlockBerry')));
 	}

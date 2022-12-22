@@ -9,16 +9,16 @@ class pageCache extends Singleton {
 		$this->context = Model_Context::getInstance();
 		$this->reset();
 	}
-    
+
 	public static function getInstance() {
 		return self::_getInstance(__CLASS__);
 	}
 
 	public function reset($name = null) {
-		$this->name = 
-		$this->realName = 
-		$this->realNameOwner = 
-		$this->realNameGuest = 
+		$this->name =
+		$this->realName =
+		$this->realNameOwner =
+		$this->realNameGuest =
 		$this->filename =
 		$this->filenameOwner =
 		$this->filenameGuest =
@@ -29,7 +29,7 @@ class pageCache extends Singleton {
 		$this->dbContents =
 		$this->_dbContents =
 		$this->_fileCacheOnly =
-		$this->error = 
+		$this->error =
 		null;
 		if(!is_null($name)) $this->name = $name;
 	}
@@ -39,7 +39,7 @@ class pageCache extends Singleton {
 		if(!$this->getFileName()) return false;
 		if(file_exists($this->absoluteFilePath))
 			$this->purge();
-		if(empty($this->contents)) return $this->_error('No contents');	
+		if(empty($this->contents)) return $this->_error('No contents');
 		$fileHandle = fopen($this->absoluteFilePath,'w');
 		if(fwrite($fileHandle, $this->contents)){
 			fclose($fileHandle);
@@ -172,10 +172,10 @@ class queryCache extends Singleton {
 	private $pooltype = null;
 	function __construct($query = null, $prefix = null){
 		$this->reset();
-	
+
 		$this->context = Model_Context::getInstance();
 		$this->__usePageCache = $this->context->getProperty('service.pagecache');
-		
+
 		if($this->context->getProperty('service.memcached') == true) {
 			$this->pool = Cache_Memcache::getInstance();
 			$this->pooltype = 'memcache';
@@ -196,9 +196,9 @@ class queryCache extends Singleton {
 			$this->prefix = $prefix."-";
 			$this->namespace = $this->prefix;
 		}
-		
+
 	}
-	
+
 	public function create() {
 		$this->setPageCacheLog();
 		return true;
@@ -224,7 +224,7 @@ class queryCache extends Singleton {
 	public function flush() {
 		if(empty($this->__usePageCache)) return false;
 		$this->pool->reset('PageCacheLog',$this->prefix);
-		if($this->pooltype == 'memcache') {	
+		if($this->pooltype == 'memcache') {
 			$this->pool->flush();
 		} else {
 			$this->pool->setQualifier('blogid','equals',getBlogId());
@@ -232,15 +232,15 @@ class queryCache extends Singleton {
 			$this->pool->delete();
 		}
 	}
-	
-	private function getQueryHash(){ 
+
+	private function getQueryHash(){
 		if(empty($this->query)) return false;
 		$this->queryHash = $this->namespace."queryCache-".abs(crc32($this->query));
 	}
-	
+
 	private function getPageCacheLog() {
 		if(empty($this->queryHash)) $this->getQueryHash();
-		
+
 		$this->pool->reset('PageCacheLog',$this->prefix);
 		$this->pool->setQualifier('blogid','equals',getBlogId());
 		$this->pool->setQualifier('name','equals',$this->queryHash,true);
@@ -256,7 +256,7 @@ class queryCache extends Singleton {
 
 	private function setPageCacheLog() {
 		if(empty($this->queryHash)) $this->getQueryHash();
-		
+
 		$name = $this->queryHash;
 		$value = serialize($this->contents);
 		$this->pool->reset('PageCacheLog',$this->prefix);
@@ -316,7 +316,7 @@ class globalCacheStorage extends pageCache {
 
 	function save() {
 		if(empty($this->__usePageCache)) return false;
-		if($this->_isChanged) {	
+		if($this->_isChanged) {
 			$this->pool->reset('PageCacheLog');
 			$this->pool->setAttribute('blogid',$this->_gBlogId);
 			$this->pool->setAttribute('name','globalCacheStorage',true);
@@ -326,7 +326,7 @@ class globalCacheStorage extends pageCache {
 			return $this->pool->replace();
 		}
 	}
-	
+
 	function getContent($name) {
 		if(empty($this->_gCacheStorage)) $this->load();
 		if(isset($this->_gCacheStorage[$this->_gBlogId][$name])) return $this->_gCacheStorage[$this->_gBlogId][$name];
@@ -347,7 +347,7 @@ class globalCacheStorage extends pageCache {
 		$this->pool->reset('PageCacheLog');
 		$this->pool->setQualifier('blogid','equals',$this->_gBlogId);
 		$this->pool->setQualifier('name','equals','globalCacheStorage',true);
-		return $this->pool->delete();		
+		return $this->pool->delete();
 	}
 }
 
@@ -355,7 +355,7 @@ class globalCacheStorage extends pageCache {
 class CacheControl {
 	function flushAll($blogid = null) {
 		if(empty($blogid)) $blogid = getBlogId();
-		
+
 		$dir = __TEXTCUBE_CACHE_DIR__.'/pageCache/'.$blogid;
 		if( !file_exists($dir) ) return true;
 		if(!($dirHandle = @opendir($dir))) return true;
@@ -386,11 +386,11 @@ class CacheControl {
 
 		if(empty($categoryId)) $categoryId = '';
 		else $categoryId = $categoryId.'-';
-		
+
 		$categoryLists = POD::queryColumn("SELECT name
 			FROM {$database['prefix']}PageCacheLog
 			WHERE blogid = ".getBlogId()."
-			AND (name like 'categoryList-".$categoryId."%' 
+			AND (name like 'categoryList-".$categoryId."%'
 				OR name like 'categoryRSS-".$categoryId."%'
 				OR name like 'categoryATOM-".$categoryId."%')");
 		CacheControl::purgeItems($categoryLists);
@@ -402,7 +402,7 @@ class CacheControl {
 		global $database;
 		if(empty($authorId)) $authorId = '';
 		else $authorId = POD::escapeString($authorId).'-';
-		
+
 		$pageLists = POD::queryColumn("SELECT name
 			FROM {$database['prefix']}PageCacheLog
 			WHERE blogid = ".getBlogId()."
@@ -420,7 +420,7 @@ class CacheControl {
 		$tagLists = POD::queryColumn("SELECT name
 			FROM {$database['prefix']}PageCacheLog
 			WHERE blogid = ".getBlogId()."
-			AND (name like 'tagList-".$tagId."%' 
+			AND (name like 'tagList-".$tagId."%'
 				OR name like 'keyword-".$tagId."%'
 				OR name like 'tagATOM-".$tagId."%'
 				OR name like 'tagRSS-".$tagId."%')");
@@ -444,7 +444,7 @@ class CacheControl {
 		CacheControl::purgeItems($keywordEntries);
 		return true;
 	}
-	
+
 	function flushSearchKeywordRSS($search = null) {
 		global $database;
 
@@ -458,13 +458,13 @@ class CacheControl {
 		if(!empty($searchEntries)) CacheControl::purgeItems($searchEntries);
 		return true;
 	}
-	
+
 	function flushEntry($entryId = null) {
 		global $database;
 
 		if(empty($entryId)) $entryId = '';
 		else $entryId = intval($entryId);
-		
+
 		$Entries = POD::queryColumn("SELECT name
 			FROM {$database['prefix']}PageCacheLog
 			WHERE blogid = ".getBlogId()."
@@ -499,7 +499,7 @@ class CacheControl {
 		if(empty($entryId)) $entryId = '';
 		$cache = pageCache::getInstance();
 		$cache->name = 'commentRSS-'.$entryId;
-		$cache->purge(); 
+		$cache->purge();
 		$cache->reset();
 		$cache->name = 'commentRSS';
 		$cache->purge();
@@ -512,7 +512,7 @@ class CacheControl {
 		CacheControl::flushResponseRSS($entryId);
 		return true;
 	}
-	
+
 	function flushTrackbackRSS($entryId = null) {
 		if(empty($entryId)) $entryId = '';
 		$cache = pageCache::getInstance();
@@ -530,7 +530,7 @@ class CacheControl {
 		CacheControl::flushResponseRSS($entryId);
 		return true;
 	}
-		
+
 	function flushResponseRSS($entryId = null) {
 		if(empty($entryId)) $entryId = '';
 		$cache = pageCache::getInstance();
@@ -583,19 +583,19 @@ class CacheControl {
 				unset($tag);
 			}
 //			if ($xmls->doesExist('/plugin/binding/sidebar')) {
-//			TODO:	사이드바 캐시때 처리하도록 하지요.				
+//			TODO:	사이드바 캐시때 처리하도록 하지요.
 //			}
 			if ($xmls->doesExist('/plugin/binding/formatter[lang()]')){
 				CacheControl::flushCategory();
 			}
-			
+
 		}
 	}
 	function flushDBCache($prefix = null) {
 		$pool = queryCache::getInstance();
 		$pool->reset('PageCacheLog',$prefix);
 		return $pool->flush();
-/*		
+/*
 		global $database;
 		$context = Model_Context::getInstance();
 		if($context->getProperty('service.memcached') !== null) {
@@ -615,7 +615,7 @@ class CacheControl {
 				$cache->name = $item;
 				$cache->purge();
 			}
-		}	
+		}
 	}
 }
 
@@ -623,22 +623,22 @@ class CacheControl {
 // Supports same methods as POD raw mode.
 class MMCache{
 	/*var $variable;*/
-	
+
 	//Variable must be the table form. (2-dimensional recursive structure)
-	function queryRow($var, $key, $value) {
+	static function queryRow($var, $key, $value) {
 		foreach($var as $row){
 			if(isset($row[$key]) && $row[$key] == $value) return $row;
 		}
 		return false;
 	}
-	function queryAll($var, $key, $value) {
+	static function queryAll($var, $key, $value) {
 		$result = array();
 		foreach($var as $row){
 			if(isset($row[$key]) && $row[$key] == $value) array_push($result, $row);
 		}
 		return $result;
 	}
-	function queryColumn($var, $key, $value, $column){
+	static function queryColumn($var, $key, $value, $column){
 		$result = array();
 		foreach($var as $row){
 			if(isset($row[$key]) && $row[$key] == $value) array_push($result, $row[$column]);
@@ -651,7 +651,7 @@ class CodeCache {
 	function __construct() {
 		$this->reset();
 	}
-	
+
 	private function reset() {
 		$this->code =
 		$this->name =
@@ -659,14 +659,14 @@ class CodeCache {
 		null;
 		$this->sources = array();
 	}
-	
+
 	private function initialize() {
 		 if (!is_dir(__TEXTCUBE_CACHE_DIR__."/code")){
 			 @mkdir(__TEXTCUBE_CACHE_DIR__."/code");
 			 @chmod(__TEXTCUBE_CACHE_DIR__."/code",0777);
 		 }
 	}
-	
+
 	public function save() {
 		if(!empty($this->name)) $this->__getCodes();	// Get source codes.
 		if(empty($this->code)) return $this->_error(2);
@@ -681,7 +681,7 @@ class CodeCache {
 		fclose($fileHandle);
 		return $this->_error(3);
 	}
-	
+
 	/*@ private @*/
 	private function __getCodes() {
 		$code = '';
@@ -690,7 +690,7 @@ class CodeCache {
 		}
 		$this->code = $code;
 	}
-	
+
 	public function flush() {
 		$this->initialize();
 		foreach (new DirectoryIterator(__TEXTCUBE_CACHE_DIR__."/code") as $code) {

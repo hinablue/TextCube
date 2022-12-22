@@ -24,7 +24,7 @@ $IV = array(
 define('__TEXTCUBE_LOGIN__',true);
 define('__TEXTCUBE_ADMINPANEL__',true);
 require ROOT . '/library/preprocessor.php';
-$context = Model_Context::getInstance(); 
+$context = Model_Context::getInstance();
 
 //$blogURL = getBlogURL();
 if (isset($_GET['loginid']))
@@ -50,7 +50,7 @@ if (isset($_GET['session']) && isset($_GET['requestURI'])) {
 } else if (!empty($_POST['loginid']) && !empty($_POST['reset'])) {
 	if (resetPassword($blogid, $_POST['loginid']))
 		$message = _text('지정된 이메일로 로그인 정보가 전달되었습니다.');
-	else 
+	else
 		$message = _text('권한이 없습니다.');
 } else if (!empty($_POST['loginid']) && !empty($_POST['password'])) {
 	$isLogin = login($_POST['loginid'],$_POST['password']);
@@ -69,7 +69,7 @@ $authResult = fireEvent('LOGIN_try_auth', false);
 if (doesHaveOwnership() || doesHaveMembership()) {
 	if (doesHaveOwnership() && !empty($_POST['requestURI'])) {
 		$url = parse_url($_POST['requestURI']);
-		if ($url && isset($url['host']) && !String::endsWith( '.' . $url['host'], '.' . $context->getProperty('service.domain')))
+		if ($url && isset($url['host']) && !ModifyString::endsWith( '.' . $url['host'], '.' . $context->getProperty('service.domain')))
 			$redirect = $context->getProperty('uri.blog')."/login?requestURI=" . rawurlencode($_POST['requestURI']) . '&session=' . rawurlencode(session_id());
 		else
 			$redirect = $_POST['requestURI'];
@@ -119,7 +119,7 @@ if (doesHaveOwnership() || doesHaveMembership()) {
 			var adminSkin = "<?php echo $adminSkinSetting['skin'];?>";
 
 			window.addEventListener("load", execLoadFunction, false);
-			
+
 			function execLoadFunction() {
 				document.forms[0].<?php echo (empty($_COOKIE['TSSESSION_LOGINID']) ? 'loginid' : 'password');?>.focus();
 <?php
@@ -188,7 +188,7 @@ if (!file_exists(__TEXTCUBE_CACHE_DIR__.'/CHECKUP')) {
 									<?php echo ($showPasswordReset ? '<div id="password_int"><input type="checkbox" class="checkbox" id="reset" name="reset" /><label for="reset">' . _text('암호 초기화') . '</label></div>'.CRLF : '');?>
 								</dd>
 							</dl>
-							
+
 							<div class="button-box">
 								<input type="submit" class="login-button input-button" name="button_login" value="<?php echo _text('로그인');?>" />
 							</div>
@@ -197,8 +197,8 @@ if (!file_exists(__TEXTCUBE_CACHE_DIR__.'/CHECKUP')) {
 							</div>
 						</div>
 					</form>
-						
-<?php if( isActivePlugin('CL_OpenID') ) { 
+
+<?php if( isActivePlugin('CL_OpenID') ) {
 	if( !empty($_COOKIE['openid']) ) {
 		$openid_remember_check = "checked";
 		$cookie_openid = $_COOKIE['openid'];
@@ -213,7 +213,7 @@ if (!file_exists(__TEXTCUBE_CACHE_DIR__.'/CHECKUP')) {
 						<input type="hidden" name="refererURI" value="<?php echo htmlspecialchars($_POST['refererURI']); ?>" />
 						<input type="hidden" name="need_writers" value="1" />
 						<input type="hidden" name="action" value="try_auth" />
-						
+
 						<div id="openid-field-box" class="field-box">
 							<dl id="openid-line">
 								<dt><label for="openid_identifier"><?php echo _text('관리자 계정과 연결된 오픈아이디');?></label></dt>
@@ -226,11 +226,11 @@ if (!file_exists(__TEXTCUBE_CACHE_DIR__.'/CHECKUP')) {
 								<dt><span class="label"><?php echo _text('선택사항');?></span></dt>
 								<dd><input type="checkbox" class="checkbox" id="openid_remember" name="openid_remember" <?php echo $openid_remember_check; ?> /><label for="openid_remember"><?php echo _text('오픈아이디 저장'); ?></label></dd>
 							</dl>
-							
+
 							<div class="button-box">
 								<input type="submit" class="login-button input-button" id="openid-login-button" name="openid_login" value="<?php echo _text('로그인'); ?>" />
 							</div>
-							
+
 							<?php if (!empty($openid_help_link) || !empty($openid_signup_link)) { ?>
 							<ul id="openid-intro">
 								<?php if( !empty( $openid_help_link ) ) { ?>
@@ -244,8 +244,8 @@ if (!file_exists(__TEXTCUBE_CACHE_DIR__.'/CHECKUP')) {
 						</div>
 					</form>
 					<script type="text/javascript">
-					//<![CDATA[ 
-						function focus_openid(){ 
+					//<![CDATA[
+						function focus_openid(){
 							document.getElementById("openid_identifier").focus();}
 					//]]>
 					</script>
@@ -265,7 +265,7 @@ if (!empty($message)) {
 		</div> <!-- all-wrap -->
 	</div> <!-- temp-wrap -->
 <?php
-	if( function_exists('__tcSqlLogDump') ) { 
+	if( function_exists('__tcSqlLogDump') ) {
 		__tcSqlLogDump();
 	}
 ?>

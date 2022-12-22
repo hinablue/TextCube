@@ -11,8 +11,8 @@ define( 'BITWISE_OWNER', 0x10 );              // 10000
 
 /* static */
 global $sAcoPredefinedChain;
-$sAcoPredefinedChain = 
-	array(	
+$sAcoPredefinedChain =
+	array(
 		"group.creators"       => array( "group.owners" ),
 		"group.owners"         => array( "group.administrators", "group.editors" ),
 		"group.administrators" => array( "group.writers" ),
@@ -23,7 +23,7 @@ $sAcoPredefinedChain =
 /* static */
 global $requiredPrivFromUri;
 $requiredPrivFromUri = array(
-		"group.administrators" => array( 
+		"group.administrators" => array(
 			'/owner/center/dashboard*',
 			'/owner/center/about',
 			'/owner/communication*',
@@ -142,7 +142,7 @@ class Privilege {
 		return $arranged_objs;
 	}
 
-	function adjust( $priv )
+	static function adjust( $priv )
 	{
 		$blogid = getBlogId();
 		if( !Acl::isAvailable($blogid) ) {
@@ -165,7 +165,7 @@ class Aco {
 	function Aco() {
 	}
 
-	function adjust( $priv, $otherPriv ) {
+	static function adjust( $priv, $otherPriv ) {
 		// $priv is an string array
 		if( !empty($otherPriv) ) {
 			if( is_array($otherPriv) ) {
@@ -197,7 +197,7 @@ class Aco {
 						array_push( $priv, $acoObj );
 						break;
 					}
-				} 
+				}
 
 			}
 		}
@@ -278,7 +278,7 @@ class Acl {
 		return $_SESSION['identity'][$domain];
 	}
 
-	function check($requiredPriv = null, $otherPriv = null) {
+	static function check($requiredPriv = null, $otherPriv = null) {
 		if( !is_array( $requiredPriv ) ) {
 			$requiredPriv = array( $requiredPriv );
 		}
@@ -324,7 +324,7 @@ class Acl {
 		$_SESSION['acl']["blog.$blogid"] = Privilege::expand($priv);
 	}
 
-	function getCurrentPrivilege($blogid=null) {
+	static function getCurrentPrivilege($blogid=null) {
 		if( is_null($blogid) ) {
 			$blogid = getBlogId();
 		}
@@ -343,9 +343,9 @@ class Acl {
 		}
 	}
 
-	function isAvailable($blogid) {
-		if( !isset( $_SESSION['acl'] ) || 
-			!is_array( $_SESSION['acl'] ) || 
+	static function isAvailable($blogid) {
+		if( !isset( $_SESSION['acl'] ) ||
+			!is_array( $_SESSION['acl'] ) ||
 			!isset( $_SESSION['acl']["blog.$blogid"] ) ) {
 			return false;
 		}
@@ -366,7 +366,7 @@ class Auth {
 
 	function authenticate( $blogid, $loginid, $password, $blogapi = false ) {
 		global $database;
-		$session = array(); 
+		$session = array();
 		Acl::clearAcl();
 		$loginid = POD::escapeString($loginid);
 

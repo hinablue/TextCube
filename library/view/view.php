@@ -162,7 +162,7 @@ function getLowerView() {
 function getScriptsOnFoot() {
 	$context = Model_Context::getInstance();
 	ob_start();
-	if(($context->getProperty('service.reader') != false) && (gmmktime() - Setting::getServiceSetting('lastFeedUpdate',0) > 180)) {
+	if(($context->getProperty('service.reader') != false) && (time() - Setting::getServiceSetting('lastFeedUpdate',0) > 180)) {
 ?>
 	<script type="text/javascript">
 		//<![CDATA[

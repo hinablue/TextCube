@@ -33,7 +33,7 @@ final class Model_URIHandler extends Singleton
 		$url             = $this->uri['fullpath'];
 		$defaultblogid   = Setting::getServiceSetting("defaultBlogId",1,true);
 		$this->suri            = array('url' => $url, 'value' => '');
-		$this->blogid    = null;
+		self::$blogid    = null;
 		$this->uri['isStrictBlogURL'] = true;
 		$depth           = substr_count($this->context->getProperty('path'), '/');
 		if ($depth > 0) {
@@ -43,28 +43,28 @@ final class Model_URIHandler extends Singleton
 				Respond::NotFoundPage();
 		}
 		if ($this->context->getProperty('type') == 'single') {
-			$this->blogid = $defaultblogid;
+			self::$blogid = $defaultblogid;
 		} else {
 			if ($this->context->getProperty('type') == 'domain') {	// Domain-based service
 				if ($_SERVER['HTTP_HOST'] == $this->context->getProperty('domain')) {
-					$this->blogid = $defaultblogid;
+					self::$blogid = $defaultblogid;
 				} else {
 					$domain = explode('.', $_SERVER['HTTP_HOST'], 2);
 					if ($domain[1] == $this->context->getProperty('domain')) {
-						$this->blogid = $this->__getBlogIdByName($domain[0]);
-						if ($this->blogid === null)
-							$this->blogid = $this->__getBlogIdBySecondaryDomain($_SERVER['HTTP_HOST']);
+						self::$blogid = $this->__getBlogIdByName($domain[0]);
+						if (self::$blogid === null)
+							self::$blogid = $this->__getBlogIdBySecondaryDomain($_SERVER['HTTP_HOST']);
 						} else {
-							$this->blogid = $this->__getBlogIdBySecondaryDomain($_SERVER['HTTP_HOST']);
+							self::$blogid = $this->__getBlogIdBySecondaryDomain($_SERVER['HTTP_HOST']);
 						}
 				}
 			} else {	// Path-based service
 				if ($url == '/') {
-					$this->blogid = $defaultblogid;
+					self::$blogid = $defaultblogid;
 				} else if (preg_match('@^/+([^/]+)(.*)$@', $url, $matches)) {
-					$this->blogid = $this->__getBlogIdByName(strtok($matches[1],'?'));
-					if ($this->blogid === null) {
-						$this->blogid = $defaultblogid;
+					self::$blogid = $this->__getBlogIdByName(strtok($matches[1],'?'));
+					if (self::$blogid === null) {
+						self::$blogid = $defaultblogid;
 						$this->uri['isStrictBlogURL']= false;
 					}
 					$url = $matches[2];
@@ -72,7 +72,7 @@ final class Model_URIHandler extends Singleton
 					Respond::NotFoundPage();
 				}
 			}
-			if ($this->blogid === null)
+			if (self::$blogid === null)
 				Respond::NotFoundPage();
 		}
 		if(isset($this->uri['interfacePath'])) {
@@ -116,13 +116,13 @@ final class Model_URIHandler extends Singleton
 
 	private function __URIvariableParser() {
 		global $suri, $blog, $blogid, $skinSetting, $gCacheStorage;
-		$blogid        = $this->blogid;
+		$blogid        = self::$blogid;
 		$gCacheStorage = new globalCacheStorage; // Initialize global cache
 
 		$suri        = $this->suri;
-		$blog        = Setting::getBlogSettingsGlobal($this->blogid);
-		$blog['id']  = $this->blogid;
-		$skinSetting = Setting::getSkinSettings($this->blogid);
+		$blog        = Setting::getBlogSettingsGlobal(self::$blogid);
+		$blog['id']  = self::$blogid;
+		$skinSetting = Setting::getSkinSettings(self::$blogid);
 
 		if(!is_null($this->context->getProperty('service.serviceURL'))) {
 			$this->uri['service'] = $this->context->getProperty('service.serviceURL');
@@ -237,7 +237,7 @@ final class Model_URIHandler extends Singleton
 
 function getBlogId() {
 	$uri = Model_URIHandler::getInstance();
-	return intval($uri->blogid);
+	return intval($uri::$blogid);
 }
 
 ?>

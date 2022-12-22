@@ -318,7 +318,7 @@ THEAD;
 			$backtrace = '';
 		}
 
-		$elapsed_total_db += $log['elapsed'];
+		$elapsed_total_db += (int) $log['elapsed'];
 		$elapsed_total = $log['endtime'];
 		$progress_bar = $log['percent'] / 2; //Max 50px;
 		if (!$commentBlosk) {

@@ -6,9 +6,9 @@ class Paging {
 	function init($url, $prefix = '?page=') {
 		return array('url' => rtrim($url,'?'), 'prefix' => $prefix, 'postfix' => '', 'total' => 0, 'pages' => 0, 'page' => 0, 'before' => array(), 'after' => array());
 	}
-	
-	function getPagingView( & $paging, & $template, & $itemTemplate, $useCache = false, $mode = 'href') {
-		$ctx = Model_Context::getInstance();	
+
+	static function getPagingView( & $paging, & $template, & $itemTemplate, $useCache = false, $mode = 'href') {
+		$ctx = Model_Context::getInstance();
 		if (($paging === false) || empty($paging['page'])) {
 			$paging['url'] = NULL;
 			$paging['onclick'] = NULL;
@@ -19,7 +19,7 @@ class Paging {
 			$paging['page'] = 1;
 			$paging['next'] = NULL;
 		}
-		$url = str_replace('/%3F/', '/?/', URL::encode($paging['url'], $ctx->getProperty('service.useEncodedURL')));	
+		$url = str_replace('/%3F/', '/?/', URL::encode($paging['url'], $ctx->getProperty('service.useEncodedURL')));
 		$prefix = $paging['prefix'];
 		$postfix = isset($paging['postfix']) ? $paging['postfix'] : '';
 		ob_start();
@@ -100,11 +100,11 @@ class Paging {
 		Misc::dress('next_page_title', isset($paging['next_title']) ? $paging['next'] : '', $view, $useCache);
 		Misc::dress('no_more_prev', isset($paging['prev']) ? '' : 'no-more-prev', $view, $useCache);
 		Misc::dress('no_more_next', isset($paging['next']) ? '' : 'no-more-next', $view, $useCache);
-		
+
 		return $view;
 	}
-	
-	function fetch($sql, $page, $count, $url = null, $prefix = '?page=', $countItem = null, $onclick = null) {
+
+	static function fetch($sql, $page, $count, $url = null, $prefix = '?page=', $countItem = null, $onclick = null) {
 		$context = Model_Context::getInstance();
 		if ($url === null)
 			$url = $context->getProperty('uri.folder');

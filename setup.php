@@ -26,14 +26,14 @@ foreach ($bootFiles as $bf) {
 	require_once($bf);
 }
 unset($bootFiles);
-if (get_magic_quotes_gpc()) {
-    foreach ($_GET as $key => $value)
-        $_GET[$key] = stripslashes($value);
-    foreach ($_POST as $key => $value)
-        $_POST[$key] = stripslashes($value);
-    foreach ($_COOKIE as $key => $value)
-        $_COOKIE[$key] = stripslashes($value);
-}
+
+foreach ($_GET as $key => $value)
+    $_GET[$key] = stripslashes($value);
+foreach ($_POST as $key => $value)
+    $_POST[$key] = stripslashes($value);
+foreach ($_COOKIE as $key => $value)
+    $_COOKIE[$key] = stripslashes($value);
+
 $host = explode(':', $_SERVER['HTTP_HOST']);
 if (count($host) > 1) {
 	$_SERVER['HTTP_HOST'] = $host[0];
@@ -476,10 +476,6 @@ copy
 count
 dechex
 dir
-ereg
-ereg_replace
-eregi
-eregi_replace
 explode
 fclose
 feof
@@ -493,7 +489,6 @@ fread
 fsockopen
 function_exists
 fwrite
-get_magic_quotes_gpc
 getimagesize
 gmdate
 gmmktime
@@ -1269,7 +1264,7 @@ INSERT INTO {$_POST['dbPrefix']}Entries (blogid, userid, id, category, visibilit
 			$pool->reset('Users');
 			$pool->setAttribute('password',$password,true);
 			$pool->setQualifier('userid','equals',1);
-			$pool->setQualifier('password','not',$password2,true);
+			// $pool->setQualifier('password','not',$password2,true);
 			$pool->update();
 
 			$pool->reset('BlogSettings');

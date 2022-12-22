@@ -218,7 +218,7 @@ class Textile
     var $pnct;
     var $rel;
     var $fn;
-    
+
     var $shelf = array();
     var $restricted = false;
     var $noimage = false;
@@ -226,7 +226,7 @@ class Textile
     var $url_schemes = array();
     var $glyph = array();
     var $hu = '';
-    
+
     var $ver = '2.0.0';
     var $rev = '$Rev: 216 $';
 
@@ -1101,12 +1101,7 @@ class Textile
     function txtgps($thing)
     {
         if (isset($_POST[$thing])) {
-            if (get_magic_quotes_gpc()) {
-                return stripslashes($_POST[$thing]);
-            }
-            else {
-                return $_POST[$thing];
-            }
+            return stripslashes($_POST[$thing]);
         }
         else {
             return '';
